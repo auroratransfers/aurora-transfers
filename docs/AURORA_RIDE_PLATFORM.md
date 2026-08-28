@@ -47,8 +47,17 @@ Admin confirms a ride and starts dispatch. Up to five eligible drivers receive 3
 ### Admin
 
 - `POST /api/admin-login`, `GET /api/admin-session`, `POST /api/admin-logout`.
-- `GET /api/admin-data?resource=overview|rides|drivers|vehicles|ride`.
+- `GET /api/admin-data?resource=overview|fleet|rides|drivers|vehicles|incidents|ride`.
 - `POST /api/admin-data`: create entities, confirm/assign/dispatch rides, set price, resolve incidents and issue device tokens.
+
+## Live operations console
+
+- The fleet map polls the normalized admin fleet feed every eight seconds while the tab is visible.
+- Every vehicle remains present in the fleet list, including vehicles with no tracker or stale telemetry. Only vehicles with a real reported GPS position appear as map markers.
+- The fleet feed combines the latest vehicle position, tracker heartbeat, speed, heading, battery, accuracy, driver, rider and active ride in one query.
+- Selecting a vehicle loads the current ride trail from `ride_positions`; the live marker continues to use the latest normalized position.
+- Leaflet and OpenStreetMap tiles are suitable for the initial low-volume operations console. A contracted tile provider should replace the public tile endpoint before sustained commercial map traffic.
+- Polling is intentionally replaceable. Driver apps and hardware trackers continue writing through `/api/v1/telemetry`, so a future realtime transport can be introduced without changing the telemetry contract.
 
 ## Anti-fraud controls
 

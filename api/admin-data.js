@@ -7,6 +7,87 @@ function query(req) {
   return new URL(req.url, "https://aurora.local").searchParams;
 }
 
+async function fleetRows(sql) {
+  return sql`select
+      v.*,
+      p.latitude,
+      p.longitude,
+      p.accuracy_m,
+      p.heading,
+      p.speed_kph,
+      p.battery_percent,
+      p.source position_source,
+      p.recorded_at position_recorded_at,
+      extract(epoch from (now()-p.recorded_at))::int position_age_seconds,
+      dc.id device_id,
+      dc.kind device_kind,
+      dc.label device_label,
+      dc.last_seen_at device_last_seen_at,
+      ar.id ride_id,
+      ar.reference ride_reference,
+      ar.status ride_status,
+      ar.scheduled_at ride_scheduled_at,
+      ar.pickup_address,
+      ar.pickup_lat,
+      ar.pickup_lng,
+      ar.destination_address,
+      ar.destination_lat,
+      ar.destination_lng,
+      ar.rider_name,
+      ar.rider_phone,
+      d.id driver_id,
+      d.full_name driver_name,
+      d.phone driver_phone,
+      d.status driver_status,
+      case
+        when p.recorded_at > now()-interval '2 minutes' then 'live'
+        when p.recorded_at > now()-interval '15 minutes' then 'stale'
+        when dc.last_seen_at > now()-interval '2 minutes' then 'no_gps'
+        else 'offline'
+      end connection_status
+    from vehicles v
+    left join lateral (
+      select rp.latitude,rp.longitude,rp.accuracy_m,rp.heading,rp.speed_kph,
+             rp.battery_percent,rp.source,rp.recorded_at
+      from ride_positions rp
+      where rp.vehicle_id=v.id
+      order by rp.recorded_at desc
+      limit 1
+    ) p on true
+    left join lateral (
+      select credentials.id,credentials.kind,credentials.label,
+             credentials.driver_id,credentials.last_seen_at
+      from device_credentials credentials
+      where credentials.vehicle_id=v.id
+        and credentials.active=true
+        and credentials.revoked_at is null
+      order by credentials.last_seen_at desc nulls last,credentials.created_at desc
+      limit 1
+    ) dc on true
+    left join lateral (
+      select r.id,r.reference,r.status,r.scheduled_at,r.driver_id,r.rider_id,
+             r.pickup_address,r.pickup_lat,r.pickup_lng,
+             r.destination_address,r.destination_lat,r.destination_lng,
+             rider.full_name rider_name,rider.phone rider_phone
+      from rides r
+      join riders rider on rider.id=r.rider_id
+      where r.vehicle_id=v.id
+        and r.status in ('assigned','en_route','arrived','in_progress','emergency')
+      order by case when r.status in ('en_route','arrived','in_progress','emergency') then 0 else 1 end,
+               r.scheduled_at
+      limit 1
+    ) ar on true
+    left join drivers d on d.id=coalesce(ar.driver_id,dc.driver_id)
+    order by
+      case
+        when p.recorded_at > now()-interval '2 minutes' then 0
+        when p.recorded_at > now()-interval '15 minutes' then 1
+        when dc.last_seen_at > now()-interval '2 minutes' then 2
+        else 3
+      end,
+      v.plate_number`;
+}
+
 async function getData(sql, req) {
   const params = query(req);
   const resource = params.get("resource") || "overview";
@@ -15,7 +96,11 @@ async function getData(sql, req) {
       sql`select count(*) filter(where status in ('requested','confirmed','assigned','en_route','arrived','in_progress','emergency'))::int active,
                  count(*) filter(where status='in_progress')::int live,
                  count(*) filter(where status='requested')::int unconfirmed,
-                 count(*) filter(where status='completed' and completed_at::date=current_date)::int completed_today from rides`,
+                 count(*) filter(where status in ('requested','confirmed') and driver_id is null)::int unassigned,
+                 count(*) filter(where status in ('requested','confirmed','assigned') and scheduled_at<now())::int delayed,
+                 count(*) filter(where status='completed' and completed_at::date=current_date)::int completed_today,
+                 (select count(*)::int from incidents where status in ('open','acknowledged')) open_incidents
+          from rides`,
       sql`select r.*,ri.full_name rider_name,ri.phone rider_phone,d.full_name driver_name,v.plate_number,v.make vehicle_make,v.model vehicle_model
           from rides r join riders ri on ri.id=r.rider_id left join drivers d on d.id=r.driver_id left join vehicles v on v.id=r.vehicle_id
           where r.scheduled_at >= now()-interval '1 day' order by r.scheduled_at asc limit 100`,
@@ -23,20 +108,79 @@ async function getData(sql, req) {
       sql`select d.*,count(r.id) filter(where r.status in ('assigned','en_route','arrived','in_progress'))::int active_rides
           from drivers d left join rides r on r.driver_id=d.id group by d.id order by d.full_name`,
     ]);
-    return { counts: counts[0], rides, incidents, drivers };
+    return { counts: counts[0], rides, incidents, drivers, serverTime: new Date().toISOString() };
   }
   if (resource === "rides") return { rides: await sql`select r.*,ri.full_name rider_name,ri.email rider_email,ri.phone rider_phone,d.full_name driver_name,v.plate_number from rides r join riders ri on ri.id=r.rider_id left join drivers d on d.id=r.driver_id left join vehicles v on v.id=r.vehicle_id order by r.scheduled_at desc limit 500` };
-  if (resource === "drivers") return { drivers: await sql`select * from drivers order by full_name`, devices: await sql`select id,label,kind,driver_id,vehicle_id,active,last_seen_at,created_at from device_credentials order by created_at desc` };
-  if (resource === "vehicles") return { vehicles: await sql`select * from vehicles order by plate_number` };
+  if (resource === "fleet") return { fleet: await fleetRows(sql), serverTime: new Date().toISOString() };
+  if (resource === "drivers") return {
+    drivers: await sql`select
+        d.*,
+        coalesce(stats.active_rides,0)::int active_rides,
+        coalesce(stats.completed_rides,0)::int completed_rides,
+        dc.id device_id,
+        dc.active device_active,
+        dc.last_seen_at device_last_seen_at,
+        dc.vehicle_id selected_vehicle_id,
+        v.plate_number selected_vehicle_plate,
+        v.make selected_vehicle_make,
+        v.model selected_vehicle_model,
+        p.latitude,
+        p.longitude,
+        p.recorded_at position_recorded_at
+      from drivers d
+      left join lateral (
+        select
+          count(*) filter(where r.status in ('assigned','en_route','arrived','in_progress','emergency'))::int active_rides,
+          count(*) filter(where r.status='completed')::int completed_rides
+        from rides r where r.driver_id=d.id
+      ) stats on true
+      left join lateral (
+        select credentials.id,credentials.active,credentials.last_seen_at,credentials.vehicle_id
+        from device_credentials credentials
+        where credentials.driver_id=d.id
+          and credentials.kind='driver_app'
+          and credentials.active=true
+          and credentials.revoked_at is null
+        order by credentials.last_seen_at desc nulls last,credentials.created_at desc
+        limit 1
+      ) dc on true
+      left join vehicles v on v.id=dc.vehicle_id
+      left join lateral (
+        select latitude,longitude,recorded_at
+        from ride_positions
+        where driver_id=d.id
+        order by recorded_at desc
+        limit 1
+      ) p on true
+      order by d.full_name`,
+    devices: await sql`select id,label,kind,driver_id,vehicle_id,active,last_seen_at,created_at,revoked_at from device_credentials order by created_at desc`,
+  };
+  if (resource === "vehicles") return { vehicles: await fleetRows(sql) };
+  if (resource === "incidents") return {
+    incidents: await sql`select i.*,r.reference,r.status ride_status,r.driver_id,r.vehicle_id,
+        d.full_name driver_name,v.plate_number
+      from incidents i
+      left join rides r on r.id=i.ride_id
+      left join drivers d on d.id=r.driver_id
+      left join vehicles v on v.id=r.vehicle_id
+      order by case when i.status in ('open','acknowledged') then 0 else 1 end,
+               case i.severity when 'critical' then 0 when 'high' then 1 when 'medium' then 2 else 3 end,
+               i.created_at desc
+      limit 500`,
+  };
   if (resource === "ride") {
     const id = clean(params.get("id"), 40);
     const [ride] = await sql`select r.*,ri.full_name rider_name,ri.email rider_email,ri.phone rider_phone,d.full_name driver_name,d.phone driver_phone,v.plate_number,v.make vehicle_make,v.model vehicle_model,v.color vehicle_color from rides r join riders ri on ri.id=r.rider_id left join drivers d on d.id=r.driver_id left join vehicles v on v.id=r.vehicle_id where r.id=${id}`;
     if (!ride) throw Object.assign(new Error("Ride not found"), { status: 404 });
-    const [events, positions] = await Promise.all([
+    const [events, positions, incidents, offers] = await Promise.all([
       sql`select * from ride_events where ride_id=${id} order by occurred_at desc limit 200`,
-      sql`select latitude,longitude,accuracy_m,heading,speed_kph,source,recorded_at from ride_positions where ride_id=${id} order by recorded_at desc limit 300`,
+      sql`select latitude,longitude,accuracy_m,heading,speed_kph,battery_percent,source,recorded_at from ride_positions where ride_id=${id} order by recorded_at desc limit 300`,
+      sql`select * from incidents where ride_id=${id} order by created_at desc limit 100`,
+      sql`select o.*,d.full_name driver_name,v.plate_number
+          from dispatch_offers o join drivers d on d.id=o.driver_id left join vehicles v on v.id=o.vehicle_id
+          where o.ride_id=${id} order by o.offered_at desc limit 100`,
     ]);
-    return { ride, events, positions };
+    return { ride, events, positions, incidents, offers };
   }
   throw Object.assign(new Error("Unknown resource"), { status: 400 });
 }
@@ -53,6 +197,26 @@ async function postAction(sql, req) {
     if (!make || !model || !plate) throw Object.assign(new Error("Make, model and plate are required"), { status: 400 });
     const [vehicle] = await sql`insert into vehicles(make,model,color,plate_number,passenger_capacity,tracker_external_id) values(${make},${model},${clean(data.color,50)||null},${plate},${Number(data.capacity)||4},${clean(data.trackerExternalId,100)||null}) returning *`;
     return { vehicle };
+  }
+  if (action === "set_driver_status") {
+    const driverId=clean(data.driverId,40), status=clean(data.status,20);
+    if (!['offline','available','suspended'].includes(status)) throw Object.assign(new Error("Invalid driver status"), { status:400 });
+    if (status === 'suspended') {
+      const active=await sql`select id from rides where driver_id=${driverId} and status in ('assigned','en_route','arrived','in_progress','emergency') limit 1`;
+      if (active.length) throw Object.assign(new Error("An active driver cannot be suspended"), { status:409 });
+    }
+    const [driver]=await sql`update drivers set status=${status},updated_at=now() where id=${driverId} returning *`;
+    if (!driver) throw Object.assign(new Error("Driver not found"), { status:404 });
+    return {driver};
+  }
+  if (action === "set_vehicle_status") {
+    const vehicleId=clean(data.vehicleId,40), status=clean(data.status,20);
+    if (!['available','maintenance','inactive'].includes(status)) throw Object.assign(new Error("Invalid vehicle status"), { status:400 });
+    const active=await sql`select id from rides where vehicle_id=${vehicleId} and status in ('assigned','en_route','arrived','in_progress','emergency') limit 1`;
+    if (active.length) throw Object.assign(new Error("An active vehicle status is controlled by its ride"), { status:409 });
+    const [vehicle]=await sql`update vehicles set status=${status},updated_at=now() where id=${vehicleId} returning *`;
+    if (!vehicle) throw Object.assign(new Error("Vehicle not found"), { status:404 });
+    return {vehicle};
   }
   if (action === "assign_ride") {
     const rideId=clean(data.rideId,40), driverId=clean(data.driverId,40), vehicleId=clean(data.vehicleId,40);
@@ -121,7 +285,14 @@ async function postAction(sql, req) {
     return { device, token };
   }
   if (action === "resolve_incident") {
-    const [incident]=await sql`update incidents set status=${data.dismiss ? "dismissed":"resolved"},resolved_at=now() where id=${clean(data.incidentId,40)} returning *`;
+    const nextStatus=data.dismiss ? "dismissed":"resolved";
+    const [incident]=await sql`update incidents set status=${nextStatus},resolved_at=now() where id=${clean(data.incidentId,40)} returning *`;
+    if (!incident) throw Object.assign(new Error("Incident not found"), { status:404 });
+    return {incident};
+  }
+  if (action === "acknowledge_incident") {
+    const [incident]=await sql`update incidents set status='acknowledged' where id=${clean(data.incidentId,40)} and status='open' returning *`;
+    if (!incident) throw Object.assign(new Error("Open incident not found"), { status:404 });
     return {incident};
   }
   throw Object.assign(new Error("Unknown action"), { status: 400 });
