@@ -1,8 +1,5 @@
-packages:
-  - "."
-
 allowBuilds:
   esbuild: true
-
-onlyBuiltDependencies:
-  - esbuild
+  sharp: true
+minimumReleaseAgeExclude:
+  - '@lucide/astro@1.35.0'

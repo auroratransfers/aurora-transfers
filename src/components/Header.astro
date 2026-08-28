@@ -1,41 +1,43 @@
 ---
-import { Menu, ArrowRight } from "@lucide/astro";
-import { getLabels, languages, type Lang } from "../data/site";
+import { CarFront, Globe2, Menu, Phone, X } from "@lucide/astro";
+import { getContent, languages, type Lang } from "../data/site";
 
 interface Props { lang: Lang; active?: string; }
 const { lang, active = "home" } = Astro.props;
-const t = getLabels(lang);
+const t = getContent(lang);
 const currentPath = Astro.url.pathname;
-const languagePath = (target: Lang) => currentPath.replace(/^\/(hr|en|de|fr)(?=\/|$)/, `/${target}`);
-const nav = [
-  ["home", `/${lang}`, t.nav.home],
-  ["services", `/${lang}/services`, t.nav.services],
-  ["fleet", `/${lang}/fleet`, t.nav.fleet],
-  ["pricing", `/${lang}/pricing`, t.nav.pricing],
-  ["about", `/${lang}/about`, t.nav.about],
-  ["contact", `/${lang}/contact`, t.nav.contact],
-  ["faq", `/${lang}/faq`, t.nav.faq],
+const langPath = (target: Lang) => currentPath.replace(/^\/(hr|en|de|fr)(?=\/|$)/, `/${target}`);
+const links = [
+  ["home", `/${lang}/`, t.nav.home],
+  ["services", `/${lang}/services/`, t.nav.services],
+  ["destinations", `/${lang}/destinations/`, t.nav.destinations],
+  ["fleet", `/${lang}/fleet/`, t.nav.fleet],
+  ["about", `/${lang}/about/`, t.nav.about],
+  ["contact", `/${lang}/contact/`, t.nav.contact],
+  ["book", `/${lang}/book/`, t.nav.book]
 ] as const;
 ---
-<header class="site-header">
-  <div class="container nav-shell">
-    <a class="brand" href={`/${lang}`} aria-label="Feniks Dubrovnik Transfers">
-      <span class="brand-mark">F</span>
-      <span class="brand-name">Feniks<span>.</span>Transfers</span>
+<header class="site-header" data-header>
+  <nav class="nav-wrap">
+    <a class="wordmark" href={`/${lang}/`} aria-label="Feniks Dubrovnik Transfers home">
+      <span class="logo-symbol"><CarFront size={22} strokeWidth={2.4} /></span>
+      <span>Feniks<small>Dubrovnik Transfers</small></span>
     </a>
-    <nav class="desktop-nav" aria-label="Main navigation">
-      {nav.map(([key, href, label]) => <a href={href} class:list={[{ active: active === key }]}>{label}</a>)}
-    </nav>
-    <div class="nav-actions">
-      <select class="language-select" data-language-select aria-label="Language">
-        {languages.map((target) => <option value={languagePath(target)} selected={target === lang}>{target.toUpperCase()}</option>)}
-      </select>
-      <a class="button button-purple desktop-book" href={`/${lang}/booking`}>{t.nav.booking}<ArrowRight size={16} /></a>
-      <button class="menu-button" type="button" data-menu-button aria-label="Open menu" aria-expanded="false"><Menu size={21} /></button>
+    <div class="desktop-nav" aria-label="Main navigation">
+      {links.map(([key, href, label]) => <a class:list={["nav-link", { active: active === key }]} href={href}>{label}</a>)}
     </div>
-  </div>
-  <nav class="mobile-menu" data-mobile-menu aria-label="Mobile navigation">
-    {nav.map(([key, href, label]) => <a href={href} class:list={[{ active: active === key }]}>{label}</a>)}
-    <a class="button button-purple" href={`/${lang}/booking`}>{t.nav.booking}<ArrowRight size={16} /></a>
+    <div class="nav-tools">
+      <div class="language-control" data-language>
+        <button class="round-tool language-trigger" type="button" aria-label="Change language" aria-expanded="false"><Globe2 size={15} /><span>{lang.toUpperCase()}</span></button>
+        <div class="language-menu" hidden>
+          {languages.map((target) => <a class:list={[{ active: target === lang }]} href={langPath(target)}>{target.toUpperCase()}</a>)}
+        </div>
+      </div>
+      <a class="round-tool phone-tool" href="tel:+385000000000" aria-label="Call Feniks Transfers"><Phone size={16} /></a>
+      <button class="menu-toggle" type="button" data-menu-toggle aria-label="Open menu" aria-expanded="false"><Menu class="menu-open-icon" size={21} /><X class="menu-close-icon" size={21} /></button>
+    </div>
   </nav>
+  <div class="mobile-menu" data-mobile-menu hidden>
+    {links.map(([key, href, label]) => <a class:list={[{ active: active === key }]} href={href}>{label}</a>)}
+  </div>
 </header>

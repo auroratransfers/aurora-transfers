@@ -1,6 +1,8 @@
 node_modules/
+.pnpm-store/
 dist/
 .astro/
-.pnpm-store/
-.env
 .DS_Store
+.env
+.env.*
+!.env.example

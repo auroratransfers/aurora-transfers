@@ -1,77 +1,57 @@
 export const languages = ["hr", "en", "de", "fr"] as const;
 export type Lang = (typeof languages)[number];
+export const pages = ["services", "destinations", "fleet", "about", "contact", "book"] as const;
+export type Page = (typeof pages)[number];
 
-export const pageSlugs = ["services", "fleet", "pricing", "about", "contact", "faq", "booking"] as const;
-export type PageSlug = (typeof pageSlugs)[number];
-
-export const labels = {
+const content = {
   hr: {
-    nav: { home: "Naslovnica", services: "Usluge", fleet: "Vozila", pricing: "Cijene", about: "O nama", contact: "Kontakt", faq: "FAQ", booking: "Rezerviraj" },
-    hero: { badge: "Vaše putovanje počinje mirno", title: "Feniks Dubrovnik Transfers", text: "Siguran, udoban i pouzdan prijevoz od zračne luke, hotela ili marine do Dubrovnika i najljepših destinacija u regiji.", primary: "Rezervirajte transfer", secondary: "Istražite usluge" },
-    booking: { eyebrow: "Brza rezervacija", title: "Gdje vas vozimo?", text: "Odaberite rutu i pošaljite zahtjev. Potvrdu dobivate u najkraćem roku.", pickup: "Polazište", dropoff: "Odredište", date: "Datum", passengers: "Putnici", contact: "Telefon ili email", submit: "Provjeri transfer", placeholder: "Odaberite lokaciju", result: "Procijenjena cijena", note: "Konačnu cijenu potvrđujemo prije vožnje." },
-    home: { servicesEyebrow: "Što nudimo", servicesTitle: "Od slijetanja do vašeg odredišta", servicesText: "Lokalni vozači, moderna vozila i podrška 24/7 za putovanja bez nepotrebnog čekanja.", whyEyebrow: "Zašto Feniks", whyTitle: "Jednostavno od prve poruke do dolaska", destinationsEyebrow: "Popularne rute", destinationsTitle: "Dubrovnik je tek početak", aboutEyebrow: "Lokalna priča", aboutTitle: "Vaš pouzdani partner u Dubrovniku", aboutText: "Feniks Dubrovnik Transfers specijaliziran je za privatne transfere i prijevoz putnika na području Dubrovnika i cijele regije. Profesionalni vozači, točnost i sigurnost temelj su svakog putovanja.", blogEyebrow: "Lokalni vodiči", blogTitle: "Putujte pametnije", ctaTitle: "Spremni za Dubrovnik?", ctaText: "Putujte sigurno. Putujte udobno. Putujte s Feniksom." },
-    common: { learn: "Saznajte više", read: "Čitaj vodič", included: "Uvijek uključeno", footerText: "Privatni transferi iz Dubrovnika, dostupni 24/7.", pages: "Stranice", info: "Informacije", copyright: "Sva prava pridržana." }
+    nav: { home: "Naslovnica", services: "Usluge", destinations: "Destinacije", fleet: "Vozila", about: "O nama", contact: "Kontakt", book: "Rezerviraj" },
+    hero: { badge: "Privatni transferi · Dubrovnik", title: "Vaše putovanje počinje mirno.", text: "Sigurni, udobni i pouzdani privatni transferi iz Dubrovnika prema zračnoj luci, hotelima, marinama i destinacijama u cijeloj regiji.", primary: "Rezerviraj transfer", secondary: "Istraži destinacije" },
+    stats: ["Putnika", "Destinacija", "Godina iskustva"],
+    welcome: { tag: "Dobrodošli", title: "Feniks Dubrovnik Transfers", p1: "Profesionalna smo agencija za privatne transfere koja putnicima pruža sigurnu, udobnu i pouzdanu uslugu prijevoza.", p2: "Naši iskusni vozači i moderna vozila brinu da svako putovanje bude ugodno, točno i bez stresa - bez obzira dolazite li poslovno ili turistički." },
+    pillars: { tag: "Sve za bezbrižan put", title: "Transfer prilagođen vašem dolasku", text: "Od prvog kontakta do dolaska na odredište, svaki detalj organiziramo jasno i osobno.", items: [["Transferi iz zračne luke", "Praćenje leta i doček na dogovorenom mjestu."], ["Privatne međugradske vožnje", "Dubrovnik, Split, Mostar, Kotor i cijela regija."], ["Hoteli i marine", "Točan prijevoz do smještaja, jahte ili kruzera."], ["Izleti po mjeri", "Fleksibilne privatne ture s lokalnim vozačem."]] },
+    why: { tag: "Zašto Feniks", title: "Lokalna usluga kojoj možete vjerovati", text: "Razumijemo koliko je važan prvi dojam pri dolasku u novu destinaciju. Zato nudimo točnost, sigurnost i mir od trenutka rezervacije.", points: ["Profesionalni i ljubazni vozači", "Udobna, klimatizirana vozila", "Fiksne cijene bez iznenađenja", "Dostupnost 24/7 i praćenje letova"] },
+    route: { tag: "Popularne rute", title: "Od Dubrovnika prema cijeloj regiji", cta: "Pogledaj sve cijene" },
+    cta: { title: "Recite nam kamo putujete.", text: "Pošaljite rutu i termin. Potvrdit ćemo dostupnost i konačnu cijenu u najkraćem roku.", button: "Zatraži transfer" },
+    booking: { tag: "Rezervacija transfera", title: "Rezervirajte privatni transfer", intro: "Odaberite vrstu vožnje, datum i detalje putovanja. Javit ćemo vam se s konačnom potvrdom.", choose: "1 · Odaberite transfer", details: "2 · Vaši detalji", pickup: "Polazište", destination: "Odredište", date: "Datum transfera", passengers: "Broj putnika", name: "Ime i prezime", email: "Email", phone: "Telefon", flight: "Broj leta (opcionalno)", message: "Napomena (opcionalno)", submit: "Pošalji zahtjev za rezervaciju", selected: "Odabrani transfer", services: [["airport", "Zračna luka Dubrovnik", "Privatni doček i transfer do hotela ili vile."], ["city", "Međugradski transfer", "Udobna privatna vožnja kroz Hrvatsku i regiju."], ["marina", "Hotel, marina ili luka", "Točan dolazak do smještaja, jahte ili kruzera."], ["tour", "Privatni izlet", "Ruta i zaustavljanja prilagođeni vašem danu."]] },
+    footer: "Privatni transferi iz Dubrovnika - sigurno, udobno i pouzdano."
   },
   en: {
-    nav: { home: "Home", services: "Services", fleet: "Fleet", pricing: "Pricing", about: "About", contact: "Contact", faq: "FAQ", booking: "Book now" },
-    hero: { badge: "Your journey starts calmly", title: "Feniks Dubrovnik Transfers", text: "Safe, comfortable and reliable transport from the airport, hotel or marina to Dubrovnik and the region's most beautiful destinations.", primary: "Book your transfer", secondary: "Explore services" },
-    booking: { eyebrow: "Quick booking", title: "Where can we take you?", text: "Choose your route and send a request. We will confirm it shortly.", pickup: "Pickup", dropoff: "Destination", date: "Date", passengers: "Passengers", contact: "Phone or email", submit: "Check transfer", placeholder: "Choose location", result: "Estimated price", note: "We confirm the final price before your ride." },
-    home: { servicesEyebrow: "What we offer", servicesTitle: "From landing to your destination", servicesText: "Local drivers, modern vehicles and 24/7 support for travel without unnecessary waiting.", whyEyebrow: "Why Feniks", whyTitle: "Simple from the first message to arrival", destinationsEyebrow: "Popular routes", destinationsTitle: "Dubrovnik is only the beginning", aboutEyebrow: "A local story", aboutTitle: "Your trusted partner in Dubrovnik", aboutText: "Feniks Dubrovnik Transfers specialises in private transfers throughout Dubrovnik and the region. Professional drivers, punctuality and safety shape every journey.", blogEyebrow: "Local guides", blogTitle: "Travel smarter", ctaTitle: "Ready for Dubrovnik?", ctaText: "Travel safely. Travel comfortably. Travel with Feniks." },
-    common: { learn: "Learn more", read: "Read guide", included: "Always included", footerText: "Private transfers from Dubrovnik, available 24/7.", pages: "Pages", info: "Information", copyright: "All rights reserved." }
+    nav: { home: "Home", services: "Services", destinations: "Destinations", fleet: "Fleet", about: "About", contact: "Contact", book: "Book" },
+    hero: { badge: "Private transfers · Dubrovnik", title: "Your journey starts calmly.", text: "Safe, comfortable and reliable private transfers from Dubrovnik to the airport, hotels, marinas and destinations across the region.", primary: "Book a transfer", secondary: "Explore destinations" },
+    stats: ["Passengers", "Destinations", "Years of experience"],
+    welcome: { tag: "Welcome", title: "Feniks Dubrovnik Transfers", p1: "We are a professional private transfer agency providing safe, comfortable and reliable passenger transport.", p2: "Our experienced drivers and modern vehicles make every journey pleasant, punctual and stress-free - whether you travel for business or leisure." },
+    pillars: { tag: "Everything for an easy journey", title: "A transfer shaped around your arrival", text: "From first contact to your destination, every detail is handled clearly and personally.", items: [["Airport transfers", "Flight monitoring and a welcome at the agreed meeting point."], ["Private intercity rides", "Dubrovnik, Split, Mostar, Kotor and the entire region."], ["Hotels and marinas", "Punctual transport to your hotel, yacht or cruise ship."], ["Tailor-made tours", "Flexible private tours with a knowledgeable local driver."]] },
+    why: { tag: "Why Feniks", title: "Local service you can trust", text: "We know how important the first impression is when arriving somewhere new. That is why we provide punctuality, safety and peace of mind from booking onward.", points: ["Professional and friendly drivers", "Comfortable air-conditioned vehicles", "Fixed prices with no surprises", "24/7 availability and flight monitoring"] },
+    route: { tag: "Popular routes", title: "From Dubrovnik across the region", cta: "View all prices" },
+    cta: { title: "Tell us where you are going.", text: "Send your route and travel time. We will confirm availability and the final price shortly.", button: "Request a transfer" },
+    booking: { tag: "Transfer booking", title: "Book your private transfer", intro: "Choose your ride, date and travel details. We will reply with the final confirmation.", choose: "1 · Choose a transfer", details: "2 · Your details", pickup: "Pickup location", destination: "Destination", date: "Transfer date", passengers: "Passengers", name: "Full name", email: "Email", phone: "Phone", flight: "Flight number (optional)", message: "Message (optional)", submit: "Send booking request", selected: "Selected transfer", services: [["airport", "Dubrovnik Airport", "Private welcome and transfer to your hotel or villa."], ["city", "Intercity transfer", "Comfortable private travel through Croatia and the region."], ["marina", "Hotel, marina or port", "Punctual arrival at your accommodation, yacht or cruise."], ["tour", "Private day tour", "A route and stops tailored to your day."]] },
+    footer: "Private transfers from Dubrovnik - safe, comfortable and reliable."
   },
   de: {
-    nav: { home: "Startseite", services: "Leistungen", fleet: "Fahrzeuge", pricing: "Preise", about: "Über uns", contact: "Kontakt", faq: "FAQ", booking: "Buchen" },
-    hero: { badge: "Ihre Reise beginnt entspannt", title: "Feniks Dubrovnik Transfers", text: "Sicherer, komfortabler und zuverlässiger Transport vom Flughafen, Hotel oder Hafen nach Dubrovnik und zu den schönsten Zielen der Region.", primary: "Transfer buchen", secondary: "Leistungen entdecken" },
-    booking: { eyebrow: "Schnellbuchung", title: "Wohin dürfen wir Sie fahren?", text: "Wählen Sie Ihre Route und senden Sie eine Anfrage. Wir bestätigen sie in Kürze.", pickup: "Abholung", dropoff: "Ziel", date: "Datum", passengers: "Fahrgäste", contact: "Telefon oder E-Mail", submit: "Transfer prüfen", placeholder: "Ort auswählen", result: "Geschätzter Preis", note: "Den endgültigen Preis bestätigen wir vor der Fahrt." },
-    home: { servicesEyebrow: "Unser Angebot", servicesTitle: "Von der Landung bis zum Ziel", servicesText: "Lokale Fahrer, moderne Fahrzeuge und 24/7-Support für Reisen ohne unnötige Wartezeit.", whyEyebrow: "Warum Feniks", whyTitle: "Einfach von der ersten Nachricht bis zur Ankunft", destinationsEyebrow: "Beliebte Routen", destinationsTitle: "Dubrovnik ist erst der Anfang", aboutEyebrow: "Eine lokale Geschichte", aboutTitle: "Ihr zuverlässiger Partner in Dubrovnik", aboutText: "Feniks Dubrovnik Transfers ist auf private Transfers in Dubrovnik und der gesamten Region spezialisiert. Professionelle Fahrer, Pünktlichkeit und Sicherheit prägen jede Fahrt.", blogEyebrow: "Lokale Guides", blogTitle: "Cleverer reisen", ctaTitle: "Bereit für Dubrovnik?", ctaText: "Sicher reisen. Komfortabel reisen. Mit Feniks reisen." },
-    common: { learn: "Mehr erfahren", read: "Guide lesen", included: "Immer inklusive", footerText: "Private Transfers ab Dubrovnik, rund um die Uhr.", pages: "Seiten", info: "Informationen", copyright: "Alle Rechte vorbehalten." }
+    nav: { home: "Start", services: "Leistungen", destinations: "Ziele", fleet: "Fahrzeuge", about: "Über uns", contact: "Kontakt", book: "Buchen" },
+    hero: { badge: "Private Transfers · Dubrovnik", title: "Ihre Reise beginnt entspannt.", text: "Sichere, komfortable und zuverlässige Privattransfers von Dubrovnik zum Flughafen, zu Hotels, Marinas und Zielen in der gesamten Region.", primary: "Transfer buchen", secondary: "Ziele entdecken" },
+    stats: ["Fahrgäste", "Reiseziele", "Jahre Erfahrung"],
+    welcome: { tag: "Willkommen", title: "Feniks Dubrovnik Transfers", p1: "Wir sind eine professionelle Agentur für sichere, komfortable und zuverlässige Privattransfers.", p2: "Erfahrene Fahrer und moderne Fahrzeuge sorgen für eine pünktliche und stressfreie Fahrt - geschäftlich oder privat." },
+    pillars: { tag: "Alles für eine entspannte Fahrt", title: "Ein Transfer passend zu Ihrer Ankunft", text: "Vom ersten Kontakt bis zum Ziel organisieren wir jedes Detail klar und persönlich.", items: [["Flughafentransfers", "Flugüberwachung und Empfang am vereinbarten Treffpunkt."], ["Private Fernfahrten", "Dubrovnik, Split, Mostar, Kotor und die gesamte Region."], ["Hotels und Marinas", "Pünktlicher Transfer zu Hotel, Yacht oder Kreuzfahrtschiff."], ["Individuelle Ausflüge", "Flexible Privattouren mit einem lokalen Fahrer."]] },
+    why: { tag: "Warum Feniks", title: "Lokaler Service, dem Sie vertrauen können", text: "Der erste Eindruck an einem neuen Ort zählt. Wir bieten Pünktlichkeit, Sicherheit und Ruhe ab der Buchung.", points: ["Professionelle und freundliche Fahrer", "Komfortable klimatisierte Fahrzeuge", "Festpreise ohne Überraschungen", "24/7 erreichbar und Flugüberwachung"] },
+    route: { tag: "Beliebte Routen", title: "Von Dubrovnik durch die Region", cta: "Alle Preise ansehen" },
+    cta: { title: "Sagen Sie uns, wohin Sie reisen.", text: "Senden Sie Route und Termin. Wir bestätigen Verfügbarkeit und Endpreis schnellstmöglich.", button: "Transfer anfragen" },
+    booking: { tag: "Transferbuchung", title: "Privattransfer buchen", intro: "Wählen Sie Fahrt, Datum und Reisedaten. Sie erhalten unsere endgültige Bestätigung.", choose: "1 · Transfer wählen", details: "2 · Ihre Angaben", pickup: "Abholort", destination: "Ziel", date: "Transferdatum", passengers: "Fahrgäste", name: "Vor- und Nachname", email: "E-Mail", phone: "Telefon", flight: "Flugnummer (optional)", message: "Nachricht (optional)", submit: "Buchungsanfrage senden", selected: "Gewählter Transfer", services: [["airport", "Flughafen Dubrovnik", "Privater Empfang und Transfer zu Hotel oder Villa."], ["city", "Transfer zwischen Städten", "Komfortable Privatfahrt durch Kroatien und die Region."], ["marina", "Hotel, Marina oder Hafen", "Pünktlich zu Unterkunft, Yacht oder Kreuzfahrtschiff."], ["tour", "Privater Tagesausflug", "Route und Stopps individuell nach Ihren Wünschen."]] },
+    footer: "Private Transfers ab Dubrovnik - sicher, komfortabel und zuverlässig."
   },
   fr: {
-    nav: { home: "Accueil", services: "Services", fleet: "Véhicules", pricing: "Tarifs", about: "À propos", contact: "Contact", faq: "FAQ", booking: "Réserver" },
-    hero: { badge: "Votre voyage commence sereinement", title: "Feniks Dubrovnik Transfers", text: "Un transport sûr, confortable et fiable depuis l'aéroport, l'hôtel ou la marina vers Dubrovnik et les plus belles destinations de la région.", primary: "Réserver un transfert", secondary: "Découvrir nos services" },
-    booking: { eyebrow: "Réservation rapide", title: "Où souhaitez-vous aller ?", text: "Choisissez votre itinéraire et envoyez une demande. Nous la confirmerons rapidement.", pickup: "Départ", dropoff: "Destination", date: "Date", passengers: "Passagers", contact: "Téléphone ou e-mail", submit: "Vérifier le transfert", placeholder: "Choisir un lieu", result: "Prix estimé", note: "Nous confirmons le prix final avant votre trajet." },
-    home: { servicesEyebrow: "Nos services", servicesTitle: "De l'atterrissage à votre destination", servicesText: "Chauffeurs locaux, véhicules modernes et assistance 24h/24 pour voyager sans attente inutile.", whyEyebrow: "Pourquoi Feniks", whyTitle: "Simple, du premier message à l'arrivée", destinationsEyebrow: "Itinéraires populaires", destinationsTitle: "Dubrovnik n'est que le début", aboutEyebrow: "Une histoire locale", aboutTitle: "Votre partenaire de confiance à Dubrovnik", aboutText: "Feniks Dubrovnik Transfers est spécialisé dans les transferts privés à Dubrovnik et dans toute la région. Chauffeurs professionnels, ponctualité et sécurité guident chaque trajet.", blogEyebrow: "Guides locaux", blogTitle: "Voyagez mieux", ctaTitle: "Prêt pour Dubrovnik ?", ctaText: "Voyagez en sécurité. Voyagez confortablement. Voyagez avec Feniks." },
-    common: { learn: "En savoir plus", read: "Lire le guide", included: "Toujours inclus", footerText: "Transferts privés depuis Dubrovnik, disponibles 24h/24.", pages: "Pages", info: "Informations", copyright: "Tous droits réservés." }
+    nav: { home: "Accueil", services: "Services", destinations: "Destinations", fleet: "Véhicules", about: "À propos", contact: "Contact", book: "Réserver" },
+    hero: { badge: "Transferts privés · Dubrovnik", title: "Votre voyage commence sereinement.", text: "Transferts privés sûrs, confortables et fiables depuis Dubrovnik vers l'aéroport, les hôtels, les marinas et toute la région.", primary: "Réserver un transfert", secondary: "Voir les destinations" },
+    stats: ["Passagers", "Destinations", "Années d'expérience"],
+    welcome: { tag: "Bienvenue", title: "Feniks Dubrovnik Transfers", p1: "Nous sommes une agence professionnelle de transferts privés, sûre, confortable et fiable.", p2: "Nos chauffeurs expérimentés et nos véhicules modernes assurent un trajet ponctuel et sans stress, pour affaires ou loisirs." },
+    pillars: { tag: "Tout pour voyager sereinement", title: "Un transfert adapté à votre arrivée", text: "Du premier contact à votre destination, chaque détail est organisé clairement et personnellement.", items: [["Transferts aéroport", "Suivi du vol et accueil au point de rencontre convenu."], ["Trajets privés interurbains", "Dubrovnik, Split, Mostar, Kotor et toute la région."], ["Hôtels et marinas", "Transport ponctuel vers votre hôtel, yacht ou croisière."], ["Excursions sur mesure", "Circuits privés flexibles avec un chauffeur local."]] },
+    why: { tag: "Pourquoi Feniks", title: "Un service local de confiance", text: "La première impression compte lorsque l'on arrive ailleurs. Nous garantissons ponctualité, sécurité et tranquillité dès la réservation.", points: ["Chauffeurs professionnels et accueillants", "Véhicules confortables et climatisés", "Prix fixes sans surprise", "Disponibilité 24/7 et suivi des vols"] },
+    route: { tag: "Itinéraires populaires", title: "De Dubrovnik vers toute la région", cta: "Voir tous les tarifs" },
+    cta: { title: "Dites-nous où vous allez.", text: "Envoyez votre itinéraire et votre horaire. Nous confirmerons rapidement la disponibilité et le prix final.", button: "Demander un transfert" },
+    booking: { tag: "Réservation de transfert", title: "Réservez votre transfert privé", intro: "Choisissez le trajet, la date et les détails. Nous vous répondrons avec la confirmation finale.", choose: "1 · Choisissez un transfert", details: "2 · Vos informations", pickup: "Lieu de départ", destination: "Destination", date: "Date du transfert", passengers: "Passagers", name: "Nom complet", email: "E-mail", phone: "Téléphone", flight: "Numéro de vol (facultatif)", message: "Message (facultatif)", submit: "Envoyer la demande", selected: "Transfert sélectionné", services: [["airport", "Aéroport de Dubrovnik", "Accueil privé et transfert vers votre hôtel ou villa."], ["city", "Transfert interurbain", "Voyage privé confortable en Croatie et dans la région."], ["marina", "Hôtel, marina ou port", "Arrivée ponctuelle à l'hôtel, au yacht ou au navire."], ["tour", "Excursion privée", "Itinéraire et arrêts adaptés à votre journée."]] },
+    footer: "Transferts privés depuis Dubrovnik - sûrs, confortables et fiables."
   }
 } as const;
 
-export function getLabels(lang: Lang) {
-  return labels[lang] || labels.en;
-}
-
-export const locations = [
-  ["airport", "Zračna luka Dubrovnik"],
-  ["dubrovnik", "Dubrovnik – Stari grad"],
-  ["hotel", "Dubrovnik – hotel / vila"],
-  ["split", "Split"],
-  ["mostar", "Mostar"],
-  ["kotor", "Kotor"],
-] as const;
-
-export const routePrices: Record<string, number> = {
-  "airport-dubrovnik": 35, "airport-hotel": 35, "airport-split": 280,
-  "airport-mostar": 150, "airport-kotor": 120, "dubrovnik-airport": 35,
-  "dubrovnik-hotel": 15, "dubrovnik-split": 280, "dubrovnik-mostar": 150,
-  "dubrovnik-kotor": 120, "hotel-airport": 35, "hotel-dubrovnik": 15,
-  "hotel-split": 280, "hotel-mostar": 150, "hotel-kotor": 120,
-  "split-dubrovnik": 280, "mostar-dubrovnik": 150, "kotor-dubrovnik": 120
-};
-
-export const services = [
-  { icon: "plane", title: "Aerodromski transferi", text: "Praćenje leta, doček u terminalu i 60 minuta besplatnog čekanja." },
-  { icon: "hotel", title: "Hoteli i vile", text: "Prijevoz od vrata do vrata uz pomoć s prtljagom na cijeloj rivijeri." },
-  { icon: "route", title: "Međugradske vožnje", text: "Split, Mostar, Kotor, Budva i druga odredišta u Hrvatskoj i regiji." },
-  { icon: "compass", title: "Privatni izleti", text: "Fleksibilan itinerar, lokalne preporuke i dovoljno vremena za uživanje." },
-  { icon: "briefcase", title: "Poslovni prijevoz", text: "Diskretna usluga za konferencije, sastanke i korporativne goste." },
-  { icon: "sparkles", title: "Posebne prigode", text: "Vjenčanja, proslave, krstarenja i dani koji traže dodatnu pažnju." },
-];
-
-export const pages: Record<PageSlug, { eyebrow: string; title: string; intro: string }> = {
-  services: { eyebrow: "Naše usluge", title: "Privatni prijevoz po vašoj mjeri", intro: "Od dolaska u zračnu luku do cjelodnevnih izleta kroz Dalmaciju, Hercegovinu i Crnu Goru." },
-  fleet: { eyebrow: "Vozni park", title: "Udobnost za svaki broj putnika", intro: "Moderna, klimatizirana i redovito održavana vozila za privatne, obiteljske i grupne transfere." },
-  pricing: { eyebrow: "Cjenik", title: "Fiksne cijene bez iznenađenja", intro: "Cijena je po vozilu i uključuje gorivo, cestarine, parking, čekanje i dječje sjedalice na zahtjev." },
-  about: { eyebrow: "O nama", title: "Lokalna priča o povjerenju", intro: "Profesionalni vozači, lokalno znanje i pažnja prema svakom gostu od prvog kontakta do odredišta." },
-  contact: { eyebrow: "Kontakt", title: "Pišite nam bilo kada", intro: "Za brze upite dostupni smo putem telefona, WhatsAppa i emaila. Odgovaramo u najkraćem roku." },
-  faq: { eyebrow: "Česta pitanja", title: "Sve prije vašeg putovanja", intro: "Rezervacije, plaćanje, prtljaga, dječje sjedalice, granice i sve što vas može zanimati prije polaska." },
-  booking: { eyebrow: "Rezervacija", title: "Rezervirajte transfer u nekoliko koraka", intro: "Pošaljite detalje putovanja. Provjerit ćemo dostupnost i potvrditi konačnu cijenu prije vožnje." },
-};
+export function getContent(lang: Lang) { return content[lang] || content.en; }

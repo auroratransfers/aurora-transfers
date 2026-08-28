@@ -1,0 +1,4 @@
+{
+  "name": "Feniks Dubrovnik Transfers API",
+  "endpoints": [{ "path": "/api/book", "method": "POST", "purpose": "Submit a private transfer booking request" }]
+}

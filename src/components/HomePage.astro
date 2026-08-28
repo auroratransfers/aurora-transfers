@@ -1,90 +1,74 @@
 ---
-import { Plane, Hotel, Route, Compass, BriefcaseBusiness, Sparkles, Check, ArrowRight, Clock3, ShieldCheck, Wifi, Star } from "@lucide/astro";
-import BookingForm from "./BookingForm.astro";
-import { getLabels, services, type Lang } from "../data/site";
-
+import { ArrowRight, CalendarCheck, CarFront, Check, Clock3, Compass, MapPin, Plane, Route, ShieldCheck, Ship, Sparkles } from "@lucide/astro";
+import { getContent, type Lang } from "../data/site";
 interface Props { lang: Lang; }
 const { lang } = Astro.props;
-const t = getLabels(lang);
-const iconMap = { plane: Plane, hotel: Hotel, route: Route, compass: Compass, briefcase: BriefcaseBusiness, sparkles: Sparkles };
-const steps = [
-  ["01", "Pošaljite rutu", "Odaberite gdje vas preuzimamo i kamo putujete."],
-  ["02", "Primite potvrdu", "Provjeravamo dostupnost i šaljemo konačnu cijenu."],
-  ["03", "Upoznajte vozača", "Čekamo vas na dogovorenom mjestu i pratimo vaš dolazak."],
-  ["04", "Uživajte u vožnji", "Vi se opustite, a mi brinemo o putu i vremenu."],
-];
-const journals = [
-  ["/images/dubrovnik-harbor.jpg", "Transfer · 5 min", "Kako doći od zračne luke Dubrovnik do Starog grada", "Sve opcije prijevoza, trajanje i što odabrati nakon slijetanja."],
-  ["/images/sea-coast.png", "Izleti · 7 min", "Najbolji jednodnevni izleti iz Dubrovnika", "Mostar, Kotor, Pelješac i mjesta koja vrijedi vidjeti bez žurbe."],
-  ["/images/sea-coast-portrait.png", "Savjeti · 4 min", "Što trebate znati prije dolaska", "Praktični lokalni savjeti za lakši i ugodniji boravak u Dubrovniku."],
-];
+const t = getContent(lang);
+const pillarIcons = [Plane, Route, Ship, Compass];
 ---
-<section class="hero">
-  <img class="hero-media" src="/images/dubrovnik-harbor.jpg" alt="Dubrovnik harbor and the Adriatic Sea" fetchpriority="high" />
-  <div class="hero-shade"></div>
-  <div class="container hero-content">
-    <p class="eyebrow">{t.hero.badge}</p>
+<section class="hero-grid grid-dots">
+  <div class="hero-copy">
+    <span class="section-marker"><Sparkles size={15} />{t.hero.badge}</span>
     <h1>{t.hero.title}</h1>
-    <p class="hero-text">{t.hero.text}</p>
-    <div class="hero-actions">
-      <a class="button button-primary" href={`/${lang}/booking`}>{t.hero.primary}<ArrowRight size={17} /></a>
-      <a class="button button-outline" href={`/${lang}/services`}>{t.hero.secondary}</a>
+    <p>{t.hero.text}</p>
+    <div class="button-row">
+      <a class="pill-button primary" href={`/${lang}/book/`}><CalendarCheck size={17} />{t.hero.primary}</a>
+      <a class="pill-button outline" href={`/${lang}/destinations/`}><Compass size={17} />{t.hero.secondary}</a>
     </div>
-    <div class="hero-trust">
-      <span><ShieldCheck size={18} /> Licencirani vozači</span>
-      <span><Clock3 size={18} /> Dostupni 24/7</span>
-      <span><Star size={18} /> Fiksne cijene</span>
-    </div>
+    <div class="hero-trust"><span><ShieldCheck size={17} /> Licensed drivers</span><span><Clock3 size={17} /> Available 24/7</span></div>
   </div>
-</section>
-
-<section class="booking-band container" aria-label={t.booking.title}><BookingForm lang={lang} /></section>
-
-<section class="section">
-  <div class="container">
-    <header class="section-head"><p class="eyebrow">{t.home.servicesEyebrow}</p><h2>{t.home.servicesTitle}</h2><p class="lead">{t.home.servicesText}</p></header>
-    <div class="services-grid">
-      {services.map((service) => {
-        const Icon = iconMap[service.icon as keyof typeof iconMap];
-        return <article class="service-item"><span class="service-icon"><Icon size={20} strokeWidth={2.2} /></span><h3>{service.title}</h3><p>{service.text}</p></article>;
-      })}
+  <div class="hero-visual">
+    <div class="image-card">
+      <img src="/media/dubrovnik-harbor.jpg" alt="Dubrovnik old harbour and the Adriatic Sea" fetchpriority="high" />
+      <div class="image-caption"><div><strong>Feniks Dubrovnik Transfers</strong><span>Private rides across the Adriatic region</span></div><span class="location-pill"><MapPin size={14} /> Dubrovnik</span></div>
+      <div class="stats-grid">
+        <div><strong>10k+</strong><span>{t.stats[0]}</span></div>
+        <div><strong>50+</strong><span>{t.stats[1]}</span></div>
+        <div><strong>10+</strong><span>{t.stats[2]}</span></div>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="section section-soft">
-  <div class="container">
-    <header class="section-head"><p class="eyebrow">{t.home.whyEyebrow}</p><h2>{t.home.whyTitle}</h2></header>
-    <div class="steps-grid">{steps.map(([num, title, text]) => <article class="step"><span class="step-num">{num}</span><h3>{title}</h3><p>{text}</p></article>)}</div>
+<section class="intro-section section-rule">
+  <span class="section-marker kiwi-marker">{t.welcome.tag}</span>
+  <h2>{t.welcome.title}</h2>
+  <div class="intro-copy"><p>{t.welcome.p1}</p><p>{t.welcome.p2}</p></div>
+  <a class="pill-button primary" href={`/${lang}/about/`}>{t.nav.about}<ArrowRight size={16} /></a>
+</section>
+
+<section class="section-block section-rule">
+  <div class="section-heading"><div><span class="section-marker pink-marker">{t.pillars.tag}</span><h2>{t.pillars.title}</h2></div><p>{t.pillars.text}</p></div>
+  <div class="pillar-grid">
+    {t.pillars.items.map((item, index) => { const Icon = pillarIcons[index]; return <a class="pillar-card" href={`/${lang}/services/`}><Icon size={25} /><h3>{item[0]}</h3><p>{item[1]}</p><span>{t.nav.services}<ArrowRight size={14} /></span></a>; })}
   </div>
 </section>
 
-<section class="section">
-  <div class="container">
-    <header class="section-head"><p class="eyebrow">{t.home.destinationsEyebrow}</p><h2>{t.home.destinationsTitle}</h2></header>
-    <div class="destination-grid">
-      <a class="destination" href={`/${lang}/pricing`}><img src="/images/adriatic-town.jpg" alt="Historic Adriatic coastal town" loading="lazy" /><div class="destination-content"><h3>Dubrovnik · Split</h3><p>Privatni transfer uz odmor i fotografiranje po želji.</p></div></a>
-      <a class="destination" href={`/${lang}/pricing`}><img src="/images/sea-coast-portrait.png" alt="Adriatic coast seen from above" loading="lazy" /><div class="destination-content"><h3>Kotor · Mostar</h3><p>Regionalne rute s lokalnim vozačem.</p></div></a>
-    </div>
+<section class="feature-section section-rule">
+  <div class="feature-panel pink-grid">
+    <span class="section-marker light-marker">{t.why.tag}</span>
+    <h2>{t.why.title}</h2>
+    <p>{t.why.text}</p>
+    <ul>{t.why.points.map((point) => <li><span><Check size={16} /></span>{point}</li>)}</ul>
+    <a class="pill-button light" href={`/${lang}/book/`}>{t.hero.primary}<ArrowRight size={16} /></a>
+  </div>
+  <div class="feature-photo">
+    <img src="/media/dubrovnik-harbor.jpg" alt="Private transfer service in Dubrovnik" loading="lazy" />
+    <div class="photo-note"><CarFront size={22} /><div><strong>Door-to-door service</strong><span>Airport · Hotel · Marina · City</span></div></div>
   </div>
 </section>
 
-<section class="section section-blue">
-  <div class="container about-grid">
-    <img class="about-image" src="/images/sea-aerial.png" alt="Clear Adriatic sea and rocky coast" loading="lazy" />
-    <div>
-      <p class="eyebrow">{t.home.aboutEyebrow}</p><h2>{t.home.aboutTitle}</h2><p class="lead">{t.home.aboutText}</p>
-      <ul class="feature-list"><li><Check size={19} /> Udobna, klimatizirana vozila</li><li><Check size={19} /> Profesionalni i ljubazni vozači</li><li><Check size={19} /> Fiksne cijene bez iznenađenja</li><li><Wifi size={19} /> Besplatan Wi-Fi u vozilima</li><li><Plane size={19} /> Praćenje letova u realnom vremenu</li></ul>
-      <a class="button button-purple" href={`/${lang}/about`}>{t.common.learn}<ArrowRight size={17} /></a>
-    </div>
+<section class="section-block section-rule">
+  <div class="section-heading"><div><span class="section-marker kiwi-marker">{t.route.tag}</span><h2>{t.route.title}</h2></div><a class="text-link" href={`/${lang}/destinations/`}>{t.route.cta}<ArrowRight size={15} /></a></div>
+  <div class="route-grid">
+    <article><span>01</span><div><h3>Dubrovnik Airport · Old Town</h3><p>30 min · from 35 EUR</p></div><Plane size={22} /></article>
+    <article><span>02</span><div><h3>Dubrovnik · Kotor</h3><p>2 h · private cross-border ride</p></div><Route size={22} /></article>
+    <article><span>03</span><div><h3>Dubrovnik · Mostar</h3><p>2 h 30 min · scenic regional route</p></div><Route size={22} /></article>
+    <article><span>04</span><div><h3>Dubrovnik · Split</h3><p>3 h 15 min · comfortable door-to-door ride</p></div><CarFront size={22} /></article>
   </div>
 </section>
 
-<section class="section">
-  <div class="container">
-    <header class="section-head"><p class="eyebrow">{t.home.blogEyebrow}</p><h2>{t.home.blogTitle}</h2></header>
-    <div class="journal-grid">{journals.map(([image, meta, title, text]) => <article class="journal-item"><img src={image} alt="Adriatic travel guide" loading="lazy" /><div><span class="journal-meta">{meta}</span><h3>{title}</h3><p>{text}</p></div></article>)}</div>
-  </div>
+<section class="final-cta purple-grid">
+  <div><span class="section-marker light-marker">Feniks Transfers</span><h2>{t.cta.title}</h2><p>{t.cta.text}</p></div>
+  <a class="pill-button kiwi" href={`/${lang}/book/`}>{t.cta.button}<ArrowRight size={17} /></a>
 </section>
-
-<section class="section cta-band"><div class="container cta-inner"><div><h2>{t.home.ctaTitle}</h2><p>{t.home.ctaText}</p></div><a class="button button-primary" href={`/${lang}/booking`}>{t.hero.primary}<ArrowRight size={17} /></a></div></section>
