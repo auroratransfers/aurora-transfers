@@ -1,10 +1,10 @@
 ---
-import { ArrowLeftRight, CalendarDays, CarFront, Check, ChevronDown, ChevronLeft, ChevronRight, Clock3, MapPin, Plane, Route, Ship, Users } from "@lucide/astro";
+import { ArrowLeftRight, CalendarDays, Car, Check, ChevronDown, ChevronLeft, ChevronRight, Clock3, MapPin, Plane, Route, Ship, Users } from "@lucide/astro";
 import { getContent, type Lang } from "../data/site";
 interface Props { lang: Lang; }
 const { lang } = Astro.props;
 const t = getContent(lang).booking;
-const icons = [Plane, Route, Ship, CarFront];
+const icons = [Plane, Route, Ship, Car];
 const times = Array.from({ length: 96 }, (_, index) => `${String(Math.floor(index / 4)).padStart(2, "0")}:${String((index % 4) * 15).padStart(2, "0")}`);
 const help = {
   hr: ["Niste sigurni koji transfer odabrati?", "Pošaljite rutu koja vam odgovara. Prije potvrde provjerit ćemo vrijeme, granice i potrebnu veličinu vozila."],
@@ -24,7 +24,7 @@ const help = {
       <div class="service-options">
         {t.services.map((service, index) => { const Icon = icons[index]; return <button type="button" class="service-option" data-service-option={service[0]} data-service-label={service[1]}><span><Icon size={21} /></span><div><strong>{service[1]}</strong><small>{service[2]}</small></div><i><Check size={15} /></i></button>; })}
       </div>
-      <div class="booking-help purple-grid"><CarFront size={28} /><h3>{help[0]}</h3><p>{help[1]}</p></div>
+      <div class="booking-help purple-grid"><Car size={28} /><h3>{help[0]}</h3><p>{help[1]}</p></div>
     </div>
 
     <div class="booking-card">
@@ -36,13 +36,13 @@ const help = {
           <button type="button" class="select-trigger" data-select-trigger aria-expanded="false"><span data-select-label>{t.selected}...</span><ChevronDown size={16} /></button>
           <div class="select-menu" data-select-menu hidden>{t.services.map((service) => <button type="button" data-select-value={service[0]} data-select-text={service[1]}>{service[1]}</button>)}</div>
         </div>
-        <div class="form-field"><label for={`pickup-${lang}`}>{t.pickup}</label><div class="input-wrap"><MapPin size={16} /><input id={`pickup-${lang}`} name="pickup" required placeholder="Dubrovnik Airport" /></div></div>
-        <div class="form-field"><label for={`destination-${lang}`}>{t.destination}</label><div class="input-wrap"><MapPin size={16} /><input id={`destination-${lang}`} name="destination" required placeholder="Hotel / city / marina" /></div></div>
+        <div class="form-field"><label for={`pickup-${lang}`}>{t.pickup}</label><div class="input-wrap"><MapPin size={16} /><input id={`pickup-${lang}`} name="pickup" required placeholder="Dubrovnik Airport" autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" /></div></div>
+        <div class="form-field"><label for={`destination-${lang}`}>{t.destination}</label><div class="input-wrap"><MapPin size={16} /><input id={`destination-${lang}`} name="destination" required placeholder="Hotel / city / marina" autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" /></div></div>
         <div class="form-field full trip-type-field">
           <label>{t.tripType}</label>
           <input type="hidden" name="tripType" value="one-way" data-trip-type-input />
           <div class="trip-type-toggle" role="group" aria-label={t.tripType}>
-            <button type="button" class="active" data-trip-option="one-way" aria-pressed="true"><CarFront size={16} />{t.oneWay}</button>
+            <button type="button" class="active" data-trip-option="one-way" aria-pressed="true"><Car size={16} />{t.oneWay}</button>
             <button type="button" data-trip-option="return" aria-pressed="false"><ArrowLeftRight size={16} />{t.returnTrip}</button>
           </div>
         </div>

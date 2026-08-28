@@ -1,5 +1,5 @@
 ---
-import { CarFront, Globe2, Menu, Phone, X } from "@lucide/astro";
+import { Car, Globe2, Menu, Phone, X } from "@lucide/astro";
 import { getContent, languages, type Lang } from "../data/site";
 
 interface Props { lang: Lang; active?: string; }
@@ -20,7 +20,7 @@ const links = [
 <header class="site-header" data-header>
   <nav class="nav-wrap">
     <a class="wordmark" href={`/${lang}/`} aria-label="Feniks Dubrovnik Transfers home">
-      <span class="logo-symbol"><CarFront size={22} strokeWidth={2.4} /></span>
+      <span class="logo-symbol"><Car size={22} strokeWidth={2.4} /></span>
       <span>Feniks<small>Dubrovnik Transfers</small></span>
     </a>
     <div class="desktop-nav" aria-label="Main navigation">

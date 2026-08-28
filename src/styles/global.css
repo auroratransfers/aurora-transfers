@@ -93,6 +93,7 @@ main { width: min(1152px, calc(100% - 32px)); margin-inline: auto; padding-top: 
 .hero-booking-form > label, .hero-trip, .quick-control { min-width: 0; display: grid; gap: 5px; color: #625a67; font-size: .72rem; font-weight: 600; }
 .hero-booking-form .input-wrap { min-height: 41px; }
 .hero-booking-form .input-wrap:focus-within { border-color: #ddd8e2; box-shadow: none; }
+.hero-booking-form .input-wrap input:focus, .booking-form .input-wrap input[name="pickup"]:focus, .booking-form .input-wrap input[name="destination"]:focus { outline: none !important; box-shadow: none !important; -webkit-appearance: none; appearance: none; }
 .hero-booking-form .full { grid-column: 1 / -1; }
 .quick-return { display: grid; grid-template-columns: minmax(0, 1fr); gap: 11px; }
 .quick-control { position: relative; }
