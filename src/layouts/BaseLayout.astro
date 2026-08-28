@@ -72,9 +72,11 @@ const localized = (target: Lang) => Astro.url.pathname.replace(/^\/(hr|en|de|fr)
       if (scrollParam !== null && Number.isFinite(savedScroll)) {
         if ("scrollRestoration" in history) history.scrollRestoration = "manual";
         history.replaceState(history.state, "", `${window.location.pathname}${window.location.hash}`);
+        document.documentElement.classList.add("language-switching");
         const restoreScroll = () => window.scrollTo(0, savedScroll);
         requestAnimationFrame(() => requestAnimationFrame(restoreScroll));
         [50, 200, 500, 900, 1400].forEach((delay) => setTimeout(restoreScroll, delay));
+        setTimeout(() => document.documentElement.classList.remove("language-switching"), 1500);
       }
       languageButton?.addEventListener("click", (event) => {
         event.stopPropagation();
