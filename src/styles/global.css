@@ -106,6 +106,12 @@ main { width: min(1152px, calc(100% - 32px)); margin-inline: auto; padding-top: 
 .quick-menu button { width: 100%; padding: 7px 8px; border: 0; border-radius: 8px; background: transparent; font-size: .76rem; text-align: center; cursor: pointer; }
 .quick-menu button:hover { color: var(--purple); background: var(--purple-light); }
 .passenger-menu { max-height: 190px; }
+.passenger-stepper { width: 100%; min-height: 43px; display: flex; align-items: center; gap: 6px; padding: 4px 5px 4px 11px; border: 1px solid #ddd8e2; border-radius: 13px; background: white; }
+.passenger-stepper > svg { flex: none; color: var(--purple); }
+.passenger-stepper button { width: 34px; height: 34px; display: grid; place-items: center; border: 0; border-radius: 9px; color: var(--purple); background: var(--purple-light); cursor: pointer; }
+.passenger-stepper button:first-of-type { margin-left: auto; }
+.passenger-stepper button:hover { color: white; background: var(--purple); }
+.passenger-stepper strong { width: 31px; color: var(--ink); font-size: .82rem; font-variant-numeric: tabular-nums; text-align: center; }
 .quick-calendar { width: min(300px, calc(100vw - 64px)); padding: 10px; color: var(--ink); }
 .quick-calendar .calendar-days button, .quick-calendar .calendar-days > span { font-size: .7rem; }
 .hero-booking-submit { width: 100%; margin-top: 1px; border: 0; }

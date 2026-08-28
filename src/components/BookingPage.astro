@@ -1,5 +1,5 @@
 ---
-import { ArrowLeftRight, CalendarDays, Car, Check, ChevronDown, ChevronLeft, ChevronRight, Clock3, MapPin, Plane, Route, Ship, Users } from "@lucide/astro";
+import { ArrowLeftRight, CalendarDays, Car, Check, ChevronDown, ChevronLeft, ChevronRight, Clock3, MapPin, Minus, Plane, Plus, Route, Ship, Users } from "@lucide/astro";
 import { getContent, type Lang } from "../data/site";
 interface Props { lang: Lang; }
 const { lang } = Astro.props;
@@ -49,10 +49,9 @@ const help = {
         <div class="form-field"><label for={`name-${lang}`}>{t.name}</label><input id={`name-${lang}`} name="name" autocomplete="name" required /></div>
         <div class="form-field"><label for={`email-${lang}`}>{t.email}</label><input id={`email-${lang}`} name="email" type="email" autocomplete="email" required /></div>
         <div class="form-field"><label for={`phone-${lang}`}>{t.phone}</label><input id={`phone-${lang}`} name="phone" type="tel" autocomplete="tel" required placeholder="+385 ..." /></div>
-        <div class="form-field custom-select" data-passenger-select>
+        <div class="form-field" data-passenger-stepper>
           <label>{t.passengers}</label><input type="hidden" name="passengers" value="1" />
-          <button type="button" class="select-trigger" data-select-trigger aria-expanded="false"><span data-select-label>1</span><Users size={16} /><ChevronDown size={16} /></button>
-          <div class="select-menu compact-menu" data-select-menu hidden>{[1,2,3,4,5,6,7,8].map((number) => <button type="button" data-select-value={number} data-select-text={`${number}${number === 8 ? "+" : ""}`}>{number}{number === 8 ? "+" : ""}</button>)}</div>
+          <div class="passenger-stepper"><Users size={16} /><button type="button" data-passenger-minus aria-label="Decrease passengers"><Minus size={15} /></button><strong data-passenger-count>1</strong><button type="button" data-passenger-plus aria-label="Increase passengers"><Plus size={15} /></button></div>
         </div>
         <div class="form-field full schedule-field" data-date-picker="outbound">
           <label>{t.date}</label>
@@ -133,6 +132,18 @@ const help = {
         else { if (input instanceof HTMLInputElement) input.value = value; if (label) label.textContent = text; if (menu) menu.hidden = true; trigger?.classList.remove("invalid"); }
         trigger?.setAttribute("aria-expanded", "false");
       }));
+    });
+
+    booking.querySelectorAll("[data-passenger-stepper]").forEach((stepper) => {
+      const input = stepper.querySelector('input[name="passengers"]');
+      const count = stepper.querySelector("[data-passenger-count]");
+      const update = (next) => {
+        const value = Math.min(8, Math.max(1, next));
+        if (input instanceof HTMLInputElement) input.value = String(value);
+        if (count) count.textContent = value === 8 ? "8+" : String(value);
+      };
+      stepper.querySelector("[data-passenger-minus]")?.addEventListener("click", () => update(Number(input instanceof HTMLInputElement ? input.value : 1) - 1));
+      stepper.querySelector("[data-passenger-plus]")?.addEventListener("click", () => update(Number(input instanceof HTMLInputElement ? input.value : 1) + 1));
     });
 
     const locale = booking.getAttribute("data-lang") || "en";
@@ -234,7 +245,7 @@ const help = {
       const value = params.get(name);
       if (input instanceof HTMLInputElement && value) {
         input.value = value;
-        const label = input.parentElement?.querySelector("[data-select-label]");
+        const label = input.parentElement?.querySelector(name === "passengers" ? "[data-passenger-count]" : "[data-select-label]");
         if (label) label.textContent = value === "8" ? "8+" : value;
       }
     });

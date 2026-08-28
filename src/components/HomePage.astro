@@ -1,5 +1,5 @@
 ---
-import { ArrowLeftRight, ArrowRight, CalendarCheck, Car, Check, ChevronDown, ChevronLeft, ChevronRight, Clock3, Compass, MapPin, Plane, Route, ShieldCheck, Ship, Sparkles, Users } from "@lucide/astro";
+import { ArrowLeftRight, ArrowRight, CalendarCheck, Car, Check, ChevronDown, ChevronLeft, ChevronRight, Clock3, Compass, MapPin, Minus, Plane, Plus, Route, ShieldCheck, Ship, Sparkles, Users } from "@lucide/astro";
 import { getContent, type Lang } from "../data/site";
 interface Props { lang: Lang; }
 const { lang } = Astro.props;
@@ -30,7 +30,7 @@ const times = Array.from({ length: 96 }, (_, index) => `${String(Math.floor(inde
         <div class="quick-control" data-quick-date="returnDate"><span>{t.booking.returnDate}</span><input type="hidden" name="returnDate" /><button type="button" class="quick-trigger" data-quick-trigger><CalendarCheck size={16} /><b data-quick-label>{t.booking.returnDate}</b><ChevronDown size={15} /></button><div class="quick-calendar" data-quick-panel hidden><div class="calendar-header"><button type="button" data-cal-prev><ChevronLeft size={17} /></button><strong data-cal-title></strong><button type="button" data-cal-next><ChevronRight size={17} /></button></div><div class="calendar-weekdays" data-cal-weekdays></div><div class="calendar-days" data-cal-days></div></div></div>
         <div class="quick-control" data-quick-select><span>{t.booking.returnTime}</span><input type="hidden" name="returnTime" /><button type="button" class="quick-trigger" data-quick-trigger><Clock3 size={16} /><b data-quick-label>{t.booking.selectTime}</b><ChevronDown size={15} /></button><div class="quick-menu" data-quick-panel hidden>{times.map((time) => <button type="button" data-value={time}>{time}</button>)}</div></div>
       </div>
-      <div class="quick-control full" data-quick-select><span>{t.booking.passengers}</span><input type="hidden" name="passengers" value="1" /><button type="button" class="quick-trigger" data-quick-trigger><Users size={16} /><b data-quick-label>1</b><ChevronDown size={15} /></button><div class="quick-menu passenger-menu" data-quick-panel hidden>{[1,2,3,4,5,6,7,8].map((number) => <button type="button" data-value={number}>{number}{number === 8 ? "+" : ""}</button>)}</div></div>
+      <div class="quick-control full" data-passenger-stepper><span>{t.booking.passengers}</span><input type="hidden" name="passengers" value="1" /><div class="passenger-stepper"><Users size={16} /><button type="button" data-passenger-minus aria-label="Decrease passengers"><Minus size={15} /></button><strong data-passenger-count>1</strong><button type="button" data-passenger-plus aria-label="Increase passengers"><Plus size={15} /></button></div></div>
       <button class="pill-button primary hero-booking-submit full" type="submit">{t.hero.primary}<ArrowRight size={16} /></button>
     </form>
   </div>
@@ -60,6 +60,18 @@ const times = Array.from({ length: 96 }, (_, index) => `${String(Math.floor(inde
         if (panel) panel.hidden = true;
         select.querySelector("[data-quick-trigger]")?.classList.remove("invalid");
       }));
+    });
+
+    booking.querySelectorAll("[data-passenger-stepper]").forEach((stepper) => {
+      const input = stepper.querySelector('input[name="passengers"]');
+      const count = stepper.querySelector("[data-passenger-count]");
+      const update = (next) => {
+        const value = Math.min(8, Math.max(1, next));
+        if (input instanceof HTMLInputElement) input.value = String(value);
+        if (count) count.textContent = value === 8 ? "8+" : String(value);
+      };
+      stepper.querySelector("[data-passenger-minus]")?.addEventListener("click", () => update(Number(input instanceof HTMLInputElement ? input.value : 1) - 1));
+      stepper.querySelector("[data-passenger-plus]")?.addEventListener("click", () => update(Number(input instanceof HTMLInputElement ? input.value : 1) + 1));
     });
 
     const today = new Date(); today.setHours(0, 0, 0, 0);
