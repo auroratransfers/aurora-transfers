@@ -248,6 +248,8 @@ main { width: min(1152px, calc(100% - 32px)); margin-inline: auto; padding-top: 
 .booking-success h3 { margin: 15px 0 0; font-size: 1.25rem; }
 .booking-success p { max-width: 390px; margin: 7px auto 0; color: var(--muted); font-size: .86rem; }
 .booking-success button { margin-top: 16px; border: 0; background: transparent; color: var(--purple); font-weight: 700; cursor: pointer; }
+.booking-success > a { width: fit-content; margin: 17px auto 0; }
+.booking-error { margin: 0; padding: 10px 12px; border-radius: var(--radius); color: #a22352; background: var(--pink-light); font-size: .78rem; font-weight: 700; }
 
 .content-page { min-height: 65vh; }
 .content-card-grid { margin-top: 32px; display: grid; gap: 14px; }

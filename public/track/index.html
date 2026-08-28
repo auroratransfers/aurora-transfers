@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="no-referrer">
+  <title>Track your Aurora ride</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.css" rel="stylesheet">
+  <link rel="stylesheet" href="/track/track.css">
+  <style>[hidden]{display:none!important}</style>
+</head>
+<body>
+  <header><a class="brand" href="/"><span>A</span>Aurora Transfers</a><strong id="connection" data-i18n="connecting">Connecting</strong></header>
+  <main>
+    <section class="ride-summary">
+      <div><span class="eyebrow" id="reference" data-i18n="privateRide">Private ride</span><h1 id="headline" data-i18n="finding">Finding your ride...</h1><p id="schedule"></p></div>
+      <span class="status" id="status" data-i18n="loading">Loading</span>
+    </section>
+    <section class="map-shell"><div id="map"></div><div class="map-empty" id="mapEmpty"><strong id="mapTitle">Live tracking will appear here</strong><span id="mapText">Your driver's location is shown after assignment.</span></div></section>
+    <section class="content-grid">
+      <article class="route-panel"><span class="eyebrow" data-i18n="route">Route</span><div class="route-point pickup"><i></i><div><small data-i18n="pickup">Pickup</small><strong id="pickup"></strong></div></div><div class="route-line"></div><div class="route-point destination"><i></i><div><small data-i18n="destination">Destination</small><strong id="destination"></strong></div></div></article>
+      <article class="driver-panel"><span class="eyebrow pink" data-i18n="yourDriver">Your driver</span><div id="driverDetails" class="driver-empty">Driver and vehicle will appear after confirmation.</div></article>
+    </section>
+    <section class="progress-panel"><div class="panel-head"><div><span class="eyebrow kiwi" data-i18n="progress">Ride progress</span><h2 id="progressTitle">Request received</h2></div><span id="lastUpdate"></span></div><ol id="progressSteps"></ol></section>
+    <footer><button id="reportButton" data-i18n="report">Report a problem</button><a href="tel:+385" data-i18n="call">Call Aurora</a></footer>
+  </main>
+  <dialog id="reportDialog"><form id="reportForm"><div><span class="eyebrow pink" data-i18n="support">Safety support</span><button type="button" id="closeReport" aria-label="Close" data-i18n-aria="close">&times;</button></div><h2 data-i18n="tellUs">Tell us what happened</h2><textarea id="reportMessage" required maxlength="1000"></textarea><button class="primary" type="submit" data-i18n="send">Send report</button><p id="reportResult"></p></form></dialog>
+  <script src="https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.js"></script>
+  <script src="/track/track.js" defer></script>
+</body>
+</html>

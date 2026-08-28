@@ -5,11 +5,13 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "test": "node --test test/*.test.cjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.6.0",
     "@lucide/astro": "^1.35.0",
-    "astro": "^5.1.5"
+    "astro": "^5.1.5",
+    "postgres": "^3.4.9"
   }
 }

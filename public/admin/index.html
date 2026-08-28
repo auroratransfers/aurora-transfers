@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Aurora Operations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin/admin.css">
+  <style>[hidden]{display:none!important}</style>
+</head>
+<body>
+  <section class="login-shell" id="loginView">
+    <form class="login-panel" id="loginForm">
+      <a class="brand" href="/" aria-label="Aurora Transfers home"><span class="brand-mark">A</span><span>Aurora <b>Operations</b></span></a>
+      <div><span class="eyebrow">Private workspace</span><h1>Dispatch starts here.</h1><p>Manage every booking, driver, vehicle and live ride from one place.</p></div>
+      <label for="password">Admin password</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+      <p class="form-error" id="loginError" hidden></p>
+      <button class="primary-button" type="submit">Sign in</button>
+    </form>
+  </section>
+
+  <div class="app-shell" id="appView" hidden>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><a class="brand" href="/"><span class="brand-mark">A</span><span>Aurora <b>Ops</b></span></a><button class="icon-button mobile-only" id="closeMenu" aria-label="Close menu">&times;</button></div>
+      <nav aria-label="Operations navigation">
+        <button class="nav-item active" data-view="overview"><span>01</span>Overview</button>
+        <button class="nav-item" data-view="rides"><span>02</span>Rides</button>
+        <button class="nav-item" data-view="drivers"><span>03</span>Drivers</button>
+        <button class="nav-item" data-view="vehicles"><span>04</span>Vehicles</button>
+      </nav>
+      <div class="sidebar-foot"><span class="system-dot"></span><span>Operations online</span><button id="logoutButton">Log out</button></div>
+    </aside>
+    <div class="menu-scrim" id="menuScrim" hidden></div>
+
+    <main class="workspace">
+      <header class="topbar"><button class="icon-button mobile-only" id="openMenu" aria-label="Open menu">&#9776;</button><div><span id="todayLabel"></span><h1 id="viewTitle">Operations overview</h1></div><button class="primary-button compact" id="refreshButton">Refresh</button></header>
+      <div id="notice" class="notice" hidden></div>
+
+      <section id="overviewView" class="view">
+        <div class="metrics" id="metrics"></div>
+        <div class="dashboard-grid">
+          <section class="panel wide"><div class="panel-head"><div><span class="eyebrow">Live board</span><h2>Upcoming and active rides</h2></div><button class="text-button" data-go="rides">View all</button></div><div class="ride-list" id="liveRides"></div></section>
+          <section class="panel"><div class="panel-head"><div><span class="eyebrow pink">Attention</span><h2>Safety incidents</h2></div></div><div class="incident-list" id="incidentList"></div></section>
+          <section class="panel"><div class="panel-head"><div><span class="eyebrow kiwi">Team</span><h2>Driver availability</h2></div><button class="text-button" data-go="drivers">Manage</button></div><div class="driver-list" id="driverSummary"></div></section>
+        </div>
+      </section>
+
+      <section id="ridesView" class="view" hidden>
+        <div class="toolbar"><div class="search-wrap"><input id="rideSearch" type="search" placeholder="Search reference, rider or route"><span>Search</span></div><select id="rideFilter" aria-label="Filter ride status"><option value="">All statuses</option><option>requested</option><option>confirmed</option><option>assigned</option><option>en_route</option><option>arrived</option><option>in_progress</option><option>completed</option><option>cancelled</option></select></div>
+        <section class="panel"><div class="table-wrap"><table><thead><tr><th>Ride</th><th>Schedule</th><th>Route</th><th>Rider</th><th>Driver</th><th>Status</th></tr></thead><tbody id="ridesTable"></tbody></table></div></section>
+      </section>
+
+      <section id="driversView" class="view" hidden>
+        <div class="split-heading"><div><p>Driver accounts and credentials for the future Aurora Driver app.</p></div><button class="primary-button compact" data-dialog="driverDialog">Add driver</button></div>
+        <div class="entity-grid" id="driversGrid"></div>
+      </section>
+
+      <section id="vehiclesView" class="view" hidden>
+        <div class="split-heading"><div><p>Vehicles and independent hardware trackers are managed separately.</p></div><button class="primary-button compact" data-dialog="vehicleDialog">Add vehicle</button></div>
+        <div class="entity-grid" id="vehiclesGrid"></div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="rideDialog" class="drawer"><div id="rideDetail"></div></dialog>
+  <dialog id="driverDialog"><form method="dialog" class="dialog-form" data-create="driver"><div class="dialog-head"><div><span class="eyebrow">New account</span><h2>Add driver</h2></div><button value="cancel" class="icon-button" aria-label="Close">&times;</button></div><label>Full name<input name="fullName" required></label><label>Phone<input name="phone" type="tel"></label><label>Email<input name="email" type="email"></label><label>Licence number<input name="licenseNumber"></label><button class="primary-button" value="default">Create driver</button></form></dialog>
+  <dialog id="vehicleDialog"><form method="dialog" class="dialog-form" data-create="vehicle"><div class="dialog-head"><div><span class="eyebrow">Fleet</span><h2>Add vehicle</h2></div><button value="cancel" class="icon-button" aria-label="Close">&times;</button></div><div class="form-grid"><label>Make<input name="make" required></label><label>Model<input name="model" required></label><label>Color<input name="color"></label><label>Plate number<input name="plateNumber" required></label><label>Passenger capacity<input name="capacity" type="number" min="1" max="60" value="4"></label><label>Tracker ID<input name="trackerExternalId" placeholder="Optional for now"></label></div><button class="primary-button" value="default">Create vehicle</button></form></dialog>
+  <dialog id="tokenDialog"><div class="dialog-form"><div class="dialog-head"><div><span class="eyebrow pink">One-time secret</span><h2>Device token</h2></div><button class="icon-button" onclick="this.closest('dialog').close()" aria-label="Close">&times;</button></div><p>Store this token in the driver app or GPS tracker. It cannot be shown again.</p><code id="deviceToken"></code><button class="primary-button" id="copyToken">Copy token</button></div></dialog>
+
+  <script src="/admin/admin.js" defer></script>
+</body>
+</html>

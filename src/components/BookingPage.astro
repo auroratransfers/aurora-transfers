@@ -13,6 +13,12 @@ const help = {
   de: ["Nicht sicher, welcher Transfer passt?", "Senden Sie Ihre Wunschroute. Wir prüfen Zeitplan, Grenzübertritte und die passende Fahrzeuggröße."],
   fr: ["Vous hésitez sur le transfert?", "Envoyez l'itinéraire souhaité. Nous vérifierons les horaires, les frontières et la taille du véhicule."]
 }[lang];
+const bookingFeedback = {
+  hr: { error: "Rezervacija trenutačno nije poslana. Pokušajte ponovno.", track: "Prati vožnju" },
+  en: { error: "Your booking could not be sent right now. Please try again.", track: "Track your ride" },
+  de: { error: "Ihre Buchung konnte gerade nicht gesendet werden. Bitte versuchen Sie es erneut.", track: "Fahrt verfolgen" },
+  fr: { error: "Votre réservation n'a pas pu être envoyée. Veuillez réessayer.", track: "Suivre votre trajet" },
+}[lang];
 ---
 <section class="booking-page soft-page" data-transfer-booking data-lang={lang}>
   <span class="section-marker pink-marker">{t.tag}</span>
@@ -31,6 +37,7 @@ const help = {
     <div class="booking-card">
       <h2>{t.details}</h2>
       <form class="booking-form" action="/api/book" method="post">
+        <input type="hidden" name="lang" value={lang} />
         <div class="form-field full custom-select" data-service-select>
           <label>{t.selected}</label>
           <input type="hidden" name="service" required data-service-input />
@@ -94,9 +101,10 @@ const help = {
         </div>
         <div class="form-field"><label for={`flight-${lang}`}>{t.flight}</label><div class="input-wrap"><Plane size={16} /><input id={`flight-${lang}`} name="flight" /></div></div>
         <div class="form-field"><label for={`message-${lang}`}>{t.message}</label><input id={`message-${lang}`} name="message" /></div>
+        <p class="booking-error full" data-booking-error hidden>{bookingFeedback.error}</p>
         <button class="pill-button primary submit-button full" type="submit"><CalendarDays size={17} />{t.submit}</button>
       </form>
-      <div class="booking-success" data-booking-success hidden><span><Check size={23} /></span><h3>{ui.successTitle}</h3><p>{ui.successText}</p><button type="button" data-booking-again>{ui.successAgain}</button></div>
+      <div class="booking-success" data-booking-success hidden><span><Check size={23} /></span><h3>{ui.successTitle}</h3><p>{ui.successText}</p><a class="pill-button primary" data-tracking-link hidden>{bookingFeedback.track}</a><button type="button" data-booking-again>{ui.successAgain}</button></div>
     </div>
   </div>
 </section>
@@ -299,7 +307,15 @@ const help = {
         return;
       }
       const payload = Object.fromEntries(new FormData(form).entries());
-      try { await fetch("/api/book", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) }); } catch (_) {}
+      const errorMessage = booking.querySelector("[data-booking-error]");
+      if (errorMessage) errorMessage.hidden = true;
+      try {
+        const response = await fetch("/api/book", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.error || "Booking failed");
+        const trackingLink = booking.querySelector("[data-tracking-link]");
+        if (trackingLink instanceof HTMLAnchorElement && result.trackingUrls?.[0]) { trackingLink.href = result.trackingUrls[0]; trackingLink.hidden = false; }
+      } catch (_) { if (errorMessage) errorMessage.hidden = false; return; }
       form.hidden = true;
       if (success) success.hidden = false;
     });

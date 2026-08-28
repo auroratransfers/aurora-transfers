@@ -7,6 +7,12 @@ const t = getContent(lang);
 const ui = getInterfaceContent(lang);
 const pillarIcons = [Plane, Route, Ship, Compass];
 const times = Array.from({ length: 96 }, (_, index) => `${String(Math.floor(index / 4)).padStart(2, "0")}:${String((index % 4) * 15).padStart(2, "0")}`);
+const bookingFeedback = {
+  hr: { error: "Rezervacija trenutačno nije poslana. Pokušajte ponovno.", track: "Prati vožnju" },
+  en: { error: "Your booking could not be sent right now. Please try again.", track: "Track your ride" },
+  de: { error: "Ihre Buchung konnte gerade nicht gesendet werden. Bitte versuchen Sie es erneut.", track: "Fahrt verfolgen" },
+  fr: { error: "Votre réservation n'a pas pu être envoyée. Veuillez réessayer.", track: "Suivre votre trajet" },
+}[lang];
 ---
 <section class="hero-grid grid-dots">
   <div class="hero-copy">
@@ -38,12 +44,13 @@ const times = Array.from({ length: 96 }, (_, index) => `${String(Math.floor(inde
         <label>{t.booking.email}<div class="input-wrap"><Mail size={16} /><input name="email" type="email" autocomplete="email" required /></div></label>
         <label>{t.booking.phone}<div class="input-wrap"><Phone size={16} /><input name="phone" type="tel" autocomplete="tel" required placeholder="+385 ..." /></div></label>
       </div>
+      <p class="booking-error full" data-booking-error hidden>{bookingFeedback.error}</p>
       <div class="hero-booking-actions full">
         <div class="quick-control" data-passenger-stepper><span>{t.booking.passengers}</span><input type="hidden" name="passengers" value="1" /><div class="passenger-stepper"><Users size={16} /><button type="button" data-passenger-minus aria-label={ui.decreasePassengers}><Minus size={15} /></button><strong data-passenger-count>1</strong><button type="button" data-passenger-plus aria-label={ui.increasePassengers}><Plus size={15} /></button></div></div>
         <button class="pill-button primary hero-booking-submit" type="submit">{t.hero.primary}<ArrowRight size={16} /></button>
       </div>
     </form>
-    <div class="booking-success hero-booking-success" data-hero-booking-success hidden><span><Check size={23} /></span><h3>{ui.successTitle}</h3><p>{ui.successText}</p><button type="button" data-hero-booking-again>{ui.successAgain}</button></div>
+    <div class="booking-success hero-booking-success" data-hero-booking-success hidden><span><Check size={23} /></span><h3>{ui.successTitle}</h3><p>{ui.successText}</p><a class="pill-button primary" data-tracking-link hidden>{bookingFeedback.track}</a><button type="button" data-hero-booking-again>{ui.successAgain}</button></div>
   </div>
 </section>
 
@@ -163,7 +170,15 @@ const times = Array.from({ length: 96 }, (_, index) => `${String(Math.floor(inde
       required.forEach((input) => { if (!(input instanceof HTMLInputElement) || !input.value) { input?.parentElement?.querySelector("[data-quick-trigger]")?.classList.add("invalid"); valid = false; } });
       if (!valid) return;
       const payload = Object.fromEntries(new FormData(form).entries());
-      try { await fetch("/api/book", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) }); } catch (_) {}
+      const errorMessage = booking.querySelector("[data-booking-error]");
+      if (errorMessage) errorMessage.hidden = true;
+      try {
+        const response = await fetch("/api/book", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.error || "Booking failed");
+        const trackingLink = booking.querySelector("[data-tracking-link]");
+        if (trackingLink instanceof HTMLAnchorElement && result.trackingUrls?.[0]) { trackingLink.href = result.trackingUrls[0]; trackingLink.hidden = false; }
+      } catch (_) { if (errorMessage) errorMessage.hidden = false; return; }
       form.hidden = true;
       if (success) success.hidden = false;
     });
