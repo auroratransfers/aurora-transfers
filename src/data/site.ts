@@ -18,7 +18,7 @@ const content = {
   },
   en: {
     nav: { home: "Home", services: "Services", destinations: "Destinations", fleet: "Fleet", about: "About", contact: "Contact", book: "Book" },
-    hero: { badge: "Private transfers · Dubrovnik", title: "Your journey starts calmly.", text: "Safe, comfortable and reliable private transfers from Dubrovnik to the airport, hotels, marinas and destinations across the region.", primary: "Book a transfer", secondary: "Explore destinations" },
+    hero: { badge: "Private transfers · Dubrovnik", title: "Your journey begins with peace of mind.", text: "Safe, comfortable and reliable private transfers from Dubrovnik to the airport, hotels, marinas and destinations across the region.", primary: "Book a transfer", secondary: "Explore destinations" },
     stats: ["Passengers", "Destinations", "Years of experience"],
     welcome: { tag: "Welcome", title: "Feniks Dubrovnik Transfers", p1: "We are a professional private transfer agency providing safe, comfortable and reliable passenger transport.", p2: "Our experienced drivers and modern vehicles make every journey pleasant, punctual and stress-free - whether you travel for business or leisure." },
     pillars: { tag: "Everything for an easy journey", title: "A transfer shaped around your arrival", text: "From first contact to your destination, every detail is handled clearly and personally.", items: [["Airport transfers", "Flight monitoring and a welcome at the agreed meeting point."], ["Private intercity rides", "Dubrovnik, Split, Mostar, Kotor and the entire region."], ["Hotels and marinas", "Punctual transport to your hotel, yacht or cruise ship."], ["Tailor-made tours", "Flexible private tours with a knowledgeable local driver."]] },
@@ -44,8 +44,8 @@ const content = {
     nav: { home: "Accueil", services: "Services", destinations: "Destinations", fleet: "Véhicules", about: "À propos", contact: "Contact", book: "Réserver" },
     hero: { badge: "Transferts privés · Dubrovnik", title: "Votre voyage commence sereinement.", text: "Transferts privés sûrs, confortables et fiables depuis Dubrovnik vers l'aéroport, les hôtels, les marinas et toute la région.", primary: "Réserver un transfert", secondary: "Voir les destinations" },
     stats: ["Passagers", "Destinations", "Années d'expérience"],
-    welcome: { tag: "Bienvenue", title: "Feniks Dubrovnik Transfers", p1: "Nous sommes une agence professionnelle de transferts privés, sûre, confortable et fiable.", p2: "Nos chauffeurs expérimentés et nos véhicules modernes assurent un trajet ponctuel et sans stress, pour affaires ou loisirs." },
-    pillars: { tag: "Tout pour voyager sereinement", title: "Un transfert adapté à votre arrivée", text: "Du premier contact à votre destination, chaque détail est organisé clairement et personnellement.", items: [["Transferts aéroport", "Suivi du vol et accueil au point de rencontre convenu."], ["Trajets privés interurbains", "Dubrovnik, Split, Mostar, Kotor et toute la région."], ["Hôtels et marinas", "Transport ponctuel vers votre hôtel, yacht ou croisière."], ["Excursions sur mesure", "Circuits privés flexibles avec un chauffeur local."]] },
+    welcome: { tag: "Bienvenue", title: "Feniks Dubrovnik Transfers", p1: "Nous sommes une agence professionnelle spécialisée dans les transferts privés, offrant un transport sûr, confortable et fiable.", p2: "Nos chauffeurs expérimentés et nos véhicules modernes garantissent un trajet agréable, ponctuel et sans stress, que vous voyagiez pour affaires ou pour vos loisirs." },
+    pillars: { tag: "Tout pour voyager sereinement", title: "Un transfert adapté à votre arrivée", text: "Du premier contact jusqu'à votre destination, nous organisons chaque détail avec clarté et attention.", items: [["Transferts aéroport", "Suivi du vol et accueil au point de rencontre convenu."], ["Trajets privés interurbains", "Dubrovnik, Split, Mostar, Kotor et toute la région."], ["Hôtels et marinas", "Transport ponctuel vers votre hôtel, votre yacht ou votre bateau de croisière."], ["Excursions sur mesure", "Circuits privés flexibles avec un chauffeur local."]] },
     why: { tag: "Pourquoi Feniks", title: "Un service local de confiance", text: "La première impression compte lorsque l'on arrive ailleurs. Nous garantissons ponctualité, sécurité et tranquillité dès la réservation.", points: ["Chauffeurs professionnels et accueillants", "Véhicules confortables et climatisés", "Prix fixes sans surprise", "Disponibilité 24/7 et suivi des vols"] },
     route: { tag: "Itinéraires populaires", title: "De Dubrovnik vers toute la région", cta: "Voir tous les tarifs" },
     cta: { title: "Dites-nous où vous allez.", text: "Envoyez votre itinéraire et votre horaire. Nous confirmerons rapidement la disponibilité et le prix final.", button: "Demander un transfert" },
@@ -55,3 +55,88 @@ const content = {
 } as const;
 
 export function getContent(lang: Lang) { return content[lang] || content.en; }
+
+const interfaceContent = {
+  hr: {
+    licensedDrivers: "Licencirani vozači", available247: "Dostupni 24/7",
+    pickupPlaceholder: "Zračna luka Dubrovnik", destinationPlaceholder: "Hotel / grad / marina",
+    decreasePassengers: "Smanji broj putnika", increasePassengers: "Povećaj broj putnika",
+    previousMonth: "Prethodni mjesec", nextMonth: "Sljedeći mjesec",
+    homeLabel: "Početna stranica Feniks Dubrovnik Transfers", mainNavigation: "Glavna navigacija",
+    changeLanguage: "Promijeni jezik", call: "Nazovi Feniks Transfers", openMenu: "Otvori izbornik",
+    imageAltHarbor: "Stara luka Dubrovnika i Jadransko more", imageAltTransfer: "Privatni transfer u Dubrovniku",
+    imageCaption: "Privatne vožnje diljem jadranske regije", doorToDoor: "Usluga od vrata do vrata",
+    serviceTypes: "Zračna luka · Hotel · Marina · Grad", country: "Hrvatska",
+    routes: ["30 min · od 35 EUR", "2 h · privatna prekogranična vožnja", "2 h 30 min · slikovita regionalna ruta", "3 h 15 min · udobna vožnja od vrata do vrata"],
+    destinationCards: [["Zračna luka Dubrovnik", "Stari grad · Hoteli · Vile"], ["Kotor", "Crna Gora · Bokokotorski zaljev"], ["Mostar", "Bosna i Hercegovina"], ["Split", "Dalmatinska obala · Od vrata do vrata"]],
+    pages: {
+      destinationsIntro: "Privatne rute od vrata do vrata iz Dubrovnika prema Hrvatskoj, Crnoj Gori i Bosni i Hercegovini.",
+      fleetTitle: "Udobnost za svako putovanje", fleetIntro: "Moderna, klimatizirana vozila pripremljena za vožnje iz zračne luke, međugradske transfere i privatne izlete.",
+      aboutHeading: "Profesionalni vozači. Osobna usluga.", contactTitle: "Isplanirajte vožnju s nama", contactIntro: "Pošaljite nam rutu, vrijeme dolaska i broj putnika. Naš tim odgovorit će vam s informacijama o dostupnosti i potvrđenom cijenom.",
+      name: "Ime i prezime", email: "Email", route: "Ruta", message: "Poruka"
+    },
+    successTitle: "Zahtjev je zaprimljen", successText: "Provjerit ćemo vašu rutu i javiti vam se s informacijama o dostupnosti i potvrđenom cijenom.", successAgain: "Pošalji novi zahtjev"
+  },
+  en: {
+    licensedDrivers: "Licensed drivers", available247: "Available 24/7",
+    pickupPlaceholder: "Dubrovnik Airport", destinationPlaceholder: "Hotel / city / marina",
+    decreasePassengers: "Decrease passengers", increasePassengers: "Increase passengers",
+    previousMonth: "Previous month", nextMonth: "Next month",
+    homeLabel: "Feniks Dubrovnik Transfers home", mainNavigation: "Main navigation",
+    changeLanguage: "Change language", call: "Call Feniks Transfers", openMenu: "Open menu",
+    imageAltHarbor: "Dubrovnik Old Harbour and the Adriatic Sea", imageAltTransfer: "Private transfer service in Dubrovnik",
+    imageCaption: "Private rides across the Adriatic region", doorToDoor: "Door-to-door service",
+    serviceTypes: "Airport · Hotel · Marina · City", country: "Croatia",
+    routes: ["30 min · from 35 EUR", "2 hr · private cross-border ride", "2 hr 30 min · scenic regional route", "3 hr 15 min · comfortable door-to-door ride"],
+    destinationCards: [["Dubrovnik Airport", "Old Town · Hotels · Villas"], ["Kotor", "Montenegro · Bay of Kotor"], ["Mostar", "Bosnia and Herzegovina"], ["Split", "Dalmatian coast · Door to door"]],
+    pages: {
+      destinationsIntro: "Private door-to-door routes from Dubrovnik to Croatia, Montenegro, and Bosnia and Herzegovina.",
+      fleetTitle: "Comfort for every journey", fleetIntro: "Modern, air-conditioned vehicles prepared for airport rides, long-distance transfers, and private tours.",
+      aboutHeading: "Professional drivers. Personal service.", contactTitle: "Plan your ride with us", contactIntro: "Send your route, arrival time, and passenger details. Our team will reply with availability and a confirmed price.",
+      name: "Name", email: "Email", route: "Route", message: "Message"
+    },
+    successTitle: "Request received", successText: "We will review your route and contact you with availability and the confirmed price.", successAgain: "Make another request"
+  },
+  de: {
+    licensedDrivers: "Lizenzierte Fahrer", available247: "Rund um die Uhr verfügbar",
+    pickupPlaceholder: "Flughafen Dubrovnik", destinationPlaceholder: "Hotel / Stadt / Marina",
+    decreasePassengers: "Fahrgastzahl verringern", increasePassengers: "Fahrgastzahl erhöhen",
+    previousMonth: "Vorheriger Monat", nextMonth: "Nächster Monat",
+    homeLabel: "Startseite von Feniks Dubrovnik Transfers", mainNavigation: "Hauptnavigation",
+    changeLanguage: "Sprache ändern", call: "Feniks Transfers anrufen", openMenu: "Menü öffnen",
+    imageAltHarbor: "Der alte Hafen von Dubrovnik und die Adria", imageAltTransfer: "Privater Transferservice in Dubrovnik",
+    imageCaption: "Private Fahrten in der gesamten Adriaregion", doorToDoor: "Tür-zu-Tür-Service",
+    serviceTypes: "Flughafen · Hotel · Marina · Stadt", country: "Kroatien",
+    routes: ["30 Min. · ab 35 EUR", "2 Std. · private grenzüberschreitende Fahrt", "2 Std. 30 Min. · malerische Regionalroute", "3 Std. 15 Min. · komfortable Tür-zu-Tür-Fahrt"],
+    destinationCards: [["Flughafen Dubrovnik", "Altstadt · Hotels · Villen"], ["Kotor", "Montenegro · Bucht von Kotor"], ["Mostar", "Bosnien und Herzegowina"], ["Split", "Dalmatinische Küste · Tür zu Tür"]],
+    pages: {
+      destinationsIntro: "Private Tür-zu-Tür-Transfers von Dubrovnik nach Kroatien, Montenegro sowie Bosnien und Herzegowina.",
+      fleetTitle: "Komfort für jede Reise", fleetIntro: "Moderne, klimatisierte Fahrzeuge für Flughafentransfers, Fernfahrten und private Ausflüge.",
+      aboutHeading: "Professionelle Fahrer. Persönlicher Service.", contactTitle: "Planen Sie Ihre Fahrt mit uns", contactIntro: "Senden Sie uns Route, Ankunftszeit und Fahrgastzahl. Unser Team antwortet Ihnen mit der Verfügbarkeit und dem bestätigten Preis.",
+      name: "Vor- und Nachname", email: "E-Mail", route: "Route", message: "Nachricht"
+    },
+    successTitle: "Anfrage erhalten", successText: "Wir prüfen Ihre Route und melden uns mit der Verfügbarkeit und dem bestätigten Preis bei Ihnen.", successAgain: "Weitere Anfrage senden"
+  },
+  fr: {
+    licensedDrivers: "Chauffeurs agréés", available247: "Disponibles 24 h/24 et 7 j/7",
+    pickupPlaceholder: "Aéroport de Dubrovnik", destinationPlaceholder: "Hôtel / ville / marina",
+    decreasePassengers: "Réduire le nombre de passagers", increasePassengers: "Augmenter le nombre de passagers",
+    previousMonth: "Mois précédent", nextMonth: "Mois suivant",
+    homeLabel: "Accueil de Feniks Dubrovnik Transfers", mainNavigation: "Navigation principale",
+    changeLanguage: "Changer de langue", call: "Appeler Feniks Transfers", openMenu: "Ouvrir le menu",
+    imageAltHarbor: "Le vieux port de Dubrovnik et la mer Adriatique", imageAltTransfer: "Service de transfert privé à Dubrovnik",
+    imageCaption: "Trajets privés dans toute la région adriatique", doorToDoor: "Service porte-à-porte",
+    serviceTypes: "Aéroport · Hôtel · Marina · Ville", country: "Croatie",
+    routes: ["30 min · à partir de 35 EUR", "2 h · trajet privé transfrontalier", "2 h 30 · itinéraire régional panoramique", "3 h 15 · trajet porte-à-porte confortable"],
+    destinationCards: [["Aéroport de Dubrovnik", "Vieille ville · Hôtels · Villas"], ["Kotor", "Monténégro · Bouches de Kotor"], ["Mostar", "Bosnie-Herzégovine"], ["Split", "Côte dalmate · Porte à porte"]],
+    pages: {
+      destinationsIntro: "Trajets privés porte-à-porte de Dubrovnik vers la Croatie, le Monténégro et la Bosnie-Herzégovine.",
+      fleetTitle: "Le confort à chaque trajet", fleetIntro: "Des véhicules modernes et climatisés pour les transferts aéroport, les trajets longue distance et les excursions privées.",
+      aboutHeading: "Chauffeurs professionnels. Service personnalisé.", contactTitle: "Planifiez votre trajet avec nous", contactIntro: "Envoyez-nous votre itinéraire, votre heure d'arrivée et le nombre de passagers. Notre équipe vous répondra en confirmant la disponibilité et le tarif.",
+      name: "Nom complet", email: "E-mail", route: "Itinéraire", message: "Message"
+    },
+    successTitle: "Demande reçue", successText: "Nous vérifierons votre itinéraire et vous contacterons pour confirmer la disponibilité et le tarif.", successAgain: "Envoyer une nouvelle demande"
+  }
+} as const;
+
+export function getInterfaceContent(lang: Lang) { return interfaceContent[lang] || interfaceContent.en; }

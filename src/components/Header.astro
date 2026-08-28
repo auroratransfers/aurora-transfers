@@ -1,13 +1,14 @@
 ---
 import { Car, Menu, Phone, X } from "@lucide/astro";
-import { getContent, languages, type Lang } from "../data/site";
+import { getContent, getInterfaceContent, languages, type Lang } from "../data/site";
 
 interface Props { lang: Lang; active?: string; }
 const { lang, active = "home" } = Astro.props;
 const t = getContent(lang);
+const ui = getInterfaceContent(lang);
 const currentPath = Astro.url.pathname;
 const langPath = (target: Lang) => currentPath.replace(/^\/(hr|en|de|fr)(?=\/|$)/, `/${target}`);
-const bookingLabel = { hr: "Rezerviraj transfer", en: "Book Transfer", de: "Transfer buchen", fr: "Réserver transfert" }[lang];
+const bookingLabel = { hr: "Rezerviraj transfer", en: "Book transfer", de: "Transfer buchen", fr: "Réserver un transfert" }[lang];
 const links = [
   ["home", `/${lang}/`, t.nav.home],
   ["services", `/${lang}/services/`, t.nav.services],
@@ -19,23 +20,23 @@ const links = [
 ---
 <header class="site-header" data-header>
   <nav class="nav-wrap">
-    <a class="wordmark" href={`/${lang}/`} aria-label="Feniks Dubrovnik Transfers home">
+    <a class="wordmark" href={`/${lang}/`} aria-label={ui.homeLabel}>
       <span class="logo-symbol"><Car size={22} strokeWidth={2.4} /></span>
       <span>Feniks<small>Dubrovnik Transfers</small></span>
     </a>
-    <div class="desktop-nav" aria-label="Main navigation">
+    <div class="desktop-nav" aria-label={ui.mainNavigation}>
       {links.map(([key, href, label]) => <a class:list={["nav-link", { active: active === key }]} href={href}>{label}</a>)}
     </div>
     <div class="nav-tools">
       <div class="language-control" data-language>
-        <button class="round-tool language-trigger" type="button" aria-label="Change language" aria-expanded="false"><span>{lang.toUpperCase()}</span></button>
+        <button class="round-tool language-trigger" type="button" aria-label={ui.changeLanguage} aria-expanded="false"><span>{lang.toUpperCase()}</span></button>
         <div class="language-menu" hidden>
           {languages.map((target) => <a class:list={[{ active: target === lang }]} href={langPath(target)}>{target.toUpperCase()}</a>)}
         </div>
       </div>
-      <a class="round-tool phone-tool" href="tel:+385000000000" aria-label="Call Feniks Transfers"><Phone size={16} /></a>
-      <a class:list={["nav-book-button", { active: active === "book" }]} href={`/${lang}/book/`} aria-label={bookingLabel}><span class="book-label-mobile">Book</span><span class="book-label-desktop">{bookingLabel}</span></a>
-      <button class="menu-toggle" type="button" data-menu-toggle aria-label="Open menu" aria-expanded="false"><Menu class="menu-open-icon" size={21} /><X class="menu-close-icon" size={21} /></button>
+      <a class="round-tool phone-tool" href="tel:+385000000000" aria-label={ui.call}><Phone size={16} /></a>
+      <a class:list={["nav-book-button", { active: active === "book" }]} href={`/${lang}/book/`} aria-label={bookingLabel}><span class="book-label-mobile">{t.nav.book}</span><span class="book-label-desktop">{bookingLabel}</span></a>
+      <button class="menu-toggle" type="button" data-menu-toggle aria-label={ui.openMenu} aria-expanded="false"><Menu class="menu-open-icon" size={21} /><X class="menu-close-icon" size={21} /></button>
     </div>
   </nav>
   <div class="mobile-menu" data-mobile-menu hidden>

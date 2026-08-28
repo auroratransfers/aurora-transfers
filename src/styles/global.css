@@ -96,11 +96,13 @@ main { width: min(1152px, calc(100% - 32px)); margin-inline: auto; padding-top: 
 .hero-booking-heading strong { font-size: .96rem; }
 .hero-booking-heading small { margin-top: 2px; color: var(--muted); font-size: .69rem; line-height: 1.35; }
 .hero-booking-form { margin-top: 14px; display: grid; gap: 11px; }
-.hero-booking-form > label, .hero-trip, .quick-control { min-width: 0; display: grid; gap: 5px; color: #625a67; font-size: .72rem; font-weight: 600; }
+.hero-booking-form > label, .hero-contact-fields label, .hero-trip, .quick-control { min-width: 0; display: grid; gap: 5px; color: #625a67; font-size: .72rem; font-weight: 600; }
 .hero-booking-form .input-wrap { min-height: 41px; }
 .hero-booking-form .input-wrap:focus-within { border-color: #ddd8e2; box-shadow: none; }
 .hero-booking-form .input-wrap input:focus, .booking-form .input-wrap input[name="pickup"]:focus, .booking-form .input-wrap input[name="destination"]:focus { outline: none !important; box-shadow: none !important; -webkit-appearance: none; appearance: none; }
 .hero-booking-form .full { grid-column: 1 / -1; }
+.hero-contact-fields { display: grid; gap: 11px; }
+.hero-contact-fields input { min-width: 0; }
 .quick-return { display: grid; grid-template-columns: minmax(0, 1fr); gap: 11px; }
 .quick-control { position: relative; }
 .quick-trigger { width: 100%; min-height: 41px; display: flex; align-items: center; gap: 7px; padding: 0 10px; border: 1px solid #ddd8e2; border-radius: var(--radius); background: white; cursor: pointer; text-align: left; }
@@ -124,6 +126,7 @@ main { width: min(1152px, calc(100% - 32px)); margin-inline: auto; padding-top: 
 .hero-booking-actions { display: grid; gap: 10px; align-items: end; }
 .hero-booking-actions .passenger-stepper { min-height: 45px; }
 .hero-booking-submit { width: 100%; border: 0; }
+.hero-booking-success { min-height: 315px; align-content: center; }
 .image-card { padding: 11px; border: 1px solid #eeeaf0; border-radius: var(--radius); background: white; box-shadow: var(--shadow); }
 .image-card > img { width: 100%; aspect-ratio: 4/3; max-height: 405px; border-radius: var(--radius-inner); object-fit: cover; }
 .image-caption { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 4px 10px; }
@@ -283,6 +286,7 @@ main { width: min(1152px, calc(100% - 32px)); margin-inline: auto; padding-top: 
   .pillar-grid, .content-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .booking-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .hero-booking-form, .quick-return { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hero-contact-fields { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .schedule-grid { grid-template-columns: minmax(0, 1fr) 145px; }
   .booking-card { padding: 25px; }
   .footer-wrap { grid-template-columns: 1.3fr 1fr; align-items: center; }

@@ -1,21 +1,22 @@
 ---
 import { ArrowRight, Car, Check, Compass, MapPin, Plane, ShieldCheck } from "@lucide/astro";
-import { getContent, type Lang, type Page } from "../data/site";
+import { getContent, getInterfaceContent, type Lang, type Page } from "../data/site";
 interface Props { lang: Lang; page: Page; }
 const { lang, page } = Astro.props;
 const t = getContent(lang);
+const ui = getInterfaceContent(lang);
 const pageData = {
   services: { tag: t.nav.services, title: t.pillars.title, text: t.pillars.text },
-  destinations: { tag: t.nav.destinations, title: t.route.title, text: "Private door-to-door routes from Dubrovnik to Croatia, Montenegro and Bosnia and Herzegovina." },
-  fleet: { tag: t.nav.fleet, title: "Comfort for every journey", text: "Modern, air-conditioned vehicles prepared for airport rides, long-distance transfers and private tours." },
+  destinations: { tag: t.nav.destinations, title: t.route.title, text: ui.pages.destinationsIntro },
+  fleet: { tag: t.nav.fleet, title: ui.pages.fleetTitle, text: ui.pages.fleetIntro },
   about: { tag: t.nav.about, title: t.welcome.title, text: t.why.text },
-  contact: { tag: t.nav.contact, title: "Plan your ride with us", text: "Send your route, arrival time and passenger details. Our team will reply with availability and a confirmed price." },
+  contact: { tag: t.nav.contact, title: ui.pages.contactTitle, text: ui.pages.contactIntro },
   book: { tag: t.nav.book, title: t.booking.title, text: t.booking.intro }
 }[page];
-const cards = page === "destinations" ? [["Dubrovnik Airport", "Old Town · Hotels · Villas"], ["Kotor", "Montenegro · Bay of Kotor"], ["Mostar", "Bosnia and Herzegovina"], ["Split", "Dalmatian coast · Door to door"]] : t.pillars.items;
+const cards = page === "destinations" ? ui.destinationCards : t.pillars.items;
 ---
 <section class="content-page soft-page">
   <span class="section-marker pink-marker">{pageData.tag}</span><h1>{pageData.title}</h1><p class="page-intro">{pageData.text}</p>
-  {page === "about" ? <div class="about-page-grid"><img src="/media/dubrovnik-harbor.jpg" alt="Dubrovnik and Adriatic coast" /><div><h2>Professional drivers. Personal service.</h2><p>{t.welcome.p1}</p><p>{t.welcome.p2}</p><ul>{t.why.points.map((point) => <li><Check size={16} />{point}</li>)}</ul></div></div> : page === "contact" ? <div class="contact-page-grid"><div class="contact-panel purple-grid"><ShieldCheck size={29} /><h2>Feniks Dubrovnik Transfers</h2><p>Dubrovnik, Croatia</p><a href="tel:+385000000000">+385 00 000 0000</a><a href="mailto:booking@fenikstransfers.com">booking@fenikstransfers.com</a></div><form class="simple-form"><label>Name<input name="name" required /></label><label>Email<input name="email" type="email" required /></label><label>Route<input name="route" required /></label><label>Message<textarea name="message" rows="4"></textarea></label><button class="pill-button primary" type="submit">{t.cta.button}<ArrowRight size={16} /></button></form></div> : <div class="content-card-grid">{cards.map((card, index) => <article><span>{index === 0 ? <Plane size={23} /> : index === 1 ? <Car size={23} /> : index === 2 ? <MapPin size={23} /> : <Compass size={23} />}</span><h2>{card[0]}</h2><p>{card[1]}</p><a href={`/${lang}/book/`}>{t.nav.book}<ArrowRight size={14} /></a></article>)}</div>}
+  {page === "about" ? <div class="about-page-grid"><img src="/media/dubrovnik-harbor.jpg" alt={ui.imageAltHarbor} /><div><h2>{ui.pages.aboutHeading}</h2><p>{t.welcome.p1}</p><p>{t.welcome.p2}</p><ul>{t.why.points.map((point) => <li><Check size={16} />{point}</li>)}</ul></div></div> : page === "contact" ? <div class="contact-page-grid"><div class="contact-panel purple-grid"><ShieldCheck size={29} /><h2>Feniks Dubrovnik Transfers</h2><p>Dubrovnik, {ui.country}</p><a href="tel:+385000000000">+385 00 000 0000</a><a href="mailto:booking@fenikstransfers.com">booking@fenikstransfers.com</a></div><form class="simple-form"><label>{ui.pages.name}<input name="name" required /></label><label>{ui.pages.email}<input name="email" type="email" required /></label><label>{ui.pages.route}<input name="route" required /></label><label>{ui.pages.message}<textarea name="message" rows="4"></textarea></label><button class="pill-button primary" type="submit">{t.cta.button}<ArrowRight size={16} /></button></form></div> : <div class="content-card-grid">{cards.map((card, index) => <article><span>{index === 0 ? <Plane size={23} /> : index === 1 ? <Car size={23} /> : index === 2 ? <MapPin size={23} /> : <Compass size={23} />}</span><h2>{card[0]}</h2><p>{card[1]}</p><a href={`/${lang}/book/`}>{t.nav.book}<ArrowRight size={14} /></a></article>)}</div>}
   <div class="page-cta"><div><h2>{t.cta.title}</h2><p>{t.cta.text}</p></div><a class="pill-button kiwi" href={`/${lang}/book/`}>{t.cta.button}<ArrowRight size={16} /></a></div>
 </section>

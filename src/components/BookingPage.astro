@@ -1,9 +1,10 @@
 ---
 import { ArrowLeftRight, CalendarDays, Car, Check, ChevronDown, ChevronLeft, ChevronRight, Clock3, MapPin, Minus, Plane, Plus, Route, Ship, Users } from "@lucide/astro";
-import { getContent, type Lang } from "../data/site";
+import { getContent, getInterfaceContent, type Lang } from "../data/site";
 interface Props { lang: Lang; }
 const { lang } = Astro.props;
 const t = getContent(lang).booking;
+const ui = getInterfaceContent(lang);
 const icons = [Plane, Route, Ship, Car];
 const times = Array.from({ length: 96 }, (_, index) => `${String(Math.floor(index / 4)).padStart(2, "0")}:${String((index % 4) * 15).padStart(2, "0")}`);
 const help = {
@@ -36,8 +37,8 @@ const help = {
           <button type="button" class="select-trigger" data-select-trigger aria-expanded="false"><span data-select-label>{t.selected}...</span><ChevronDown size={16} /></button>
           <div class="select-menu" data-select-menu hidden>{t.services.map((service) => <button type="button" data-select-value={service[0]} data-select-text={service[1]}>{service[1]}</button>)}</div>
         </div>
-        <div class="form-field"><label for={`pickup-${lang}`}>{t.pickup}</label><div class="input-wrap"><MapPin size={16} /><input id={`pickup-${lang}`} name="pickup" required placeholder="Dubrovnik Airport" autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" /></div></div>
-        <div class="form-field"><label for={`destination-${lang}`}>{t.destination}</label><div class="input-wrap"><MapPin size={16} /><input id={`destination-${lang}`} name="destination" required placeholder="Hotel / city / marina" autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" /></div></div>
+        <div class="form-field"><label for={`pickup-${lang}`}>{t.pickup}</label><div class="input-wrap"><MapPin size={16} /><input id={`pickup-${lang}`} name="pickup" required placeholder={ui.pickupPlaceholder} autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" /></div></div>
+        <div class="form-field"><label for={`destination-${lang}`}>{t.destination}</label><div class="input-wrap"><MapPin size={16} /><input id={`destination-${lang}`} name="destination" required placeholder={ui.destinationPlaceholder} autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" /></div></div>
         <div class="form-field full trip-type-field">
           <label>{t.tripType}</label>
           <input type="hidden" name="tripType" value="one-way" data-trip-type-input />
@@ -51,14 +52,14 @@ const help = {
         <div class="form-field"><label for={`phone-${lang}`}>{t.phone}</label><input id={`phone-${lang}`} name="phone" type="tel" autocomplete="tel" required placeholder="+385 ..." /></div>
         <div class="form-field" data-passenger-stepper>
           <label>{t.passengers}</label><input type="hidden" name="passengers" value="1" />
-          <div class="passenger-stepper"><Users size={16} /><button type="button" data-passenger-minus aria-label="Decrease passengers"><Minus size={15} /></button><strong data-passenger-count>1</strong><button type="button" data-passenger-plus aria-label="Increase passengers"><Plus size={15} /></button></div>
+          <div class="passenger-stepper"><Users size={16} /><button type="button" data-passenger-minus aria-label={ui.decreasePassengers}><Minus size={15} /></button><strong data-passenger-count>1</strong><button type="button" data-passenger-plus aria-label={ui.increasePassengers}><Plus size={15} /></button></div>
         </div>
         <div class="form-field full schedule-field" data-date-picker="outbound">
           <label>{t.date}</label>
           <div class="schedule-grid">
             <div>
               <div class="calendar-box">
-                <div class="calendar-header"><button type="button" data-cal-prev aria-label="Previous month"><ChevronLeft size={18} /></button><strong data-cal-title></strong><button type="button" data-cal-next aria-label="Next month"><ChevronRight size={18} /></button></div>
+                <div class="calendar-header"><button type="button" data-cal-prev aria-label={ui.previousMonth}><ChevronLeft size={18} /></button><strong data-cal-title></strong><button type="button" data-cal-next aria-label={ui.nextMonth}><ChevronRight size={18} /></button></div>
                 <div class="calendar-weekdays" data-cal-weekdays></div>
                 <div class="calendar-days" data-cal-days></div>
               </div>
@@ -77,7 +78,7 @@ const help = {
           <div class="schedule-grid">
             <div>
               <div class="calendar-box">
-                <div class="calendar-header"><button type="button" data-cal-prev aria-label="Previous month"><ChevronLeft size={18} /></button><strong data-cal-title></strong><button type="button" data-cal-next aria-label="Next month"><ChevronRight size={18} /></button></div>
+                <div class="calendar-header"><button type="button" data-cal-prev aria-label={ui.previousMonth}><ChevronLeft size={18} /></button><strong data-cal-title></strong><button type="button" data-cal-next aria-label={ui.nextMonth}><ChevronRight size={18} /></button></div>
                 <div class="calendar-weekdays" data-cal-weekdays></div>
                 <div class="calendar-days" data-cal-days></div>
               </div>
@@ -95,7 +96,7 @@ const help = {
         <div class="form-field"><label for={`message-${lang}`}>{t.message}</label><input id={`message-${lang}`} name="message" /></div>
         <button class="pill-button primary submit-button full" type="submit"><CalendarDays size={17} />{t.submit}</button>
       </form>
-      <div class="booking-success" data-booking-success hidden><span><Check size={23} /></span><h3>Request received</h3><p>We will review your route and contact you with availability and the confirmed price.</p><button type="button" data-booking-again>Make another request</button></div>
+      <div class="booking-success" data-booking-success hidden><span><Check size={23} /></span><h3>{ui.successTitle}</h3><p>{ui.successText}</p><button type="button" data-booking-again>{ui.successAgain}</button></div>
     </div>
   </div>
 </section>
