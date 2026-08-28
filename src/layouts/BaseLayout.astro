@@ -67,8 +67,22 @@ const localized = (target: Lang) => Astro.url.pathname.replace(/^\/(hr|en|de|fr)
       const language = document.querySelector("[data-language]");
       const languageButton = language?.querySelector("button");
       const languageMenu = language?.querySelector(".language-menu");
+      const scrollParam = new URLSearchParams(window.location.search).get("_scroll");
+      const savedScroll = Number(scrollParam);
+      if (scrollParam !== null && Number.isFinite(savedScroll)) {
+        if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+        history.replaceState(history.state, "", `${window.location.pathname}${window.location.hash}`);
+        const restoreScroll = () => window.scrollTo(0, savedScroll);
+        requestAnimationFrame(() => requestAnimationFrame(restoreScroll));
+        [50, 200, 500, 900, 1400].forEach((delay) => setTimeout(restoreScroll, delay));
+      }
       languageButton?.addEventListener("click", (event) => {
         event.stopPropagation();
+        languageMenu?.querySelectorAll("a").forEach((link) => {
+          const target = new URL(link.href);
+          target.searchParams.set("_scroll", String(Math.round(window.scrollY)));
+          link.href = target.toString();
+        });
         const open = languageMenu?.hasAttribute("hidden") ?? true;
         languageMenu?.toggleAttribute("hidden", !open);
         languageButton.setAttribute("aria-expanded", String(open));
