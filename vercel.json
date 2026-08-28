@@ -1,6 +1,8 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "trailingSlash": true,
+  "regions": ["fra1"],
   "headers": [
     { "source": "/admin/(.*)", "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }, { "key": "Cache-Control", "value": "no-store" }] },
     { "source": "/track/(.*)", "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }, { "key": "Referrer-Policy", "value": "no-referrer" }, { "key": "Cache-Control", "value": "no-store" }] },
