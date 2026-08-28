@@ -10,6 +10,7 @@ This document is the backend contract for the Aurora admin, driver apps, rider a
 - Passenger tracking uses a random, expiring token. The raw token is never stored.
 - `ride_events` is append-only and records every operational state change.
 - `notification_outbox` decouples ride changes from future push, SMS and email providers.
+- Schema changes run explicitly with `pnpm db:migrate`; request handlers never run DDL during a cold start.
 
 ## Ride lifecycle
 

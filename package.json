@@ -6,6 +6,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "db:migrate": "node scripts/migrate.cjs",
     "test": "node --test test/*.test.cjs"
   },
   "dependencies": {
