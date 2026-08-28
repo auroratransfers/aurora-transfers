@@ -30,8 +30,10 @@ const times = Array.from({ length: 96 }, (_, index) => `${String(Math.floor(inde
         <div class="quick-control" data-quick-date="returnDate"><span>{t.booking.returnDate}</span><input type="hidden" name="returnDate" /><button type="button" class="quick-trigger" data-quick-trigger><CalendarCheck size={16} /><b data-quick-label>{t.booking.returnDate}</b><ChevronDown size={15} /></button><div class="quick-calendar" data-quick-panel hidden><div class="calendar-header"><button type="button" data-cal-prev><ChevronLeft size={17} /></button><strong data-cal-title></strong><button type="button" data-cal-next><ChevronRight size={17} /></button></div><div class="calendar-weekdays" data-cal-weekdays></div><div class="calendar-days" data-cal-days></div></div></div>
         <div class="quick-control" data-quick-select><span>{t.booking.returnTime}</span><input type="hidden" name="returnTime" /><button type="button" class="quick-trigger" data-quick-trigger><Clock3 size={16} /><b data-quick-label>{t.booking.selectTime}</b><ChevronDown size={15} /></button><div class="quick-menu" data-quick-panel hidden>{times.map((time) => <button type="button" data-value={time}>{time}</button>)}</div></div>
       </div>
-      <div class="quick-control full" data-passenger-stepper><span>{t.booking.passengers}</span><input type="hidden" name="passengers" value="1" /><div class="passenger-stepper"><Users size={16} /><button type="button" data-passenger-minus aria-label="Decrease passengers"><Minus size={15} /></button><strong data-passenger-count>1</strong><button type="button" data-passenger-plus aria-label="Increase passengers"><Plus size={15} /></button></div></div>
-      <button class="pill-button primary hero-booking-submit full" type="submit">{t.hero.primary}<ArrowRight size={16} /></button>
+      <div class="hero-booking-actions full">
+        <div class="quick-control" data-passenger-stepper><span>{t.booking.passengers}</span><input type="hidden" name="passengers" value="1" /><div class="passenger-stepper"><Users size={16} /><button type="button" data-passenger-minus aria-label="Decrease passengers"><Minus size={15} /></button><strong data-passenger-count>1</strong><button type="button" data-passenger-plus aria-label="Increase passengers"><Plus size={15} /></button></div></div>
+        <button class="pill-button primary hero-booking-submit" type="submit">{t.hero.primary}<ArrowRight size={16} /></button>
+      </div>
     </form>
   </div>
 </section>
@@ -139,20 +141,19 @@ const times = Array.from({ length: 96 }, (_, index) => `${String(Math.floor(inde
   });
 </script>
 
-<section class="intro-section section-rule">
-  <span class="section-marker kiwi-marker">{t.welcome.tag}</span>
-  <h2>{t.welcome.title}</h2>
-  <div class="intro-copy"><p>{t.welcome.p1}</p><p>{t.welcome.p2}</p></div>
-  <a class="pill-button primary" href={`/${lang}/about/`}>{t.nav.about}<ArrowRight size={16} /></a>
-</section>
-
-<section class="home-image-section section-rule">
+<section class="intro-section intro-with-image section-rule">
   <div class="image-card">
     <img src="/media/dubrovnik-harbor.jpg" alt="Dubrovnik old harbour and the Adriatic Sea" loading="lazy" />
     <div class="image-caption"><div><strong>Feniks Dubrovnik Transfers</strong><span>Private rides across the Adriatic region</span></div><span class="location-pill"><MapPin size={14} /> Dubrovnik</span></div>
     <div class="stats-grid">
       <div><strong>10k+</strong><span>{t.stats[0]}</span></div><div><strong>50+</strong><span>{t.stats[1]}</span></div><div><strong>10+</strong><span>{t.stats[2]}</span></div>
     </div>
+  </div>
+  <div class="intro-content">
+    <span class="section-marker kiwi-marker">{t.welcome.tag}</span>
+    <h2>{t.welcome.title}</h2>
+    <div class="intro-copy"><p>{t.welcome.p1}</p><p>{t.welcome.p2}</p></div>
+    <a class="pill-button primary" href={`/${lang}/about/`}>{t.nav.about}<ArrowRight size={16} /></a>
   </div>
 </section>
 

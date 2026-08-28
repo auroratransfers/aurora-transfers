@@ -1,5 +1,5 @@
 ---
-import { Car, Globe2, Menu, Phone, X } from "@lucide/astro";
+import { CalendarCheck, Car, Globe2, Menu, Phone, X } from "@lucide/astro";
 import { getContent, languages, type Lang } from "../data/site";
 
 interface Props { lang: Lang; active?: string; }
@@ -7,14 +7,14 @@ const { lang, active = "home" } = Astro.props;
 const t = getContent(lang);
 const currentPath = Astro.url.pathname;
 const langPath = (target: Lang) => currentPath.replace(/^\/(hr|en|de|fr)(?=\/|$)/, `/${target}`);
+const bookingLabel = { hr: "Rezerviraj transfer", en: "Book Transfer", de: "Transfer buchen", fr: "Réserver transfert" }[lang];
 const links = [
   ["home", `/${lang}/`, t.nav.home],
   ["services", `/${lang}/services/`, t.nav.services],
   ["destinations", `/${lang}/destinations/`, t.nav.destinations],
   ["fleet", `/${lang}/fleet/`, t.nav.fleet],
   ["about", `/${lang}/about/`, t.nav.about],
-  ["contact", `/${lang}/contact/`, t.nav.contact],
-  ["book", `/${lang}/book/`, t.nav.book]
+  ["contact", `/${lang}/contact/`, t.nav.contact]
 ] as const;
 ---
 <header class="site-header" data-header>
@@ -34,6 +34,7 @@ const links = [
         </div>
       </div>
       <a class="round-tool phone-tool" href="tel:+385000000000" aria-label="Call Feniks Transfers"><Phone size={16} /></a>
+      <a class:list={["nav-book-button", { active: active === "book" }]} href={`/${lang}/book/`} aria-label={bookingLabel}><CalendarCheck size={16} /><span>{bookingLabel}</span></a>
       <button class="menu-toggle" type="button" data-menu-toggle aria-label="Open menu" aria-expanded="false"><Menu class="menu-open-icon" size={21} /><X class="menu-close-icon" size={21} /></button>
     </div>
   </nav>
