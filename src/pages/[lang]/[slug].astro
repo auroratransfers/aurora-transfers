@@ -1,0 +1,14 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ContentPage from "../../components/ContentPage.astro";
+import { languages, pageSlugs, pages, type Lang, type PageSlug } from "../../data/site";
+export function getStaticPaths() {
+  return languages.flatMap((lang) => pageSlugs.map((slug) => ({ params: { lang, slug } })));
+}
+const lang = Astro.params.lang as Lang;
+const slug = Astro.params.slug as PageSlug;
+const page = pages[slug];
+---
+<BaseLayout lang={lang} active={slug} title={`${page.title} | Feniks Dubrovnik Transfers`} description={page.intro}>
+  <ContentPage lang={lang} slug={slug} />
+</BaseLayout>

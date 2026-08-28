@@ -1,0 +1,30 @@
+---
+import { getLabels, type Lang } from "../data/site";
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const t = getLabels(lang);
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href={`/${lang}`}><span class="brand-mark">F</span><span class="brand-name">Feniks<span>.</span>Transfers</span></a>
+        <p>{t.common.footerText}</p>
+      </div>
+      <div class="footer-col">
+        <h2>{t.common.pages}</h2>
+        <nav class="footer-links">
+          <a href={`/${lang}/services`}>{t.nav.services}</a><a href={`/${lang}/fleet`}>{t.nav.fleet}</a><a href={`/${lang}/pricing`}>{t.nav.pricing}</a><a href={`/${lang}/booking`}>{t.nav.booking}</a>
+        </nav>
+      </div>
+      <div class="footer-col">
+        <h2>{t.common.info}</h2>
+        <nav class="footer-links">
+          <a href={`/${lang}/about`}>{t.nav.about}</a><a href={`/${lang}/faq`}>{t.nav.faq}</a><a href={`/${lang}/contact`}>{t.nav.contact}</a><span>Dubrovnik, Hrvatska</span><span>Dostupni 24/7</span>
+        </nav>
+      </div>
+    </div>
+    <div class="footer-bottom">© {year} Feniks Dubrovnik Transfers. {t.common.copyright}</div>
+  </div>
+</footer>

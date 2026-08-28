@@ -1,0 +1,90 @@
+---
+import { Plane, Hotel, Route, Compass, BriefcaseBusiness, Sparkles, Check, ArrowRight, Clock3, ShieldCheck, Wifi, Star } from "@lucide/astro";
+import BookingForm from "./BookingForm.astro";
+import { getLabels, services, type Lang } from "../data/site";
+
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const t = getLabels(lang);
+const iconMap = { plane: Plane, hotel: Hotel, route: Route, compass: Compass, briefcase: BriefcaseBusiness, sparkles: Sparkles };
+const steps = [
+  ["01", "Pošaljite rutu", "Odaberite gdje vas preuzimamo i kamo putujete."],
+  ["02", "Primite potvrdu", "Provjeravamo dostupnost i šaljemo konačnu cijenu."],
+  ["03", "Upoznajte vozača", "Čekamo vas na dogovorenom mjestu i pratimo vaš dolazak."],
+  ["04", "Uživajte u vožnji", "Vi se opustite, a mi brinemo o putu i vremenu."],
+];
+const journals = [
+  ["/images/dubrovnik-harbor.jpg", "Transfer · 5 min", "Kako doći od zračne luke Dubrovnik do Starog grada", "Sve opcije prijevoza, trajanje i što odabrati nakon slijetanja."],
+  ["/images/sea-coast.png", "Izleti · 7 min", "Najbolji jednodnevni izleti iz Dubrovnika", "Mostar, Kotor, Pelješac i mjesta koja vrijedi vidjeti bez žurbe."],
+  ["/images/sea-coast-portrait.png", "Savjeti · 4 min", "Što trebate znati prije dolaska", "Praktični lokalni savjeti za lakši i ugodniji boravak u Dubrovniku."],
+];
+---
+<section class="hero">
+  <img class="hero-media" src="/images/dubrovnik-harbor.jpg" alt="Dubrovnik harbor and the Adriatic Sea" fetchpriority="high" />
+  <div class="hero-shade"></div>
+  <div class="container hero-content">
+    <p class="eyebrow">{t.hero.badge}</p>
+    <h1>{t.hero.title}</h1>
+    <p class="hero-text">{t.hero.text}</p>
+    <div class="hero-actions">
+      <a class="button button-primary" href={`/${lang}/booking`}>{t.hero.primary}<ArrowRight size={17} /></a>
+      <a class="button button-outline" href={`/${lang}/services`}>{t.hero.secondary}</a>
+    </div>
+    <div class="hero-trust">
+      <span><ShieldCheck size={18} /> Licencirani vozači</span>
+      <span><Clock3 size={18} /> Dostupni 24/7</span>
+      <span><Star size={18} /> Fiksne cijene</span>
+    </div>
+  </div>
+</section>
+
+<section class="booking-band container" aria-label={t.booking.title}><BookingForm lang={lang} /></section>
+
+<section class="section">
+  <div class="container">
+    <header class="section-head"><p class="eyebrow">{t.home.servicesEyebrow}</p><h2>{t.home.servicesTitle}</h2><p class="lead">{t.home.servicesText}</p></header>
+    <div class="services-grid">
+      {services.map((service) => {
+        const Icon = iconMap[service.icon as keyof typeof iconMap];
+        return <article class="service-item"><span class="service-icon"><Icon size={20} strokeWidth={2.2} /></span><h3>{service.title}</h3><p>{service.text}</p></article>;
+      })}
+    </div>
+  </div>
+</section>
+
+<section class="section section-soft">
+  <div class="container">
+    <header class="section-head"><p class="eyebrow">{t.home.whyEyebrow}</p><h2>{t.home.whyTitle}</h2></header>
+    <div class="steps-grid">{steps.map(([num, title, text]) => <article class="step"><span class="step-num">{num}</span><h3>{title}</h3><p>{text}</p></article>)}</div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <header class="section-head"><p class="eyebrow">{t.home.destinationsEyebrow}</p><h2>{t.home.destinationsTitle}</h2></header>
+    <div class="destination-grid">
+      <a class="destination" href={`/${lang}/pricing`}><img src="/images/adriatic-town.jpg" alt="Historic Adriatic coastal town" loading="lazy" /><div class="destination-content"><h3>Dubrovnik · Split</h3><p>Privatni transfer uz odmor i fotografiranje po želji.</p></div></a>
+      <a class="destination" href={`/${lang}/pricing`}><img src="/images/sea-coast-portrait.png" alt="Adriatic coast seen from above" loading="lazy" /><div class="destination-content"><h3>Kotor · Mostar</h3><p>Regionalne rute s lokalnim vozačem.</p></div></a>
+    </div>
+  </div>
+</section>
+
+<section class="section section-blue">
+  <div class="container about-grid">
+    <img class="about-image" src="/images/sea-aerial.png" alt="Clear Adriatic sea and rocky coast" loading="lazy" />
+    <div>
+      <p class="eyebrow">{t.home.aboutEyebrow}</p><h2>{t.home.aboutTitle}</h2><p class="lead">{t.home.aboutText}</p>
+      <ul class="feature-list"><li><Check size={19} /> Udobna, klimatizirana vozila</li><li><Check size={19} /> Profesionalni i ljubazni vozači</li><li><Check size={19} /> Fiksne cijene bez iznenađenja</li><li><Wifi size={19} /> Besplatan Wi-Fi u vozilima</li><li><Plane size={19} /> Praćenje letova u realnom vremenu</li></ul>
+      <a class="button button-purple" href={`/${lang}/about`}>{t.common.learn}<ArrowRight size={17} /></a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <header class="section-head"><p class="eyebrow">{t.home.blogEyebrow}</p><h2>{t.home.blogTitle}</h2></header>
+    <div class="journal-grid">{journals.map(([image, meta, title, text]) => <article class="journal-item"><img src={image} alt="Adriatic travel guide" loading="lazy" /><div><span class="journal-meta">{meta}</span><h3>{title}</h3><p>{text}</p></div></article>)}</div>
+  </div>
+</section>
+
+<section class="section cta-band"><div class="container cta-inner"><div><h2>{t.home.ctaTitle}</h2><p>{t.home.ctaText}</p></div><a class="button button-primary" href={`/${lang}/booking`}>{t.hero.primary}<ArrowRight size={17} /></a></div></section>

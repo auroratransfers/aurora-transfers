@@ -1,0 +1,38 @@
+---
+import { Plane, Hotel, Route, Compass, BriefcaseBusiness, Sparkles, Check, Phone, Mail, MapPin, Clock3 } from "@lucide/astro";
+import BookingForm from "./BookingForm.astro";
+import { pages, services, type Lang, type PageSlug } from "../data/site";
+
+interface Props { lang: Lang; slug: PageSlug; }
+const { lang, slug } = Astro.props;
+const page = pages[slug];
+const iconMap = { plane: Plane, hotel: Hotel, route: Route, compass: Compass, briefcase: BriefcaseBusiness, sparkles: Sparkles };
+const fleet = [
+  ["Business Sedan", "Mercedes-Benz E-Class", "1–3 putnika · 3 kofera", "od 35 €"],
+  ["Premium Van", "Mercedes-Benz V-Class", "1–7 putnika · 7 kofera", "od 50 €"],
+  ["Minibus", "Mercedes-Benz Sprinter", "8–16 putnika · veliki prtljažnik", "od 75 €"],
+];
+const pricing = [["Zračna luka – Dubrovnik", "35 €"], ["Dubrovnik – Split", "280 €"], ["Dubrovnik – Mostar", "150 €"], ["Dubrovnik – Kotor", "120 €"], ["Pelješac vinski tour", "280 €"], ["Mostar i Kravica", "320 €"]];
+const faqs = [
+  ["Koliko unaprijed trebam rezervirati?", "Preporučujemo barem 24 sata unaprijed. U ljetnim mjesecima najbolje je rezervirati nekoliko dana ranije."],
+  ["Je li cijena po osobi ili po vozilu?", "Sve prikazane cijene vrijede za cijelo vozilo, a kategorija ovisi o broju putnika i količini prtljage."],
+  ["Što ako moj let kasni?", "Pratimo let u realnom vremenu. Vozač prilagođava vrijeme dolaska, a prvih 60 minuta čekanja je uključeno."],
+  ["Nudite li dječje sjedalice?", "Da. Dječje sjedalice dostupne su na zahtjev i bez doplate. Navedite dob djeteta pri rezervaciji."],
+  ["Mogu li otkazati transfer?", "Otkazivanje do 24 sata prije polaska je besplatno."],
+];
+---
+<header class="page-hero"><div class="container"><p class="eyebrow">{page.eyebrow}</p><h1>{page.title}</h1><p class="lead">{page.intro}</p></div></header>
+
+{slug === "booking" && <section class="section"><div class="container"><BookingForm lang={lang} /></div></section>}
+
+{slug === "services" && <section class="section"><div class="container content-grid">{services.map((service) => { const Icon = iconMap[service.icon as keyof typeof iconMap]; return <article class="content-card"><span class="service-icon"><Icon size={20} /></span><h3>{service.title}</h3><p>{service.text}</p></article>; })}</div></section>}
+
+{slug === "fleet" && <section class="section"><div class="container content-grid">{fleet.map(([type, model, detail, price]) => <article class="content-card"><p class="eyebrow">{type}</p><h2 style="font-size:1.65rem">{model}</h2><p>{detail}</p><ul class="feature-list"><li><Check size={18} /> Klima i puno osiguranje</li><li><Check size={18} /> Wi-Fi i voda</li><li><Check size={18} /> Redovito održavanje</li></ul><strong style="color:var(--purple);font-size:1.25rem">{price}</strong></article>)}</div></section>}
+
+{slug === "pricing" && <section class="section"><div class="container"><div class="pricing-list">{pricing.map(([routeName, price]) => <div class="pricing-row"><strong>{routeName}</strong><strong>{price}</strong></div>)}</div><p class="lead">Sve cijene su po vozilu i uključuju gorivo, cestarine, parking, osiguranje i standardnu prtljagu.</p></div></section>}
+
+{slug === "about" && <section class="section"><div class="container about-grid"><img class="about-image" src="/images/dubrovnik-harbor.jpg" alt="Dubrovnik harbor" /><div><p class="eyebrow">Feniks Dubrovnik Transfers</p><h2>Profesionalna usluga s lokalnim znanjem</h2><p class="lead">Naš tim čine profesionalni vozači s dugogodišnjim iskustvom. Razumijemo koliko je važan prvi dojam pri dolasku u novu destinaciju, zato svako putovanje organiziramo pažljivo, točno i bez stresa.</p><ul class="feature-list"><li><Check size={18} /> Točnost i praćenje dolazaka</li><li><Check size={18} /> Sigurnost i licencirani vozači</li><li><Check size={18} /> Transparentne cijene</li><li><Check size={18} /> Poznavanje Dubrovnika i regije</li></ul></div></div></section>}
+
+{slug === "contact" && <section class="section"><div class="container contact-grid"><div class="contact-details"><div class="contact-item"><Phone size={21} /><h3>Telefon i WhatsApp</h3><p>+385 99 XXX XXXX · dostupni 24/7</p></div><div class="contact-item"><Mail size={21} /><h3>Email</h3><p>info@feniks-transfers.com</p></div><div class="contact-item"><MapPin size={21} /><h3>Dubrovnik</h3><p>20000 Dubrovnik, Hrvatska</p></div><div class="contact-item"><Clock3 size={21} /><h3>Odgovor</h3><p>Javljamo se u najkraćem roku.</p></div></div><form class="content-card"><div class="field"><label>Ime i prezime</label><input name="name" required /></div><div class="field"><label>Email</label><input name="email" type="email" required /></div><div class="field"><label>Telefon</label><input name="phone" type="tel" /></div><div class="field"><label>Poruka</label><textarea name="message" required></textarea></div><button class="button button-purple" type="submit">Pošalji poruku</button></form></div></section>}
+
+{slug === "faq" && <section class="section section-soft"><div class="container faq-list">{faqs.map(([question, answer]) => <details><summary>{question}</summary><p>{answer}</p></details>)}</div></section>}

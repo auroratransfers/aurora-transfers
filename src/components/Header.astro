@@ -1,0 +1,41 @@
+---
+import { Menu, ArrowRight } from "@lucide/astro";
+import { getLabels, languages, type Lang } from "../data/site";
+
+interface Props { lang: Lang; active?: string; }
+const { lang, active = "home" } = Astro.props;
+const t = getLabels(lang);
+const currentPath = Astro.url.pathname;
+const languagePath = (target: Lang) => currentPath.replace(/^\/(hr|en|de|fr)(?=\/|$)/, `/${target}`);
+const nav = [
+  ["home", `/${lang}`, t.nav.home],
+  ["services", `/${lang}/services`, t.nav.services],
+  ["fleet", `/${lang}/fleet`, t.nav.fleet],
+  ["pricing", `/${lang}/pricing`, t.nav.pricing],
+  ["about", `/${lang}/about`, t.nav.about],
+  ["contact", `/${lang}/contact`, t.nav.contact],
+  ["faq", `/${lang}/faq`, t.nav.faq],
+] as const;
+---
+<header class="site-header">
+  <div class="container nav-shell">
+    <a class="brand" href={`/${lang}`} aria-label="Feniks Dubrovnik Transfers">
+      <span class="brand-mark">F</span>
+      <span class="brand-name">Feniks<span>.</span>Transfers</span>
+    </a>
+    <nav class="desktop-nav" aria-label="Main navigation">
+      {nav.map(([key, href, label]) => <a href={href} class:list={[{ active: active === key }]}>{label}</a>)}
+    </nav>
+    <div class="nav-actions">
+      <select class="language-select" data-language-select aria-label="Language">
+        {languages.map((target) => <option value={languagePath(target)} selected={target === lang}>{target.toUpperCase()}</option>)}
+      </select>
+      <a class="button button-purple desktop-book" href={`/${lang}/booking`}>{t.nav.booking}<ArrowRight size={16} /></a>
+      <button class="menu-button" type="button" data-menu-button aria-label="Open menu" aria-expanded="false"><Menu size={21} /></button>
+    </div>
+  </div>
+  <nav class="mobile-menu" data-mobile-menu aria-label="Mobile navigation">
+    {nav.map(([key, href, label]) => <a href={href} class:list={[{ active: active === key }]}>{label}</a>)}
+    <a class="button button-purple" href={`/${lang}/booking`}>{t.nav.booking}<ArrowRight size={16} /></a>
+  </nav>
+</header>

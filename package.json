@@ -1,0 +1,15 @@
+{
+  "name": "feniks-dubrovnik-transfers",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@lucide/astro": "latest",
+    "astro": "latest"
+  }
+}

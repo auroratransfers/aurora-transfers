@@ -1,0 +1,67 @@
+---
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import "../styles/global.css";
+import { languages, type Lang } from "../data/site";
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  active?: string;
+  image?: string;
+}
+
+const { lang, title, description, active = "home", image = "/images/dubrovnik-harbor.jpg" } = Astro.props;
+const currentPath = Astro.url.pathname;
+const canonical = new URL(currentPath, Astro.site);
+const localizedPath = (target: Lang) => currentPath.replace(/^\/(hr|en|de|fr)(?=\/|$)/, `/${target}`);
+---
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="canonical" href={canonical} />
+    {languages.map((target) => <link rel="alternate" hreflang={target} href={new URL(localizedPath(target), Astro.site)} />)}
+    <link rel="alternate" hreflang="x-default" href={new URL(localizedPath("en"), Astro.site)} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(image, Astro.site)} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <title>{title}</title>
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "TaxiService",
+      name: "Feniks Dubrovnik Transfers",
+      url: Astro.site,
+      areaServed: ["Dubrovnik", "Croatia", "Bosnia and Herzegovina", "Montenegro"],
+      availableLanguage: ["Croatian", "English", "German", "French"],
+      serviceType: "Private transfer service"
+    })} />
+  </head>
+  <body>
+    <Header lang={lang} active={active} />
+    <main><slot /></main>
+    <Footer lang={lang} />
+    <script>
+      const menuButton = document.querySelector("[data-menu-button]");
+      const mobileMenu = document.querySelector("[data-mobile-menu]");
+      menuButton?.addEventListener("click", () => {
+        const open = mobileMenu?.classList.toggle("open") || false;
+        menuButton.setAttribute("aria-expanded", String(open));
+      });
+
+      document.querySelectorAll("[data-language-select]").forEach((select) => {
+        select.addEventListener("change", (event) => {
+          const target = event.currentTarget;
+          if (target instanceof HTMLSelectElement) window.location.href = target.value;
+        });
+      });
+    </script>
+  </body>
+</html>
