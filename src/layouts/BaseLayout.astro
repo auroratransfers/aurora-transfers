@@ -8,7 +8,7 @@ const { lang, title, description, active = "home" } = Astro.props;
 const t = getContent(lang);
 const ui = getInterfaceContent(lang);
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const localized = (target: Lang) => Astro.url.pathname.replace(/^\/(hr|en|de|fr)(?=\/|$)/, `/${target}`);
+const localized = (target: Lang) => Astro.url.pathname === "/" ? (target === "en" ? "/" : `/${target}/`) : Astro.url.pathname.replace(/^\/(hr|en|de|fr)(?=\/|$)/, `/${target}`);
 ---
 <!doctype html>
 <html lang={lang}>
@@ -44,7 +44,7 @@ const localized = (target: Lang) => Astro.url.pathname.replace(/^\/(hr|en|de|fr)
     <main><slot /></main>
     <footer class="site-footer">
       <div class="footer-wrap">
-        <a class="wordmark footer-logo" href={`/${lang}/`}><span class="logo-symbol"><span>A</span></span><span>Aurora<small>Dubrovnik Transfers</small></span></a>
+        <a class="wordmark footer-logo" href={lang === "en" && Astro.url.pathname === "/" ? "/" : `/${lang}/`}><span class="logo-symbol"><span>A</span></span><span>Aurora<small>Dubrovnik Transfers</small></span></a>
         <p>{t.footer}</p>
         <div class="footer-links"><a href={`/${lang}/services/`}>{t.nav.services}</a><a href={`/${lang}/about/`}>{t.nav.about}</a><a href={`/${lang}/contact/`}>{t.nav.contact}</a><a href={`/${lang}/book/`}>{t.nav.book}</a></div>
       </div>
