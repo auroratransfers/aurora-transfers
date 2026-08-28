@@ -7,9 +7,12 @@ module.exports = async (req, res) => {
   const booking = {
     service: clean(body.service), pickup: clean(body.pickup), destination: clean(body.destination),
     name: clean(body.name), email: clean(body.email), phone: clean(body.phone), passengers: clean(body.passengers),
-    date: clean(body.date), flight: clean(body.flight), message: clean(body.message, 4000)
+    tripType: clean(body.tripType), date: clean(body.date), time: clean(body.time),
+    returnDate: clean(body.returnDate), returnTime: clean(body.returnTime),
+    flight: clean(body.flight), message: clean(body.message, 4000)
   };
-  if (!booking.service || !booking.pickup || !booking.destination || !booking.name || !booking.email || !booking.phone || !booking.date) {
+  const missingReturn = booking.tripType === "return" && (!booking.returnDate || !booking.returnTime);
+  if (!booking.service || !booking.pickup || !booking.destination || !booking.name || !booking.email || !booking.phone || !booking.date || !booking.time || missingReturn) {
     return res.status(400).json({ ok: false, error: "Missing required fields" });
   }
   if (!process.env.RESEND_API_KEY || !process.env.BOOKING_TO_EMAIL) return res.status(200).json({ ok: true, configured: false });

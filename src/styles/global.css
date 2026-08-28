@@ -83,6 +83,31 @@ main { width: min(1152px, calc(100% - 32px)); margin-inline: auto; padding-top: 
 .hero-trust span { display: inline-flex; align-items: center; gap: 6px; }
 .hero-trust svg { color: var(--pink); }
 .hero-visual { width: 100%; max-width: 540px; margin-inline: auto; }
+.hero-booking-card { padding: 18px; border: 1px solid #e8e2eb; border-radius: 25px; background: white; box-shadow: var(--shadow); }
+.hero-booking-heading { display: flex; align-items: flex-start; gap: 11px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+.hero-booking-heading > span { width: 38px; height: 38px; flex: none; display: grid; place-items: center; border-radius: 12px; color: white; background: var(--pink); }
+.hero-booking-heading > div { display: grid; }
+.hero-booking-heading strong { font-size: .96rem; }
+.hero-booking-heading small { margin-top: 2px; color: var(--muted); font-size: .69rem; line-height: 1.35; }
+.hero-booking-form { margin-top: 14px; display: grid; gap: 11px; }
+.hero-booking-form > label, .hero-trip, .quick-control { min-width: 0; display: grid; gap: 5px; color: #625a67; font-size: .72rem; font-weight: 600; }
+.hero-booking-form .input-wrap { min-height: 41px; }
+.hero-booking-form .input-wrap:focus-within { border-color: #ddd8e2; box-shadow: none; }
+.hero-booking-form .full { grid-column: 1 / -1; }
+.quick-return { display: grid; grid-template-columns: minmax(0, 1fr); gap: 11px; }
+.quick-control { position: relative; }
+.quick-trigger { width: 100%; min-height: 41px; display: flex; align-items: center; gap: 7px; padding: 0 10px; border: 1px solid #ddd8e2; border-radius: 12px; background: white; cursor: pointer; text-align: left; }
+.quick-trigger > svg { flex: none; color: var(--purple); }
+.quick-trigger b { min-width: 0; flex: 1; overflow: hidden; color: var(--ink); font-size: .78rem; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+.quick-trigger.invalid { border-color: #dc3f68; box-shadow: 0 0 0 3px rgba(220,63,104,.1); }
+.quick-menu, .quick-calendar { position: absolute; z-index: 45; top: calc(100% + 6px); left: 0; width: 100%; padding: 6px; border: 1px solid var(--line); border-radius: 14px; background: white; box-shadow: 0 18px 40px rgba(45,39,51,.16); }
+.quick-menu { max-height: 205px; overflow-y: auto; }
+.quick-menu button { width: 100%; padding: 7px 8px; border: 0; border-radius: 8px; background: transparent; font-size: .76rem; text-align: center; cursor: pointer; }
+.quick-menu button:hover { color: var(--purple); background: var(--purple-light); }
+.passenger-menu { max-height: 190px; }
+.quick-calendar { width: min(300px, calc(100vw - 64px)); padding: 10px; color: var(--ink); }
+.quick-calendar .calendar-days button, .quick-calendar .calendar-days > span { font-size: .7rem; }
+.hero-booking-submit { width: 100%; margin-top: 1px; border: 0; }
 .image-card { padding: 11px; border: 1px solid #eeeaf0; border-radius: 32px; background: white; box-shadow: var(--shadow); }
 .image-card > img { width: 100%; aspect-ratio: 4/3; max-height: 405px; border-radius: 24px; object-fit: cover; }
 .image-caption { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 4px 10px; }
@@ -98,6 +123,9 @@ main { width: min(1152px, calc(100% - 32px)); margin-inline: auto; padding-top: 
 .section-rule { border-top: 1px solid #f0edf2; }
 .intro-section, .section-block { padding: 52px 0; }
 .intro-section { max-width: 790px; }
+.home-image-section { padding: 52px 0; }
+.home-image-section .image-card { width: min(790px, 100%); margin-inline: auto; }
+.home-image-section .image-card > img { aspect-ratio: 16/9; max-height: 430px; }
 .intro-section h2, .section-heading h2, .feature-panel h2, .final-cta h2, .about-page-grid h2, .page-cta h2 { margin: 10px 0 0; font-size: clamp(1.8rem, 6vw, 2.55rem); line-height: 1.08; font-weight: 900; }
 .intro-copy { margin: 18px 0 25px; display: grid; gap: 10px; color: #514a57; }
 .intro-copy p { margin: 0; }
@@ -172,6 +200,17 @@ main { width: min(1152px, calc(100% - 32px)); margin-inline: auto; padding-top: 
 .select-menu button { width: 100%; padding: 9px 10px; border: 0; border-radius: 9px; background: transparent; cursor: pointer; font-size: .8rem; text-align: left; }
 .select-menu button:hover { color: var(--purple); background: var(--purple-light); }
 .compact-menu { max-height: 230px; overflow-y: auto; }
+.trip-type-toggle { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; padding: 4px; border: 1px solid #ddd8e2; border-radius: 14px; background: #f7f4f9; }
+.trip-type-toggle button { min-height: 39px; display: flex; align-items: center; justify-content: center; gap: 7px; padding: 8px 10px; border: 0; border-radius: 10px; color: var(--muted); background: transparent; font-size: .8rem; font-weight: 700; cursor: pointer; }
+.trip-type-toggle button:hover { color: var(--purple); background: var(--purple-light); }
+.trip-type-toggle button.active { color: white; background: var(--purple); box-shadow: 0 5px 14px rgba(111,45,189,.18); }
+.trip-type-toggle button.active svg { color: var(--kiwi); }
+.schedule-grid { display: grid; gap: 12px; align-items: start; }
+.schedule-grid > div { min-width: 0; }
+.time-select { align-self: start; }
+.time-trigger > svg:first-child { color: var(--pink); }
+.time-menu { max-height: 224px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--pink) #f3eef6; }
+.time-menu button { text-align: center; font-variant-numeric: tabular-nums; }
 .calendar-box { padding: 11px; border: 1px solid #ddd8e2; border-radius: 15px; }
 .calendar-header { display: grid; grid-template-columns: 32px 1fr 32px; align-items: center; margin-bottom: 7px; }
 .calendar-header strong { text-align: center; text-transform: capitalize; font-size: .84rem; }
@@ -224,6 +263,8 @@ main { width: min(1152px, calc(100% - 32px)); margin-inline: auto; padding-top: 
   .location-pill { display: inline-flex; }
   .pillar-grid, .content-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .booking-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hero-booking-form, .quick-return { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .schedule-grid { grid-template-columns: minmax(0, 1fr) 145px; }
   .booking-card { padding: 25px; }
   .footer-wrap { grid-template-columns: 1.3fr 1fr; align-items: center; }
   .footer-links { justify-content: flex-end; }

@@ -1,10 +1,11 @@
 ---
-import { CalendarDays, CarFront, Check, ChevronDown, ChevronLeft, ChevronRight, MapPin, Plane, Route, Search, Ship, Users } from "@lucide/astro";
+import { ArrowLeftRight, CalendarDays, CarFront, Check, ChevronDown, ChevronLeft, ChevronRight, Clock3, MapPin, Plane, Route, Ship, Users } from "@lucide/astro";
 import { getContent, type Lang } from "../data/site";
 interface Props { lang: Lang; }
 const { lang } = Astro.props;
 const t = getContent(lang).booking;
 const icons = [Plane, Route, Ship, CarFront];
+const times = Array.from({ length: 96 }, (_, index) => `${String(Math.floor(index / 4)).padStart(2, "0")}:${String((index % 4) * 15).padStart(2, "0")}`);
 const help = {
   hr: ["Niste sigurni koji transfer odabrati?", "Pošaljite rutu koja vam odgovara. Prije potvrde provjerit ćemo vrijeme, granice i potrebnu veličinu vozila."],
   en: ["Not sure which transfer to choose?", "Send the route that suits you best. We will check timing, borders and vehicle size before confirmation."],
@@ -37,6 +38,14 @@ const help = {
         </div>
         <div class="form-field"><label for={`pickup-${lang}`}>{t.pickup}</label><div class="input-wrap"><MapPin size={16} /><input id={`pickup-${lang}`} name="pickup" required placeholder="Dubrovnik Airport" /></div></div>
         <div class="form-field"><label for={`destination-${lang}`}>{t.destination}</label><div class="input-wrap"><MapPin size={16} /><input id={`destination-${lang}`} name="destination" required placeholder="Hotel / city / marina" /></div></div>
+        <div class="form-field full trip-type-field">
+          <label>{t.tripType}</label>
+          <input type="hidden" name="tripType" value="one-way" data-trip-type-input />
+          <div class="trip-type-toggle" role="group" aria-label={t.tripType}>
+            <button type="button" class="active" data-trip-option="one-way" aria-pressed="true"><CarFront size={16} />{t.oneWay}</button>
+            <button type="button" data-trip-option="return" aria-pressed="false"><ArrowLeftRight size={16} />{t.returnTrip}</button>
+          </div>
+        </div>
         <div class="form-field"><label for={`name-${lang}`}>{t.name}</label><input id={`name-${lang}`} name="name" autocomplete="name" required /></div>
         <div class="form-field"><label for={`email-${lang}`}>{t.email}</label><input id={`email-${lang}`} name="email" type="email" autocomplete="email" required /></div>
         <div class="form-field"><label for={`phone-${lang}`}>{t.phone}</label><input id={`phone-${lang}`} name="phone" type="tel" autocomplete="tel" required placeholder="+385 ..." /></div>
@@ -45,15 +54,43 @@ const help = {
           <button type="button" class="select-trigger" data-select-trigger aria-expanded="false"><span data-select-label>1</span><Users size={16} /><ChevronDown size={16} /></button>
           <div class="select-menu compact-menu" data-select-menu hidden>{[1,2,3,4,5,6,7,8].map((number) => <button type="button" data-select-value={number} data-select-text={`${number}${number === 8 ? "+" : ""}`}>{number}{number === 8 ? "+" : ""}</button>)}</div>
         </div>
-        <div class="form-field full">
+        <div class="form-field full schedule-field" data-date-picker="outbound">
           <label>{t.date}</label>
-          <div class="calendar-box">
-            <div class="calendar-header"><button type="button" data-cal-prev aria-label="Previous month"><ChevronLeft size={18} /></button><strong data-cal-title></strong><button type="button" data-cal-next aria-label="Next month"><ChevronRight size={18} /></button></div>
-            <div class="calendar-weekdays" data-cal-weekdays></div>
-            <div class="calendar-days" data-cal-days></div>
+          <div class="schedule-grid">
+            <div>
+              <div class="calendar-box">
+                <div class="calendar-header"><button type="button" data-cal-prev aria-label="Previous month"><ChevronLeft size={18} /></button><strong data-cal-title></strong><button type="button" data-cal-next aria-label="Next month"><ChevronRight size={18} /></button></div>
+                <div class="calendar-weekdays" data-cal-weekdays></div>
+                <div class="calendar-days" data-cal-days></div>
+              </div>
+              <input type="hidden" name="date" data-date-input />
+              <p class="date-choice" data-date-choice></p>
+            </div>
+            <div class="form-field custom-select time-select">
+              <label>{t.time}</label><input type="hidden" name="time" data-time-input />
+              <button type="button" class="select-trigger time-trigger" data-select-trigger aria-expanded="false"><Clock3 size={16} /><span data-select-label>{t.selectTime}</span><ChevronDown size={16} /></button>
+              <div class="select-menu time-menu" data-select-menu hidden>{times.map((time) => <button type="button" data-select-value={time} data-select-text={time}>{time}</button>)}</div>
+            </div>
           </div>
-          <input type="hidden" name="date" required data-date-input />
-          <p class="date-choice" data-date-choice></p>
+        </div>
+        <div class="form-field full schedule-field return-schedule" data-return-fields data-date-picker="return" hidden>
+          <label>{t.returnDate}</label>
+          <div class="schedule-grid">
+            <div>
+              <div class="calendar-box">
+                <div class="calendar-header"><button type="button" data-cal-prev aria-label="Previous month"><ChevronLeft size={18} /></button><strong data-cal-title></strong><button type="button" data-cal-next aria-label="Next month"><ChevronRight size={18} /></button></div>
+                <div class="calendar-weekdays" data-cal-weekdays></div>
+                <div class="calendar-days" data-cal-days></div>
+              </div>
+              <input type="hidden" name="returnDate" data-date-input />
+              <p class="date-choice" data-date-choice></p>
+            </div>
+            <div class="form-field custom-select time-select">
+              <label>{t.returnTime}</label><input type="hidden" name="returnTime" data-return-time-input />
+              <button type="button" class="select-trigger time-trigger" data-select-trigger aria-expanded="false"><Clock3 size={16} /><span data-select-label>{t.selectTime}</span><ChevronDown size={16} /></button>
+              <div class="select-menu time-menu" data-select-menu hidden>{times.map((time) => <button type="button" data-select-value={time} data-select-text={time}>{time}</button>)}</div>
+            </div>
+          </div>
         </div>
         <div class="form-field"><label for={`flight-${lang}`}>{t.flight}</label><div class="input-wrap"><Plane size={16} /><input id={`flight-${lang}`} name="flight" /></div></div>
         <div class="form-field"><label for={`message-${lang}`}>{t.message}</label><input id={`message-${lang}`} name="message" /></div>
@@ -93,43 +130,114 @@ const help = {
         const value = option.getAttribute("data-select-value") || "";
         const text = option.getAttribute("data-select-text") || "";
         if (select.hasAttribute("data-service-select")) setService(value, text);
-        else { if (input instanceof HTMLInputElement) input.value = value; if (label) label.textContent = text; if (menu) menu.hidden = true; }
+        else { if (input instanceof HTMLInputElement) input.value = value; if (label) label.textContent = text; if (menu) menu.hidden = true; trigger?.classList.remove("invalid"); }
         trigger?.setAttribute("aria-expanded", "false");
       }));
     });
 
     const locale = booking.getAttribute("data-lang") || "en";
-    const title = booking.querySelector("[data-cal-title]");
-    const weekdays = booking.querySelector("[data-cal-weekdays]");
-    const days = booking.querySelector("[data-cal-days]");
-    const dateInput = booking.querySelector("[data-date-input]");
-    const dateChoice = booking.querySelector("[data-date-choice]");
     const today = new Date(); today.setHours(0, 0, 0, 0);
-    let currentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-    let selected = "";
     const monday = new Date(2024, 0, 1);
-    if (weekdays) weekdays.innerHTML = Array.from({ length: 7 }, (_, index) => { const date = new Date(monday); date.setDate(monday.getDate() + index); return `<span>${new Intl.DateTimeFormat(locale, { weekday: "short" }).format(date).slice(0, 2)}</span>`; }).join("");
-    const render = () => {
-      if (!title || !days) return;
-      title.textContent = new Intl.DateTimeFormat(locale, { month: "long", year: "numeric" }).format(currentMonth);
-      const offset = (currentMonth.getDay() + 6) % 7;
-      const count = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
-      days.innerHTML = `${'<span></span>'.repeat(offset)}${Array.from({ length: count }, (_, index) => {
-        const n = index + 1; const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), n);
-        const iso = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(n).padStart(2, "0")}`;
-        return `<button type="button" data-day="${iso}" ${date < today ? "disabled" : ""} class="${selected === iso ? "selected" : ""}">${n}</button>`;
-      }).join("")}`;
-      days.querySelectorAll("[data-day]").forEach((button) => button.addEventListener("click", () => {
-        selected = button.getAttribute("data-day") || "";
-        if (dateInput instanceof HTMLInputElement) dateInput.value = selected;
-        booking.querySelector(".calendar-box")?.classList.remove("invalid");
-        if (dateChoice && selected) dateChoice.textContent = new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", year: "numeric" }).format(new Date(`${selected}T12:00:00`));
-        render();
-      }));
+    let outboundSelected = "";
+    let returnPicker;
+
+    const setupDatePicker = (picker, minimumDate, onSelect) => {
+      const title = picker.querySelector("[data-cal-title]");
+      const weekdays = picker.querySelector("[data-cal-weekdays]");
+      const days = picker.querySelector("[data-cal-days]");
+      const input = picker.querySelector("[data-date-input]");
+      const choice = picker.querySelector("[data-date-choice]");
+      let currentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+      let selected = "";
+      if (weekdays) weekdays.innerHTML = Array.from({ length: 7 }, (_, index) => { const date = new Date(monday); date.setDate(monday.getDate() + index); return `<span>${new Intl.DateTimeFormat(locale, { weekday: "short" }).format(date).slice(0, 2)}</span>`; }).join("");
+      const render = () => {
+        if (!title || !days) return;
+        const minimum = minimumDate();
+        title.textContent = new Intl.DateTimeFormat(locale, { month: "long", year: "numeric" }).format(currentMonth);
+        const offset = (currentMonth.getDay() + 6) % 7;
+        const count = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
+        days.innerHTML = `${'<span></span>'.repeat(offset)}${Array.from({ length: count }, (_, index) => {
+          const n = index + 1; const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), n);
+          const iso = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(n).padStart(2, "0")}`;
+          return `<button type="button" data-day="${iso}" ${date < minimum ? "disabled" : ""} class="${selected === iso ? "selected" : ""}">${n}</button>`;
+        }).join("")}`;
+        days.querySelectorAll("[data-day]").forEach((button) => button.addEventListener("click", () => {
+          selected = button.getAttribute("data-day") || "";
+          if (input instanceof HTMLInputElement) input.value = selected;
+          picker.querySelector(".calendar-box")?.classList.remove("invalid");
+          if (choice && selected) choice.textContent = new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", year: "numeric" }).format(new Date(`${selected}T12:00:00`));
+          render();
+          onSelect?.(selected);
+        }));
+      };
+      picker.querySelector("[data-cal-prev]")?.addEventListener("click", () => { const prev = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1); const minimum = minimumDate(); if (prev >= new Date(minimum.getFullYear(), minimum.getMonth(), 1)) currentMonth = prev; render(); });
+      picker.querySelector("[data-cal-next]")?.addEventListener("click", () => { currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1); render(); });
+      render();
+      return {
+        input,
+        render,
+        clear: () => { selected = ""; if (input instanceof HTMLInputElement) input.value = ""; if (choice) choice.textContent = ""; render(); },
+        set: (value) => {
+          if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return;
+          selected = value;
+          const parsed = new Date(`${value}T12:00:00`);
+          currentMonth = new Date(parsed.getFullYear(), parsed.getMonth(), 1);
+          if (input instanceof HTMLInputElement) input.value = value;
+          if (choice) choice.textContent = new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", year: "numeric" }).format(parsed);
+          render();
+          onSelect?.(value);
+        }
+      };
     };
-    booking.querySelector("[data-cal-prev]")?.addEventListener("click", () => { const prev = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1); if (prev >= new Date(today.getFullYear(), today.getMonth(), 1)) currentMonth = prev; render(); });
-    booking.querySelector("[data-cal-next]")?.addEventListener("click", () => { currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1); render(); });
-    render();
+
+    const outboundPickerElement = booking.querySelector('[data-date-picker="outbound"]');
+    const returnPickerElement = booking.querySelector('[data-date-picker="return"]');
+    const datePicker = outboundPickerElement ? setupDatePicker(outboundPickerElement, () => today, (value) => {
+      outboundSelected = value;
+      if (returnPicker?.input instanceof HTMLInputElement && returnPicker.input.value && returnPicker.input.value < value) returnPicker.clear();
+      returnPicker?.render();
+    }) : null;
+    if (returnPickerElement) returnPicker = setupDatePicker(returnPickerElement, () => outboundSelected ? new Date(`${outboundSelected}T00:00:00`) : today);
+
+    const tripInput = booking.querySelector("[data-trip-type-input]");
+    const returnFields = booking.querySelector("[data-return-fields]");
+    const setTripType = (value) => {
+      if (tripInput instanceof HTMLInputElement) tripInput.value = value;
+      if (returnFields instanceof HTMLElement) returnFields.hidden = value !== "return";
+      booking.querySelectorAll("[data-trip-option]").forEach((button) => {
+        const active = button.getAttribute("data-trip-option") === value;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+      if (value !== "return") {
+        returnPicker?.clear();
+        const returnTime = booking.querySelector("[data-return-time-input]");
+        if (returnTime instanceof HTMLInputElement) returnTime.value = "";
+      } else returnPicker?.render();
+    };
+    booking.querySelectorAll("[data-trip-option]").forEach((button) => button.addEventListener("click", () => setTripType(button.getAttribute("data-trip-option") || "one-way")));
+
+    const params = new URLSearchParams(window.location.search);
+    ["pickup", "destination"].forEach((name) => {
+      const field = booking.querySelector(`[name="${name}"]`);
+      const value = params.get(name);
+      if (field instanceof HTMLInputElement && value) field.value = value;
+    });
+    const tripParam = params.get("tripType");
+    if (tripParam === "return") setTripType("return");
+    const departureParam = params.get("date");
+    if (departureParam) datePicker?.set(departureParam);
+    const returnParam = params.get("returnDate");
+    if (tripParam === "return" && returnParam) returnPicker?.set(returnParam);
+    ["time", "returnTime", "passengers"].forEach((name) => {
+      const input = booking.querySelector(`[name="${name}"]`);
+      const value = params.get(name);
+      if (input instanceof HTMLInputElement && value) {
+        input.value = value;
+        const label = input.parentElement?.querySelector("[data-select-label]");
+        if (label) label.textContent = value === "8" ? "8+" : value;
+      }
+    });
     const form = booking.querySelector(".booking-form");
     const success = booking.querySelector("[data-booking-success]");
     form?.addEventListener("submit", async (event) => {
@@ -140,8 +248,28 @@ const help = {
         booking.querySelector("[data-service-select] [data-select-trigger]")?.focus();
         return;
       }
-      if (!(dateInput instanceof HTMLInputElement) || !dateInput.value) {
-        booking.querySelector(".calendar-box")?.classList.add("invalid");
+      if (!(datePicker?.input instanceof HTMLInputElement) || !datePicker.input.value) {
+        outboundPickerElement?.querySelector(".calendar-box")?.classList.add("invalid");
+        return;
+      }
+      const timeInput = booking.querySelector("[data-time-input]");
+      if (!(timeInput instanceof HTMLInputElement) || !timeInput.value) {
+        outboundPickerElement?.querySelector(".time-trigger")?.classList.add("invalid");
+        return;
+      }
+      if (tripInput instanceof HTMLInputElement && tripInput.value === "return") {
+        if (!(returnPicker?.input instanceof HTMLInputElement) || !returnPicker.input.value) {
+          returnPickerElement?.querySelector(".calendar-box")?.classList.add("invalid");
+          return;
+        }
+        const returnTimeInput = booking.querySelector("[data-return-time-input]");
+        if (!(returnTimeInput instanceof HTMLInputElement) || !returnTimeInput.value) {
+          returnPickerElement?.querySelector(".time-trigger")?.classList.add("invalid");
+          return;
+        }
+      }
+      if (returnPicker?.input instanceof HTMLInputElement && datePicker.input.value && returnPicker.input.value && returnPicker.input.value < datePicker.input.value) {
+        returnPickerElement?.querySelector(".calendar-box")?.classList.add("invalid");
         return;
       }
       const payload = Object.fromEntries(new FormData(form).entries());
@@ -151,6 +279,10 @@ const help = {
     });
     booking.querySelector("[data-booking-again]")?.addEventListener("click", () => {
       if (form instanceof HTMLFormElement) form.reset();
+      datePicker?.clear();
+      returnPicker?.clear();
+      outboundSelected = "";
+      setTripType("one-way");
       if (form) form.hidden = false;
       if (success) success.hidden = true;
     });

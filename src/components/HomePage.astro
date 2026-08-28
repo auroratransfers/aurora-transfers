@@ -1,10 +1,11 @@
 ---
-import { ArrowRight, CalendarCheck, CarFront, Check, Clock3, Compass, MapPin, Plane, Route, ShieldCheck, Ship, Sparkles } from "@lucide/astro";
+import { ArrowLeftRight, ArrowRight, CalendarCheck, CarFront, Check, ChevronDown, ChevronLeft, ChevronRight, Clock3, Compass, MapPin, Plane, Route, ShieldCheck, Ship, Sparkles, Users } from "@lucide/astro";
 import { getContent, type Lang } from "../data/site";
 interface Props { lang: Lang; }
 const { lang } = Astro.props;
 const t = getContent(lang);
 const pillarIcons = [Plane, Route, Ship, Compass];
+const times = Array.from({ length: 96 }, (_, index) => `${String(Math.floor(index / 4)).padStart(2, "0")}:${String((index % 4) * 15).padStart(2, "0")}`);
 ---
 <section class="hero-grid grid-dots">
   <div class="hero-copy">
@@ -17,24 +18,130 @@ const pillarIcons = [Plane, Route, Ship, Compass];
     </div>
     <div class="hero-trust"><span><ShieldCheck size={17} /> Licensed drivers</span><span><Clock3 size={17} /> Available 24/7</span></div>
   </div>
-  <div class="hero-visual">
-    <div class="image-card">
-      <img src="/media/dubrovnik-harbor.jpg" alt="Dubrovnik old harbour and the Adriatic Sea" fetchpriority="high" />
-      <div class="image-caption"><div><strong>Feniks Dubrovnik Transfers</strong><span>Private rides across the Adriatic region</span></div><span class="location-pill"><MapPin size={14} /> Dubrovnik</span></div>
-      <div class="stats-grid">
-        <div><strong>10k+</strong><span>{t.stats[0]}</span></div>
-        <div><strong>50+</strong><span>{t.stats[1]}</span></div>
-        <div><strong>10+</strong><span>{t.stats[2]}</span></div>
+  <div class="hero-visual hero-booking-card" data-home-booking data-lang={lang}>
+    <div class="hero-booking-heading"><span><CalendarCheck size={18} /></span><div><strong>{t.booking.title}</strong><small>{t.booking.intro}</small></div></div>
+    <form class="hero-booking-form" action={`/${lang}/book/`} method="get">
+      <label>{t.booking.pickup}<div class="input-wrap"><MapPin size={16} /><input name="pickup" required placeholder="Dubrovnik Airport" /></div></label>
+      <label>{t.booking.destination}<div class="input-wrap"><MapPin size={16} /><input name="destination" required placeholder="Hotel / city / marina" /></div></label>
+      <div class="hero-trip full"><span>{t.booking.tripType}</span><input type="hidden" name="tripType" value="one-way" data-quick-trip-input /><div class="trip-type-toggle"><button type="button" class="active" data-quick-trip="one-way"><CarFront size={15} />{t.booking.oneWay}</button><button type="button" data-quick-trip="return"><ArrowLeftRight size={15} />{t.booking.returnTrip}</button></div></div>
+      <div class="quick-control" data-quick-date="date"><span>{t.booking.date}</span><input type="hidden" name="date" /><button type="button" class="quick-trigger" data-quick-trigger><CalendarCheck size={16} /><b data-quick-label>{t.booking.date}</b><ChevronDown size={15} /></button><div class="quick-calendar" data-quick-panel hidden><div class="calendar-header"><button type="button" data-cal-prev><ChevronLeft size={17} /></button><strong data-cal-title></strong><button type="button" data-cal-next><ChevronRight size={17} /></button></div><div class="calendar-weekdays" data-cal-weekdays></div><div class="calendar-days" data-cal-days></div></div></div>
+      <div class="quick-control" data-quick-select><span>{t.booking.time}</span><input type="hidden" name="time" /><button type="button" class="quick-trigger" data-quick-trigger><Clock3 size={16} /><b data-quick-label>{t.booking.selectTime}</b><ChevronDown size={15} /></button><div class="quick-menu" data-quick-panel hidden>{times.map((time) => <button type="button" data-value={time}>{time}</button>)}</div></div>
+      <div class="quick-return full" data-quick-return hidden>
+        <div class="quick-control" data-quick-date="returnDate"><span>{t.booking.returnDate}</span><input type="hidden" name="returnDate" /><button type="button" class="quick-trigger" data-quick-trigger><CalendarCheck size={16} /><b data-quick-label>{t.booking.returnDate}</b><ChevronDown size={15} /></button><div class="quick-calendar" data-quick-panel hidden><div class="calendar-header"><button type="button" data-cal-prev><ChevronLeft size={17} /></button><strong data-cal-title></strong><button type="button" data-cal-next><ChevronRight size={17} /></button></div><div class="calendar-weekdays" data-cal-weekdays></div><div class="calendar-days" data-cal-days></div></div></div>
+        <div class="quick-control" data-quick-select><span>{t.booking.returnTime}</span><input type="hidden" name="returnTime" /><button type="button" class="quick-trigger" data-quick-trigger><Clock3 size={16} /><b data-quick-label>{t.booking.selectTime}</b><ChevronDown size={15} /></button><div class="quick-menu" data-quick-panel hidden>{times.map((time) => <button type="button" data-value={time}>{time}</button>)}</div></div>
       </div>
-    </div>
+      <div class="quick-control full" data-quick-select><span>{t.booking.passengers}</span><input type="hidden" name="passengers" value="1" /><button type="button" class="quick-trigger" data-quick-trigger><Users size={16} /><b data-quick-label>1</b><ChevronDown size={15} /></button><div class="quick-menu passenger-menu" data-quick-panel hidden>{[1,2,3,4,5,6,7,8].map((number) => <button type="button" data-value={number}>{number}{number === 8 ? "+" : ""}</button>)}</div></div>
+      <button class="pill-button primary hero-booking-submit full" type="submit">{t.hero.primary}<ArrowRight size={16} /></button>
+    </form>
   </div>
 </section>
+
+<script>
+  document.querySelectorAll("[data-home-booking]").forEach((booking) => {
+    const locale = booking.getAttribute("data-lang") || "en";
+    const panels = booking.querySelectorAll("[data-quick-panel]");
+    const closePanels = (except) => panels.forEach((panel) => { if (panel !== except) panel.hidden = true; });
+
+    booking.querySelectorAll("[data-quick-trigger]").forEach((trigger) => trigger.addEventListener("click", () => {
+      const panel = trigger.parentElement?.querySelector("[data-quick-panel]");
+      const shouldOpen = panel?.hasAttribute("hidden") ?? false;
+      closePanels(panel);
+      if (panel) panel.hidden = !shouldOpen;
+    }));
+
+    booking.querySelectorAll("[data-quick-select]").forEach((select) => {
+      const input = select.querySelector('input[type="hidden"]');
+      const label = select.querySelector("[data-quick-label]");
+      const panel = select.querySelector("[data-quick-panel]");
+      select.querySelectorAll("[data-value]").forEach((option) => option.addEventListener("click", () => {
+        const value = option.getAttribute("data-value") || "";
+        if (input instanceof HTMLInputElement) input.value = value;
+        if (label) label.textContent = option.textContent || value;
+        if (panel) panel.hidden = true;
+        select.querySelector("[data-quick-trigger]")?.classList.remove("invalid");
+      }));
+    });
+
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const monday = new Date(2024, 0, 1);
+    let outbound = "";
+    let returnCalendar;
+    const makeCalendar = (picker, minimumDate, onSelect) => {
+      const input = picker.querySelector('input[type="hidden"]');
+      const label = picker.querySelector("[data-quick-label]");
+      const panel = picker.querySelector("[data-quick-panel]");
+      const title = picker.querySelector("[data-cal-title]");
+      const weekdays = picker.querySelector("[data-cal-weekdays]");
+      const days = picker.querySelector("[data-cal-days]");
+      let month = new Date(today.getFullYear(), today.getMonth(), 1);
+      let selected = "";
+      if (weekdays) weekdays.innerHTML = Array.from({ length: 7 }, (_, index) => { const date = new Date(monday); date.setDate(monday.getDate() + index); return `<span>${new Intl.DateTimeFormat(locale, { weekday: "short" }).format(date).slice(0, 2)}</span>`; }).join("");
+      const render = () => {
+        if (!title || !days) return;
+        const minimum = minimumDate();
+        title.textContent = new Intl.DateTimeFormat(locale, { month: "long", year: "numeric" }).format(month);
+        const offset = (month.getDay() + 6) % 7;
+        const count = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
+        days.innerHTML = `${'<span></span>'.repeat(offset)}${Array.from({ length: count }, (_, index) => {
+          const day = index + 1; const date = new Date(month.getFullYear(), month.getMonth(), day);
+          const iso = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+          return `<button type="button" data-day="${iso}" ${date < minimum ? "disabled" : ""} class="${selected === iso ? "selected" : ""}">${day}</button>`;
+        }).join("")}`;
+        days.querySelectorAll("[data-day]").forEach((button) => button.addEventListener("click", () => {
+          selected = button.getAttribute("data-day") || "";
+          if (input instanceof HTMLInputElement) input.value = selected;
+          if (label) label.textContent = new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", year: "numeric" }).format(new Date(`${selected}T12:00:00`));
+          picker.querySelector("[data-quick-trigger]")?.classList.remove("invalid");
+          if (panel) panel.hidden = true;
+          render(); onSelect?.(selected);
+        }));
+      };
+      picker.querySelector("[data-cal-prev]")?.addEventListener("click", () => { const previous = new Date(month.getFullYear(), month.getMonth() - 1, 1); const minimum = minimumDate(); if (previous >= new Date(minimum.getFullYear(), minimum.getMonth(), 1)) month = previous; render(); });
+      picker.querySelector("[data-cal-next]")?.addEventListener("click", () => { month = new Date(month.getFullYear(), month.getMonth() + 1, 1); render(); });
+      render();
+      return { input, render, clear: () => { selected = ""; if (input instanceof HTMLInputElement) input.value = ""; render(); } };
+    };
+    const departureElement = booking.querySelector('[data-quick-date="date"]');
+    const returnElement = booking.querySelector('[data-quick-date="returnDate"]');
+    const departureCalendar = departureElement ? makeCalendar(departureElement, () => today, (value) => { outbound = value; if (returnCalendar?.input instanceof HTMLInputElement && returnCalendar.input.value < value) returnCalendar.clear(); returnCalendar?.render(); }) : null;
+    if (returnElement) returnCalendar = makeCalendar(returnElement, () => outbound ? new Date(`${outbound}T00:00:00`) : today);
+
+    const tripInput = booking.querySelector("[data-quick-trip-input]");
+    const returnFields = booking.querySelector("[data-quick-return]");
+    booking.querySelectorAll("[data-quick-trip]").forEach((button) => button.addEventListener("click", () => {
+      const value = button.getAttribute("data-quick-trip") || "one-way";
+      if (tripInput instanceof HTMLInputElement) tripInput.value = value;
+      booking.querySelectorAll("[data-quick-trip]").forEach((item) => item.classList.toggle("active", item === button));
+      if (returnFields instanceof HTMLElement) returnFields.hidden = value !== "return";
+      if (value !== "return") returnCalendar?.clear(); else returnCalendar?.render();
+    }));
+
+    booking.querySelector("form")?.addEventListener("submit", (event) => {
+      const isReturn = tripInput instanceof HTMLInputElement && tripInput.value === "return";
+      const required = [departureCalendar?.input, booking.querySelector('[name="time"]'), ...(isReturn ? [returnCalendar?.input, booking.querySelector('[name="returnTime"]')] : [])];
+      let valid = true;
+      required.forEach((input) => { if (!(input instanceof HTMLInputElement) || !input.value) { input?.parentElement?.querySelector("[data-quick-trigger]")?.classList.add("invalid"); valid = false; } });
+      if (!valid) event.preventDefault();
+    });
+    document.addEventListener("click", (event) => { if (event.target instanceof Node && !booking.contains(event.target)) closePanels(); });
+  });
+</script>
 
 <section class="intro-section section-rule">
   <span class="section-marker kiwi-marker">{t.welcome.tag}</span>
   <h2>{t.welcome.title}</h2>
   <div class="intro-copy"><p>{t.welcome.p1}</p><p>{t.welcome.p2}</p></div>
   <a class="pill-button primary" href={`/${lang}/about/`}>{t.nav.about}<ArrowRight size={16} /></a>
+</section>
+
+<section class="home-image-section section-rule">
+  <div class="image-card">
+    <img src="/media/dubrovnik-harbor.jpg" alt="Dubrovnik old harbour and the Adriatic Sea" loading="lazy" />
+    <div class="image-caption"><div><strong>Feniks Dubrovnik Transfers</strong><span>Private rides across the Adriatic region</span></div><span class="location-pill"><MapPin size={14} /> Dubrovnik</span></div>
+    <div class="stats-grid">
+      <div><strong>10k+</strong><span>{t.stats[0]}</span></div><div><strong>50+</strong><span>{t.stats[1]}</span></div><div><strong>10+</strong><span>{t.stats[2]}</span></div>
+    </div>
+  </div>
 </section>
 
 <section class="section-block section-rule">
