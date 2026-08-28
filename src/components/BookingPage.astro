@@ -181,8 +181,22 @@ const help = {
           onSelect?.(selected);
         }));
       };
-      picker.querySelector("[data-cal-prev]")?.addEventListener("click", () => { const prev = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1); const minimum = minimumDate(); if (prev >= new Date(minimum.getFullYear(), minimum.getMonth(), 1)) currentMonth = prev; render(); });
-      picker.querySelector("[data-cal-next]")?.addEventListener("click", () => { currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1); render(); });
+      const goPrevious = () => { const prev = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1); const minimum = minimumDate(); if (prev >= new Date(minimum.getFullYear(), minimum.getMonth(), 1)) currentMonth = prev; render(); };
+      const goNext = () => { currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1); render(); };
+      picker.querySelector("[data-cal-prev]")?.addEventListener("click", goPrevious);
+      picker.querySelector("[data-cal-next]")?.addEventListener("click", goNext);
+      const calendar = picker.querySelector(".calendar-box");
+      let swipeStart;
+      calendar?.addEventListener("pointerdown", (event) => { swipeStart = { x: event.clientX, y: event.clientY }; });
+      calendar?.addEventListener("pointerup", (event) => {
+        if (!swipeStart) return;
+        const deltaX = event.clientX - swipeStart.x;
+        const deltaY = event.clientY - swipeStart.y;
+        swipeStart = undefined;
+        if (Math.abs(deltaX) < 45 || Math.abs(deltaX) <= Math.abs(deltaY) * 1.25) return;
+        if (deltaX < 0) goNext(); else goPrevious();
+      });
+      calendar?.addEventListener("pointercancel", () => { swipeStart = undefined; });
       render();
       return {
         input,

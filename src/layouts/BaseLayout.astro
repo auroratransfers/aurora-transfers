@@ -52,12 +52,18 @@ const localized = (target: Lang) => Astro.url.pathname.replace(/^\/(hr|en|de|fr)
     <script>
       const menuButton = document.querySelector("[data-menu-toggle]");
       const mobileMenu = document.querySelector("[data-mobile-menu]");
+      const closeMobileMenu = () => {
+        mobileMenu?.setAttribute("hidden", "");
+        menuButton?.classList.remove("open");
+        menuButton?.setAttribute("aria-expanded", "false");
+      };
       menuButton?.addEventListener("click", () => {
         const open = mobileMenu?.hasAttribute("hidden") ?? true;
         mobileMenu?.toggleAttribute("hidden", !open);
         menuButton.classList.toggle("open", open);
         menuButton.setAttribute("aria-expanded", String(open));
       });
+      mobileMenu?.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeMobileMenu));
       const language = document.querySelector("[data-language]");
       const languageButton = language?.querySelector("button");
       const languageMenu = language?.querySelector(".language-menu");
@@ -68,6 +74,7 @@ const localized = (target: Lang) => Astro.url.pathname.replace(/^\/(hr|en|de|fr)
         languageButton.setAttribute("aria-expanded", String(open));
       });
       document.addEventListener("click", (event) => {
+        if (event.target instanceof Node && !mobileMenu?.contains(event.target) && !menuButton?.contains(event.target)) closeMobileMenu();
         if (event.target instanceof Node && !language?.contains(event.target)) {
           languageMenu?.setAttribute("hidden", "");
           languageButton?.setAttribute("aria-expanded", "false");
