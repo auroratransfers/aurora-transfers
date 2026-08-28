@@ -1,5 +1,5 @@
 ---
-import { CalendarCheck, Car, Globe2, Menu, Phone, X } from "@lucide/astro";
+import { Car, Menu, Phone, X } from "@lucide/astro";
 import { getContent, languages, type Lang } from "../data/site";
 
 interface Props { lang: Lang; active?: string; }
@@ -28,13 +28,13 @@ const links = [
     </div>
     <div class="nav-tools">
       <div class="language-control" data-language>
-        <button class="round-tool language-trigger" type="button" aria-label="Change language" aria-expanded="false"><Globe2 size={15} /><span>{lang.toUpperCase()}</span></button>
+        <button class="round-tool language-trigger" type="button" aria-label="Change language" aria-expanded="false"><span>{lang.toUpperCase()}</span></button>
         <div class="language-menu" hidden>
           {languages.map((target) => <a class:list={[{ active: target === lang }]} href={langPath(target)}>{target.toUpperCase()}</a>)}
         </div>
       </div>
       <a class="round-tool phone-tool" href="tel:+385000000000" aria-label="Call Feniks Transfers"><Phone size={16} /></a>
-      <a class:list={["nav-book-button", { active: active === "book" }]} href={`/${lang}/book/`} aria-label={bookingLabel}><CalendarCheck size={16} /><span>{bookingLabel}</span></a>
+      <a class:list={["nav-book-button", { active: active === "book" }]} href={`/${lang}/book/`} aria-label={bookingLabel}><span class="book-label-mobile">Book</span><span class="book-label-desktop">{bookingLabel}</span></a>
       <button class="menu-toggle" type="button" data-menu-toggle aria-label="Open menu" aria-expanded="false"><Menu class="menu-open-icon" size={21} /><X class="menu-close-icon" size={21} /></button>
     </div>
   </nav>
