@@ -1,20 +1,20 @@
-# Feniks Dubrovnik Transfers
+# Aurora Dubrovnik Transfers
 
 > Private transfer service based in Dubrovnik, Croatia, providing airport, hotel, marina, intercity and private tour transportation.
 
-Primary site: https://fenikstransfers.com/
+Primary site: https://auroratransfers.com/
 
 Languages: Croatian, English, German and French.
 
 ## Main sections
 
-- Home: https://fenikstransfers.com/hr/
-- Services: https://fenikstransfers.com/hr/services/
-- Destinations: https://fenikstransfers.com/hr/destinations/
-- Fleet: https://fenikstransfers.com/hr/fleet/
-- About: https://fenikstransfers.com/hr/about/
-- Booking: https://fenikstransfers.com/hr/book/
-- Contact: https://fenikstransfers.com/hr/contact/
+- Home: https://auroratransfers.com/hr/
+- Services: https://auroratransfers.com/hr/services/
+- Destinations: https://auroratransfers.com/hr/destinations/
+- Fleet: https://auroratransfers.com/hr/fleet/
+- About: https://auroratransfers.com/hr/about/
+- Booking: https://auroratransfers.com/hr/book/
+- Contact: https://auroratransfers.com/hr/contact/
 
 ## Core services
 
@@ -23,5 +23,5 @@ Languages: Croatian, English, German and French.
 - Private rides to Split, Mostar and Kotor
 - Tailor-made private day tours
 
-Full context: https://fenikstransfers.com/llms-full.txt
-Structured context: https://fenikstransfers.com/.well-known/agent-context.json
+Full context: https://auroratransfers.com/llms-full.txt
+Structured context: https://auroratransfers.com/.well-known/agent-context.json

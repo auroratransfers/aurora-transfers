@@ -6,4 +6,4 @@ export function getStaticPaths() { return languages.map((lang) => ({ params: { l
 const lang = Astro.params.lang as Lang;
 const t = getContent(lang);
 ---
-<BaseLayout lang={lang} active="home" title={`Feniks Dubrovnik Transfers | ${t.hero.title}`} description={t.hero.text}><HomePage lang={lang} /></BaseLayout>
+<BaseLayout lang={lang} active="home" title={`Aurora Dubrovnik Transfers | ${t.hero.title}`} description={t.hero.text}><HomePage lang={lang} /></BaseLayout>

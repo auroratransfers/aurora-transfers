@@ -1,8 +1,8 @@
 {
-  "name": "Feniks Dubrovnik Transfers",
-  "url": "https://fenikstransfers.com",
+  "name": "Aurora Dubrovnik Transfers",
+  "url": "https://auroratransfers.com",
   "description": "Private airport, hotel, marina, intercity and tour transfers from Dubrovnik.",
   "languages": ["hr", "en", "de", "fr"],
-  "booking": "https://fenikstransfers.com/en/book/",
+  "booking": "https://auroratransfers.com/en/book/",
   "serviceArea": ["Dubrovnik", "Croatia", "Montenegro", "Bosnia and Herzegovina"]
 }

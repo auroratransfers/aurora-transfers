@@ -17,7 +17,7 @@ module.exports = async (req, res) => {
   }
   if (!process.env.RESEND_API_KEY || !process.env.BOOKING_TO_EMAIL) return res.status(200).json({ ok: true, configured: false });
   const rows = Object.entries(booking).map(([key, value]) => `<tr><td style="padding:7px 12px;color:#6f6875">${escapeHtml(key)}</td><td style="padding:7px 12px;font-weight:600">${escapeHtml(value)}</td></tr>`).join("");
-  const response = await fetch("https://api.resend.com/emails", { method: "POST", headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, "Content-Type": "application/json" }, body: JSON.stringify({ from: process.env.BOOKING_FROM_EMAIL || "Feniks Transfers <onboarding@resend.dev>", to: [process.env.BOOKING_TO_EMAIL], reply_to: booking.email, subject: `New Feniks transfer request: ${booking.pickup} - ${booking.destination}`, html: `<h2>New transfer request</h2><table>${rows}</table>` }) });
+  const response = await fetch("https://api.resend.com/emails", { method: "POST", headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, "Content-Type": "application/json" }, body: JSON.stringify({ from: process.env.BOOKING_FROM_EMAIL || "Aurora Transfers <onboarding@resend.dev>", to: [process.env.BOOKING_TO_EMAIL], reply_to: booking.email, subject: `New Aurora transfer request: ${booking.pickup} - ${booking.destination}`, html: `<h2>New transfer request</h2><table>${rows}</table>` }) });
   if (!response.ok) return res.status(502).json({ ok: false, error: "Email delivery failed" });
   return res.status(200).json({ ok: true, configured: true });
 };

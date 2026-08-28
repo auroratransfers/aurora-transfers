@@ -23,6 +23,7 @@ const times = Array.from({ length: 96 }, (_, index) => `${String(Math.floor(inde
     <div class="hero-booking-heading"><span><CalendarCheck size={18} /></span><div><strong>{t.booking.title}</strong><small>{t.booking.intro}</small></div></div>
     <form class="hero-booking-form" action="/api/book" method="post" autocomplete="off">
       <input type="hidden" name="lang" value={lang} />
+      <input type="hidden" name="service" value="private-transfer" />
       <label>{t.booking.pickup}<div class="input-wrap"><MapPin size={16} /><input name="pickup" required placeholder={ui.pickupPlaceholder} autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" /></div></label>
       <label>{t.booking.destination}<div class="input-wrap"><MapPin size={16} /><input name="destination" required placeholder={ui.destinationPlaceholder} autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" /></div></label>
       <div class="hero-trip full"><span>{t.booking.tripType}</span><input type="hidden" name="tripType" value="one-way" data-quick-trip-input /><div class="trip-type-toggle"><button type="button" class="active" data-quick-trip="one-way"><Car size={15} />{t.booking.oneWay}</button><button type="button" data-quick-trip="return"><ArrowLeftRight size={15} />{t.booking.returnTrip}</button></div></div>
@@ -184,7 +185,7 @@ const times = Array.from({ length: 96 }, (_, index) => `${String(Math.floor(inde
 <section class="intro-section intro-with-image section-rule">
   <div class="image-card">
     <img src="/media/dubrovnik-harbor.jpg" alt={ui.imageAltHarbor} loading="lazy" />
-    <div class="image-caption"><div><strong>Feniks Dubrovnik Transfers</strong><span>{ui.imageCaption}</span></div><span class="location-pill"><MapPin size={14} /> Dubrovnik</span></div>
+    <div class="image-caption"><div><strong>Aurora Dubrovnik Transfers</strong><span>{ui.imageCaption}</span></div><span class="location-pill"><MapPin size={14} /> Dubrovnik</span></div>
     <div class="stats-grid">
       <div><strong>10k+</strong><span>{t.stats[0]}</span></div><div><strong>50+</strong><span>{t.stats[1]}</span></div><div><strong>10+</strong><span>{t.stats[2]}</span></div>
     </div>
@@ -229,6 +230,6 @@ const times = Array.from({ length: 96 }, (_, index) => `${String(Math.floor(inde
 </section>
 
 <section class="final-cta purple-grid">
-  <div><span class="section-marker light-marker">Feniks Transfers</span><h2>{t.cta.title}</h2><p>{t.cta.text}</p></div>
+  <div><span class="section-marker light-marker">Aurora Transfers</span><h2>{t.cta.title}</h2><p>{t.cta.text}</p></div>
   <a class="pill-button kiwi" href={`/${lang}/book/`}>{t.cta.button}<ArrowRight size={17} /></a>
 </section>
