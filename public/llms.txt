@@ -2,19 +2,19 @@
 
 > Private transfer service based in Dubrovnik, Croatia, providing airport, hotel, marina, intercity and private tour transportation.
 
-Primary site: https://aurora.vercel.app/
+Primary site: https://aurora-transfers.vercel.app/
 
 Languages: Croatian, English, German and French.
 
 ## Main sections
 
-- Home: https://aurora.vercel.app/hr/
-- Services: https://aurora.vercel.app/hr/services/
-- Destinations: https://aurora.vercel.app/hr/destinations/
-- Fleet: https://aurora.vercel.app/hr/fleet/
-- About: https://aurora.vercel.app/hr/about/
-- Booking: https://aurora.vercel.app/hr/book/
-- Contact: https://aurora.vercel.app/hr/contact/
+- Home: https://aurora-transfers.vercel.app/hr/
+- Services: https://aurora-transfers.vercel.app/hr/services/
+- Destinations: https://aurora-transfers.vercel.app/hr/destinations/
+- Fleet: https://aurora-transfers.vercel.app/hr/fleet/
+- About: https://aurora-transfers.vercel.app/hr/about/
+- Booking: https://aurora-transfers.vercel.app/hr/book/
+- Contact: https://aurora-transfers.vercel.app/hr/contact/
 
 ## Core services
 
@@ -23,5 +23,5 @@ Languages: Croatian, English, German and French.
 - Private rides to Split, Mostar and Kotor
 - Tailor-made private day tours
 
-Full context: https://aurora.vercel.app/llms-full.txt
-Structured context: https://aurora.vercel.app/.well-known/agent-context.json
+Full context: https://aurora-transfers.vercel.app/llms-full.txt
+Structured context: https://aurora-transfers.vercel.app/.well-known/agent-context.json

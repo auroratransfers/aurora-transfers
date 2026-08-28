@@ -1,8 +1,8 @@
 {
   "name": "Aurora Dubrovnik Transfers",
-  "url": "https://aurora.vercel.app",
+  "url": "https://aurora-transfers.vercel.app",
   "description": "Private airport, hotel, marina, intercity and tour transfers from Dubrovnik.",
   "languages": ["hr", "en", "de", "fr"],
-  "booking": "https://aurora.vercel.app/en/book/",
+  "booking": "https://aurora-transfers.vercel.app/en/book/",
   "serviceArea": ["Dubrovnik", "Croatia", "Montenegro", "Bosnia and Herzegovina"]
 }
