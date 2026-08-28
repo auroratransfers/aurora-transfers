@@ -3,6 +3,7 @@ node_modules/
 dist/
 .astro/
 .vercel/
+.neon/
 .env
 .env.*
 !.env.example
