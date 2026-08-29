@@ -71,7 +71,7 @@ const bookingFeedback = {
                 <div class="calendar-days" data-cal-days></div>
               </div>
               <input type="hidden" name="date" data-date-input />
-              <p class="date-choice" data-date-choice></p>
+              <p class="date-choice" data-date-choice hidden><span data-date-choice-date></span><span class="date-choice-time" data-date-choice-time hidden></span></p>
             </div>
             <div class="form-field custom-select time-select">
               <label>{t.time}</label><input type="hidden" name="time" data-time-input />
@@ -90,7 +90,7 @@ const bookingFeedback = {
                 <div class="calendar-days" data-cal-days></div>
               </div>
               <input type="hidden" name="returnDate" data-date-input />
-              <p class="date-choice" data-date-choice></p>
+              <p class="date-choice" data-date-choice hidden><span data-date-choice-date></span><span class="date-choice-time" data-date-choice-time hidden></span></p>
             </div>
             <div class="form-field custom-select time-select">
               <label>{t.returnTime}</label><input type="hidden" name="returnTime" data-return-time-input />
@@ -114,6 +114,25 @@ const bookingFeedback = {
     const serviceInput = booking.querySelector("[data-service-input]");
     const serviceLabel = booking.querySelector("[data-service-select] [data-select-label]");
     const serviceMenu = booking.querySelector("[data-service-select] [data-select-menu]");
+    const locale = booking.getAttribute("data-lang") || "en";
+    const updateScheduleChoice = (picker) => {
+      const input = picker?.querySelector("[data-date-input]");
+      const choice = picker?.querySelector("[data-date-choice]");
+      const dateLabel = picker?.querySelector("[data-date-choice-date]");
+      const timeLabel = picker?.querySelector("[data-date-choice-time]");
+      const timeInput = picker?.querySelector("[data-time-input], [data-return-time-input]");
+      if (!(input instanceof HTMLInputElement) || !choice || !dateLabel || !timeLabel) return;
+      if (!input.value) {
+        choice.hidden = true;
+        timeLabel.hidden = true;
+        return;
+      }
+      dateLabel.textContent = new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", year: "numeric" }).format(new Date(`${input.value}T12:00:00`));
+      const time = timeInput instanceof HTMLInputElement ? timeInput.value : "";
+      timeLabel.textContent = time;
+      timeLabel.hidden = !time;
+      choice.hidden = false;
+    };
     const setService = (value, label) => {
       if (serviceInput instanceof HTMLInputElement) serviceInput.value = value;
       if (serviceLabel) serviceLabel.textContent = label;
@@ -138,7 +157,13 @@ const bookingFeedback = {
         const value = option.getAttribute("data-select-value") || "";
         const text = option.getAttribute("data-select-text") || "";
         if (select.hasAttribute("data-service-select")) setService(value, text);
-        else { if (input instanceof HTMLInputElement) input.value = value; if (label) label.textContent = text; if (menu) menu.hidden = true; trigger?.classList.remove("invalid"); }
+        else {
+          if (input instanceof HTMLInputElement) input.value = value;
+          if (label) label.textContent = text;
+          if (menu) menu.hidden = true;
+          trigger?.classList.remove("invalid");
+          updateScheduleChoice(select.closest("[data-date-picker]"));
+        }
         trigger?.setAttribute("aria-expanded", "false");
       }));
     });
@@ -155,7 +180,6 @@ const bookingFeedback = {
       stepper.querySelector("[data-passenger-plus]")?.addEventListener("click", () => update(Number(input instanceof HTMLInputElement ? input.value : 1) + 1));
     });
 
-    const locale = booking.getAttribute("data-lang") || "en";
     const today = new Date(); today.setHours(0, 0, 0, 0);
     const monday = new Date(2024, 0, 1);
     let outboundSelected = "";
@@ -166,7 +190,6 @@ const bookingFeedback = {
       const weekdays = picker.querySelector("[data-cal-weekdays]");
       const days = picker.querySelector("[data-cal-days]");
       const input = picker.querySelector("[data-date-input]");
-      const choice = picker.querySelector("[data-date-choice]");
       let currentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
       let selected = "";
       if (weekdays) weekdays.innerHTML = Array.from({ length: 7 }, (_, index) => { const date = new Date(monday); date.setDate(monday.getDate() + index); return `<span>${new Intl.DateTimeFormat(locale, { weekday: "short" }).format(date).slice(0, 2)}</span>`; }).join("");
@@ -185,7 +208,7 @@ const bookingFeedback = {
           selected = button.getAttribute("data-day") || "";
           if (input instanceof HTMLInputElement) input.value = selected;
           picker.querySelector(".calendar-box")?.classList.remove("invalid");
-          if (choice && selected) choice.textContent = new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", year: "numeric" }).format(new Date(`${selected}T12:00:00`));
+          updateScheduleChoice(picker);
           render();
           onSelect?.(selected);
         }));
@@ -210,14 +233,14 @@ const bookingFeedback = {
       return {
         input,
         render,
-        clear: () => { selected = ""; if (input instanceof HTMLInputElement) input.value = ""; if (choice) choice.textContent = ""; render(); },
+        clear: () => { selected = ""; if (input instanceof HTMLInputElement) input.value = ""; updateScheduleChoice(picker); render(); },
         set: (value) => {
           if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return;
           selected = value;
           const parsed = new Date(`${value}T12:00:00`);
           currentMonth = new Date(parsed.getFullYear(), parsed.getMonth(), 1);
           if (input instanceof HTMLInputElement) input.value = value;
-          if (choice) choice.textContent = new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", year: "numeric" }).format(parsed);
+          updateScheduleChoice(picker);
           render();
           onSelect?.(value);
         }
@@ -270,6 +293,7 @@ const bookingFeedback = {
         input.value = value;
         const label = input.parentElement?.querySelector(name === "passengers" ? "[data-passenger-count]" : "[data-select-label]");
         if (label) label.textContent = value === "8" ? "8+" : value;
+        updateScheduleChoice(input.closest("[data-date-picker]"));
       }
     });
     const form = booking.querySelector(".booking-form");
