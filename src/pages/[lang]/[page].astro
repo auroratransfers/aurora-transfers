@@ -3,11 +3,13 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import BookingPage from "../../components/BookingPage.astro";
 import ContentPage from "../../components/ContentPage.astro";
 import { getContent, languages, pages, type Lang, type Page } from "../../data/site";
+import { getMarketingPageContent, isMarketingPage } from "../../data/pageCopy";
 export function getStaticPaths() { return languages.flatMap((lang) => pages.map((page) => ({ params: { lang, page } }))); }
 const lang = Astro.params.lang as Lang;
 const page = Astro.params.page as Page;
 const t = getContent(lang);
-const title = page === "book" ? t.booking.title : `${t.nav[page]} | Aurora Dubrovnik Transfers`;
-const description = page === "book" ? t.booking.intro : t.hero.text;
+const marketingContent = isMarketingPage(page) ? getMarketingPageContent(lang, page) : null;
+const title = page === "book" ? t.booking.title : marketingContent ? `${marketingContent.title} | Aurora Dubrovnik Transfers` : `${t.nav[page]} | Aurora Dubrovnik Transfers`;
+const description = page === "book" ? t.booking.intro : marketingContent?.seoDescription || t.hero.text;
 ---
 <BaseLayout lang={lang} active={page} title={title} description={description}>{page === "book" ? <BookingPage lang={lang} /> : <ContentPage lang={lang} page={page} />}</BaseLayout>

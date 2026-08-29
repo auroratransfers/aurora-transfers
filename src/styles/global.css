@@ -255,12 +255,24 @@ main { width: min(1152px, calc(100% - 32px)); margin-inline: auto; padding-top: 
 .booking-error { margin: 0; padding: 10px 12px; border-radius: var(--radius); color: #a22352; background: var(--pink-light); font-size: .78rem; font-weight: 700; }
 
 .content-page { min-height: 65vh; }
+.content-page-actions { margin-top: 23px; display: grid; gap: 10px; }
+.content-page-actions .pill-button { width: 100%; }
 .content-card-grid { margin-top: 32px; display: grid; gap: 14px; }
-.content-card-grid article { padding: 24px; border: 1px solid var(--line); border-radius: var(--radius); background: white; }
+.content-card-grid article { min-width: 0; padding: 24px; display: flex; flex-direction: column; align-items: flex-start; border: 1px solid var(--line); border-radius: var(--radius); background: white; }
 .content-card-grid article > span { width: 43px; height: 43px; display: grid; place-items: center; border-radius: var(--radius-inner); color: var(--purple); background: var(--purple-light); }
 .content-card-grid h2 { margin: 15px 0 0; font-size: 1.1rem; }
-.content-card-grid p { margin: 6px 0 0; color: var(--muted); font-size: .86rem; }
-.content-card-grid a { display: inline-flex; align-items: center; gap: 5px; margin-top: 15px; color: var(--pink-dark); font-size: .8rem; font-weight: 700; }
+.content-card-grid p { flex: 1; margin: 8px 0 0; color: var(--muted); font-size: .86rem; line-height: 1.6; }
+.content-card-grid a { display: inline-flex; align-items: center; gap: 5px; margin-top: 20px; color: var(--pink-dark); font-size: .8rem; font-weight: 700; }
+.content-detail { margin-top: 50px; padding: 35px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.content-detail-copy { max-width: 790px; }
+.content-detail h2 { margin: 12px 0 0; font-size: clamp(1.55rem, 5vw, 2.15rem); line-height: 1.12; }
+.content-detail p { margin: 13px 0 0; color: #514a57; }
+.content-detail ul { margin: 22px 0 0; padding: 0; display: grid; gap: 10px; list-style: none; }
+.content-detail li { display: flex; align-items: flex-start; gap: 8px; color: var(--ink); font-size: .9rem; }
+.content-detail li svg { flex: none; margin-top: 4px; color: var(--kiwi-dark); }
+.content-detail .pill-button { margin-top: 24px; }
+.content-detail-image { display: grid; gap: 25px; }
+.content-detail-image > img { width: 100%; aspect-ratio: 4/3; border-radius: var(--radius); object-fit: cover; box-shadow: var(--shadow); }
 .about-page-grid, .contact-page-grid { margin-top: 32px; display: grid; gap: 25px; align-items: center; }
 .about-page-grid img { width: 100%; aspect-ratio: 4/3; border-radius: var(--radius); object-fit: cover; box-shadow: var(--shadow); }
 .about-page-grid p { color: var(--muted); }
@@ -275,6 +287,8 @@ main { width: min(1152px, calc(100% - 32px)); margin-inline: auto; padding-top: 
 .simple-form input, .simple-form textarea { width: 100%; padding: 10px 11px; border: 1px solid #ddd8e2; border-radius: var(--radius); outline: 0; }
 .page-cta { margin-top: 42px; padding: 25px; display: flex; flex-direction: column; align-items: flex-start; gap: 18px; border-radius: var(--radius); color: white; background: var(--pink); }
 .page-cta p { margin: 8px 0 0; color: rgba(255,255,255,.8); }
+.page-cta-actions { width: 100%; display: grid; gap: 10px; }
+.page-cta-actions .pill-button { width: 100%; }
 
 .site-footer { margin-top: 30px; border-top: 1px solid var(--line); background: white; }
 .footer-wrap { width: min(1152px, calc(100% - 32px)); margin: auto; padding: 38px 0 25px; display: grid; gap: 22px; }
@@ -301,6 +315,8 @@ main { width: min(1152px, calc(100% - 32px)); margin-inline: auto; padding-top: 
 
 @media (min-width: 460px) {
   .hero-booking-actions { grid-template-columns: minmax(155px, .85fr) minmax(175px, 1.15fr); }
+  .content-page-actions { display: flex; flex-wrap: wrap; }
+  .content-page-actions .pill-button { width: auto; }
 }
 
 @media (max-width: 419px) {
@@ -328,7 +344,10 @@ main { width: min(1152px, calc(100% - 32px)); margin-inline: auto; padding-top: 
   .final-cta > div, .page-cta > div { max-width: 700px; }
   .soft-page { margin-inline: -24px; padding: 56px 24px 74px; }
   .about-page-grid, .contact-page-grid { grid-template-columns: .95fr 1.05fr; gap: 45px; }
-  .content-card-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .content-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .content-detail-image { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: center; gap: 45px; }
+  .page-cta-actions { width: auto; display: flex; flex-wrap: wrap; justify-content: flex-end; }
+  .page-cta-actions .pill-button { width: auto; }
 }
 
 @media (min-width: 900px) {
