@@ -79,22 +79,47 @@ const localized = (target: Lang) => Astro.url.pathname === "/" ? (target === "en
         [50, 200, 500, 900, 1400].forEach((delay) => setTimeout(restoreScroll, delay));
         setTimeout(() => document.documentElement.classList.remove("language-switching"), 1500);
       }
-      languageButton?.addEventListener("click", (event) => {
-        event.stopPropagation();
+      const prepareLanguageLinks = () => {
         languageMenu?.querySelectorAll("a").forEach((link) => {
           const target = new URL(link.href);
           target.searchParams.set("_scroll", String(Math.round(window.scrollY)));
           link.href = target.toString();
         });
-        const open = languageMenu?.hasAttribute("hidden") ?? true;
+      };
+      const setLanguageMenu = (open) => {
         languageMenu?.toggleAttribute("hidden", !open);
-        languageButton.setAttribute("aria-expanded", String(open));
+        languageButton?.setAttribute("aria-expanded", String(open));
+      };
+      const desktopLanguageMenu = window.matchMedia("(min-width: 980px)");
+      languageButton?.addEventListener("click", (event) => {
+        event.stopPropagation();
+        prepareLanguageLinks();
+        const open = languageMenu?.hasAttribute("hidden") ?? true;
+        setLanguageMenu(desktopLanguageMenu.matches ? true : open);
+      });
+      language?.addEventListener("mouseenter", () => {
+        if (!desktopLanguageMenu.matches) return;
+        prepareLanguageLinks();
+        setLanguageMenu(true);
+      });
+      language?.addEventListener("mouseleave", () => {
+        if (desktopLanguageMenu.matches) setLanguageMenu(false);
+      });
+      language?.addEventListener("focusin", () => {
+        if (!desktopLanguageMenu.matches) return;
+        prepareLanguageLinks();
+        setLanguageMenu(true);
+      });
+      language?.addEventListener("focusout", () => {
+        if (!desktopLanguageMenu.matches) return;
+        requestAnimationFrame(() => {
+          if (!language?.contains(document.activeElement)) setLanguageMenu(false);
+        });
       });
       document.addEventListener("click", (event) => {
         if (event.target instanceof Node && !mobileMenu?.contains(event.target) && !menuButton?.contains(event.target)) closeMobileMenu();
         if (event.target instanceof Node && !language?.contains(event.target)) {
-          languageMenu?.setAttribute("hidden", "");
-          languageButton?.setAttribute("aria-expanded", "false");
+          setLanguageMenu(false);
         }
       });
     </script>

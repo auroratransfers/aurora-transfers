@@ -99,7 +99,7 @@ const bookingFeedback = {
             </div>
           </div>
         </div>
-        <div class="form-field"><label for={`flight-${lang}`}>{t.flight}</label><div class="input-wrap"><Plane size={16} /><input id={`flight-${lang}`} name="flight" /></div></div>
+        <div class="form-field"><label for={`flight-${lang}`}>{t.flight}</label><div class="input-wrap flight-input-wrap"><Plane size={16} /><input id={`flight-${lang}`} name="flight" autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" /></div></div>
         <div class="form-field"><label for={`message-${lang}`}>{t.message}</label><input id={`message-${lang}`} name="message" /></div>
         <p class="booking-error full" data-booking-error hidden>{bookingFeedback.error}</p>
         <button class="pill-button primary submit-button full" type="submit"><CalendarDays size={17} />{t.submit}</button>
