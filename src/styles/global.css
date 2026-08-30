@@ -39,6 +39,7 @@ button { color: inherit; }
 .wordmark > span:last-child { display: grid; gap: 3px; }
 .wordmark small { color: var(--muted); font-size: .61rem; font-weight: 500; letter-spacing: .055em; text-transform: uppercase; }
 .logo-symbol { width: 37px; height: 37px; flex: none; display: grid; place-items: center; border-radius: 50%; color: white; background: var(--purple); box-shadow: inset 0 -3px 0 rgba(0,0,0,.12); }
+.header-wordmark { gap: 0; font-size: 1.4rem; }
 .desktop-nav { display: none; align-items: center; gap: 22px; font-size: .875rem; font-weight: 500; }
 .nav-link { position: relative; height: 36px; display: inline-flex; align-items: center; white-space: nowrap; }
 .nav-link::after { content: ""; position: absolute; left: 0; bottom: 4px; width: 0; height: 2px; background: var(--pink); transition: width .22s ease; }
@@ -321,6 +322,7 @@ main { width: min(1152px, calc(100% - 32px)); margin-inline: auto; padding-top: 
 }
 
 @media (max-width: 419px) {
+  .header-wordmark { font-size: 1.28rem; }
   .wordmark small { display: none; }
   .language-trigger { width: 36px; padding: 0; }
 }

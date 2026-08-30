@@ -1,5 +1,5 @@
 ---
-import { Car, Menu, Phone, X } from "@lucide/astro";
+import { Menu, Phone, X } from "@lucide/astro";
 import { getContent, getInterfaceContent, languages, type Lang } from "../data/site";
 
 interface Props { lang: Lang; active?: string; }
@@ -22,8 +22,7 @@ const links = [
 ---
 <header class="site-header" data-header>
   <nav class="nav-wrap">
-    <a class="wordmark" href={homePath} aria-label={ui.homeLabel}>
-      <span class="logo-symbol"><Car size={22} strokeWidth={2.4} /></span>
+    <a class="wordmark header-wordmark" href={homePath} aria-label={ui.homeLabel}>
       <span>Aurora<small>Dubrovnik Transfers</small></span>
     </a>
     <div class="desktop-nav" aria-label={ui.mainNavigation}>
