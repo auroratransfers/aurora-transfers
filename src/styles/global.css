@@ -201,21 +201,24 @@ main { width: min(1152px, calc(100% - 32px)); margin-inline: auto; padding-top: 
 .fast-ride-estimate strong { display: block; margin-top: 7px; color: var(--purple-dark); font-size: 1.24rem; line-height: 1; }
 .fast-ride-estimate p { min-height: 20px; margin: 7px 0 0; color: #5e5169; font-size: .78rem; line-height: 1.4; }
 .fast-ride-options { margin: 0; padding: 0; display: grid; gap: 6px; list-style: none; }
-.fast-ride-options li { display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; align-items: center; gap: 9px; padding: 9px; border: 1px solid var(--line); border-radius: var(--radius); background: white; }
-.fast-ride-options li.selected { border-color: #b0d43c; background: var(--kiwi-light); }
+.fast-ride-option { width: 100%; display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; align-items: center; gap: 9px; padding: 9px; border: 1px solid var(--line); border-radius: var(--radius); color: inherit; background: white; text-align: left; cursor: pointer; transition: border-color .2s, background .2s, box-shadow .2s; }
+.fast-ride-option:hover { border-color: var(--purple); background: var(--purple-light); }
+.fast-ride-option.selected { border-color: #b0d43c; background: var(--kiwi-light); }
 .fast-ride-vehicle-icon { width: 32px; height: 32px; display: grid; place-items: center; border-radius: var(--radius-inner); color: var(--purple); background: var(--purple-light); }
-.fast-ride-options li.selected .fast-ride-vehicle-icon { color: #334900; background: var(--kiwi); }
-.fast-ride-options li > span:nth-child(2) { display: grid; min-width: 0; gap: 1px; }
+.fast-ride-option.selected .fast-ride-vehicle-icon { color: #334900; background: var(--kiwi); }
+.fast-ride-option > span:nth-child(2) { display: grid; min-width: 0; gap: 1px; }
 .fast-ride-options strong { font-size: .78rem; }
 .fast-ride-options small { color: var(--muted); font-size: .68rem; }
 .fast-ride-options b { color: var(--purple); font-size: .77rem; font-variant-numeric: tabular-nums; }
 .fast-ride-action { width: 100%; border: 0; }
 .fast-ride-action:disabled { cursor: wait; opacity: .82; }
+.fast-ride-selection { margin: 0; color: var(--kiwi-dark); font-size: .76rem; font-weight: 800; }
 .fast-ride-preview-note { margin: 0; color: #81788a; font-size: .68rem; line-height: 1.4; }
 .fast-ride-map { position: relative; min-height: 270px; overflow: hidden; border: 1px solid #d5e9f4; border-radius: var(--radius); background: var(--blue-light); }
 .fast-ride-map iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; filter: saturate(.83) contrast(.98); }
 .fast-ride-map::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(234,246,255,.16)); }
-.fast-ride-map-marker { position: absolute; z-index: 2; width: 34px; height: 34px; display: grid; place-items: center; border: 2px solid white; border-radius: 50%; color: white; background: var(--purple); box-shadow: 0 6px 16px rgba(45,39,51,.22); pointer-events: none; }
+.fast-ride-map-marker { position: absolute; z-index: 2; width: 34px; height: 34px; display: grid; place-items: center; padding: 0; border: 2px solid white; border-radius: 50%; color: white; background: var(--purple); box-shadow: 0 6px 16px rgba(45,39,51,.22); cursor: pointer; }
+.fast-ride-map-marker:not(.pickup):hover, .fast-ride-map-marker.is-selected { transform: scale(1.12); box-shadow: 0 0 0 5px rgba(111,45,189,.2), 0 6px 16px rgba(45,39,51,.22); }
 .fast-ride-map-marker.pickup { top: 45%; left: 50%; width: 38px; height: 38px; transform: translate(-50%, -50%); color: #593200; background: var(--kiwi); box-shadow: 0 0 0 8px rgba(183,220,60,.25), 0 6px 16px rgba(45,39,51,.22); }
 .fast-ride-map-marker.driver-one { top: 20%; left: 26%; }
 .fast-ride-map-marker.driver-two { right: 18%; bottom: 22%; color: white; background: var(--pink); }
@@ -225,6 +228,21 @@ main { width: min(1152px, calc(100% - 32px)); margin-inline: auto; padding-top: 
 .fast-ride-preview.is-searching .fast-ride-map-marker.driver-one { animation: fast-ride-pulse 1s ease-in-out infinite; }
 .fast-ride-preview.is-matched .fast-ride-map-marker.driver-one { color: #334900; background: var(--kiwi); }
 @keyframes fast-ride-pulse { 50% { transform: scale(1.14); } }
+.fast-ride-vehicle-dialog { width: min(calc(100% - 28px), 500px); margin: auto; padding: 0; overflow: hidden; border: 0; border-radius: var(--radius); color: var(--ink); background: white; box-shadow: 0 24px 68px rgba(45,39,51,.28); }
+.fast-ride-vehicle-dialog::backdrop { background: rgba(33,29,38,.5); }
+.fast-ride-dialog-image { position: relative; aspect-ratio: 4 / 3; background: var(--blue-light); }
+.fast-ride-dialog-image img { width: 100%; height: 100%; object-fit: cover; }
+.fast-ride-dialog-image > span { position: absolute; right: 12px; bottom: 12px; padding: 7px 10px; border-radius: var(--radius-inner); color: #334900; background: var(--kiwi); font-size: .77rem; font-weight: 900; }
+.fast-ride-dialog-close { position: absolute; top: 12px; right: 12px; width: 38px; height: 38px; display: grid; place-items: center; padding: 0; border: 1px solid rgba(255,255,255,.6); border-radius: var(--radius); color: var(--ink); background: rgba(255,255,255,.94); cursor: pointer; }
+.fast-ride-dialog-close:hover { color: var(--purple); background: white; }
+.fast-ride-dialog-body { padding: 19px; }
+.fast-ride-dialog-body h3 { margin: 13px 0 0; font-size: 1.35rem; line-height: 1.08; }
+.fast-ride-dialog-body > p { margin: 6px 0 0; color: var(--muted); font-size: .84rem; }
+.fast-ride-dialog-meta { margin: 17px 0; display: grid; gap: 9px; }
+.fast-ride-dialog-meta span { display: flex; align-items: center; gap: 8px; color: #514a57; font-size: .82rem; font-weight: 600; }
+.fast-ride-dialog-meta svg { flex: none; color: var(--purple); }
+.fast-ride-dialog-meta b { font-variant-numeric: tabular-nums; }
+.fast-ride-dialog-body .pill-button { width: 100%; border: 0; }
 .booking-layout { margin-top: 31px; display: grid; gap: 26px; align-items: start; }
 .service-column > h2, .booking-card > h2 { margin: 0 0 13px; font-size: .98rem; }
 .service-options { display: grid; gap: 11px; }

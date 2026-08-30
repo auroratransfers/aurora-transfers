@@ -1,5 +1,5 @@
 ---
-import { ArrowLeftRight, CalendarDays, Car, CarFront, Check, ChevronDown, ChevronLeft, ChevronRight, Clock3, LocateFixed, MapPin, Minus, Plane, Plus, Route, Ship, Users } from "@lucide/astro";
+import { ArrowLeftRight, CalendarDays, Car, CarFront, Check, ChevronDown, ChevronLeft, ChevronRight, Clock3, LocateFixed, MapPin, Minus, Plane, Plus, Route, Ship, Users, X } from "@lucide/astro";
 import { getContent, getInterfaceContent, type Lang } from "../data/site";
 interface Props { lang: Lang; }
 const { lang } = Astro.props;
@@ -21,16 +21,16 @@ const bookingFeedback = {
 }[lang];
 const fastRide = {
   hr: {
-    tag: "Brza vožnja · pregled", title: "Vožnja sada, bez čekanja", text: "Unesite polazište i pronaći ćemo najbliže dostupno vozilo.", pickup: "Polazište", samplePickup: "Stari grad, Dubrovnik", useLocation: "Upotrijebi moju lokaciju", locationPending: "Preuzimamo vašu lokaciju...", locationError: "Lokacija nije dostupna. Unesite adresu ručno.", located: "Trenutačna lokacija", nearby: "3 vozila u blizini", eta: "Dolazak za 4–7 min", message: "Konačnu potvrdu dobivate čim vozač prihvati vožnju.", action: "Provjeri dostupnost", searching: "Tražimo najbliže vozilo...", found: "Najbliži vozač može doći za 4 min", preview: "Testni prikaz: vozila i vrijeme dolaska su simulirani.", mapTitle: "Karta dostupnih vozila u Dubrovniku", nearest: "Najbliže vozilo", vehicleTwo: "Aurora vozilo", vehicleThree: "Aurora vozilo", distanceOne: "1,2 km", distanceTwo: "1,8 km", distanceThree: "2,4 km"
+    tag: "Brza vožnja · pregled", title: "Vožnja sada, bez čekanja", text: "Unesite polazište i pronaći ćemo najbliže dostupno vozilo.", pickup: "Polazište", samplePickup: "Stari grad, Dubrovnik", useLocation: "Upotrijebi moju lokaciju", locationPending: "Preuzimamo vašu lokaciju...", locationError: "Lokacija nije dostupna. Unesite adresu ručno.", located: "Trenutačna lokacija", nearby: "3 vozila u blizini", eta: "Dolazak za 4–7 min", message: "Konačnu potvrdu dobivate čim vozač prihvati vožnju.", action: "Provjeri dostupnost", searching: "Tražimo najbliže vozilo...", found: "Najbliži vozač može doći za 4 min", preview: "Testni prikaz: vozila i vrijeme dolaska su simulirani.", mapTitle: "Karta dostupnih vozila u Dubrovniku", nearest: "Najbliže vozilo", vehicleTwo: "Aurora vozilo", vehicleThree: "Aurora vozilo", distanceOne: "1,2 km", distanceTwo: "1,8 km", distanceThree: "2,4 km", vehicleClass: "Premium kombi", vehicleCapacity: "Do 7 putnika", vehicleComfort: "Klima i Wi-Fi", chooseVehicle: "Odaberi ovo vozilo", selected: "Vozilo je odabrano za vaš zahtjev.", closeVehicle: "Zatvori detalje vozila", vehiclePhotoAlt: "Crni premium transfer kombi u Dubrovniku"
   },
   en: {
-    tag: "Fast ride · preview", title: "Ride now, without the wait", text: "Enter your pickup point and we will find the nearest available vehicle.", pickup: "Pickup point", samplePickup: "Old Town, Dubrovnik", useLocation: "Use my location", locationPending: "Getting your location...", locationError: "Your location is unavailable. Enter an address instead.", located: "Current location", nearby: "3 vehicles nearby", eta: "Pickup in 4–7 min", message: "You receive the final confirmation as soon as a driver accepts the ride.", action: "Check availability", searching: "Finding the nearest vehicle...", found: "The nearest driver can arrive in 4 min", preview: "Preview only: vehicle locations and arrival times are simulated.", mapTitle: "Map of available vehicles in Dubrovnik", nearest: "Nearest vehicle", vehicleTwo: "Aurora vehicle", vehicleThree: "Aurora vehicle", distanceOne: "1.2 km", distanceTwo: "1.8 km", distanceThree: "2.4 km"
+    tag: "Fast ride · preview", title: "Ride now, without the wait", text: "Enter your pickup point and we will find the nearest available vehicle.", pickup: "Pickup point", samplePickup: "Old Town, Dubrovnik", useLocation: "Use my location", locationPending: "Getting your location...", locationError: "Your location is unavailable. Enter an address instead.", located: "Current location", nearby: "3 vehicles nearby", eta: "Pickup in 4–7 min", message: "You receive the final confirmation as soon as a driver accepts the ride.", action: "Check availability", searching: "Finding the nearest vehicle...", found: "The nearest driver can arrive in 4 min", preview: "Preview only: vehicle locations and arrival times are simulated.", mapTitle: "Map of available vehicles in Dubrovnik", nearest: "Nearest vehicle", vehicleTwo: "Aurora vehicle", vehicleThree: "Aurora vehicle", distanceOne: "1.2 km", distanceTwo: "1.8 km", distanceThree: "2.4 km", vehicleClass: "Premium van", vehicleCapacity: "Up to 7 passengers", vehicleComfort: "Air conditioning and Wi-Fi", chooseVehicle: "Choose this vehicle", selected: "Vehicle selected for your request.", closeVehicle: "Close vehicle details", vehiclePhotoAlt: "Black premium transfer van in Dubrovnik"
   },
   de: {
-    tag: "Schnellfahrt · Vorschau", title: "Jetzt fahren, ohne Wartezeit", text: "Geben Sie Ihren Abholort ein und wir finden das nächste verfügbare Fahrzeug.", pickup: "Abholort", samplePickup: "Altstadt, Dubrovnik", useLocation: "Meinen Standort verwenden", locationPending: "Standort wird abgerufen...", locationError: "Ihr Standort ist nicht verfügbar. Geben Sie bitte eine Adresse ein.", located: "Aktueller Standort", nearby: "3 Fahrzeuge in der Nähe", eta: "Abholung in 4–7 Min.", message: "Die endgültige Bestätigung erhalten Sie, sobald ein Fahrer die Fahrt annimmt.", action: "Verfügbarkeit prüfen", searching: "Nächstes Fahrzeug wird gesucht...", found: "Der nächste Fahrer kann in 4 Min. da sein", preview: "Nur Vorschau: Fahrzeugpositionen und Ankunftszeiten sind simuliert.", mapTitle: "Karte verfügbarer Fahrzeuge in Dubrovnik", nearest: "Nächstes Fahrzeug", vehicleTwo: "Aurora Fahrzeug", vehicleThree: "Aurora Fahrzeug", distanceOne: "1,2 km", distanceTwo: "1,8 km", distanceThree: "2,4 km"
+    tag: "Schnellfahrt · Vorschau", title: "Jetzt fahren, ohne Wartezeit", text: "Geben Sie Ihren Abholort ein und wir finden das nächste verfügbare Fahrzeug.", pickup: "Abholort", samplePickup: "Altstadt, Dubrovnik", useLocation: "Meinen Standort verwenden", locationPending: "Standort wird abgerufen...", locationError: "Ihr Standort ist nicht verfügbar. Geben Sie bitte eine Adresse ein.", located: "Aktueller Standort", nearby: "3 Fahrzeuge in der Nähe", eta: "Abholung in 4–7 Min.", message: "Die endgültige Bestätigung erhalten Sie, sobald ein Fahrer die Fahrt annimmt.", action: "Verfügbarkeit prüfen", searching: "Nächstes Fahrzeug wird gesucht...", found: "Der nächste Fahrer kann in 4 Min. da sein", preview: "Nur Vorschau: Fahrzeugpositionen und Ankunftszeiten sind simuliert.", mapTitle: "Karte verfügbarer Fahrzeuge in Dubrovnik", nearest: "Nächstes Fahrzeug", vehicleTwo: "Aurora Fahrzeug", vehicleThree: "Aurora Fahrzeug", distanceOne: "1,2 km", distanceTwo: "1,8 km", distanceThree: "2,4 km", vehicleClass: "Premium-Van", vehicleCapacity: "Bis zu 7 Fahrgäste", vehicleComfort: "Klimaanlage und WLAN", chooseVehicle: "Dieses Fahrzeug wählen", selected: "Fahrzeug für Ihre Anfrage ausgewählt.", closeVehicle: "Fahrzeugdetails schließen", vehiclePhotoAlt: "Schwarzer Premium-Transfer-Van in Dubrovnik"
   },
   fr: {
-    tag: "Course rapide · aperçu", title: "Partez maintenant, sans attendre", text: "Indiquez votre lieu de départ et nous trouverons le véhicule disponible le plus proche.", pickup: "Lieu de départ", samplePickup: "Vieille ville, Dubrovnik", useLocation: "Utiliser ma position", locationPending: "Recherche de votre position...", locationError: "Votre position est indisponible. Saisissez une adresse.", located: "Position actuelle", nearby: "3 véhicules à proximité", eta: "Prise en charge dans 4 à 7 min", message: "Vous recevez la confirmation finale dès qu'un chauffeur accepte la course.", action: "Vérifier la disponibilité", searching: "Recherche du véhicule le plus proche...", found: "Le chauffeur le plus proche peut arriver dans 4 min", preview: "Aperçu uniquement : les positions et temps d'arrivée sont simulés.", mapTitle: "Carte des véhicules disponibles à Dubrovnik", nearest: "Véhicule le plus proche", vehicleTwo: "Véhicule Aurora", vehicleThree: "Véhicule Aurora", distanceOne: "1,2 km", distanceTwo: "1,8 km", distanceThree: "2,4 km"
+    tag: "Course rapide · aperçu", title: "Partez maintenant, sans attendre", text: "Indiquez votre lieu de départ et nous trouverons le véhicule disponible le plus proche.", pickup: "Lieu de départ", samplePickup: "Vieille ville, Dubrovnik", useLocation: "Utiliser ma position", locationPending: "Recherche de votre position...", locationError: "Votre position est indisponible. Saisissez une adresse.", located: "Position actuelle", nearby: "3 véhicules à proximité", eta: "Prise en charge dans 4 à 7 min", message: "Vous recevez la confirmation finale dès qu'un chauffeur accepte la course.", action: "Vérifier la disponibilité", searching: "Recherche du véhicule le plus proche...", found: "Le chauffeur le plus proche peut arriver dans 4 min", preview: "Aperçu uniquement : les positions et temps d'arrivée sont simulés.", mapTitle: "Carte des véhicules disponibles à Dubrovnik", nearest: "Véhicule le plus proche", vehicleTwo: "Véhicule Aurora", vehicleThree: "Véhicule Aurora", distanceOne: "1,2 km", distanceTwo: "1,8 km", distanceThree: "2,4 km", vehicleClass: "Van premium", vehicleCapacity: "Jusqu'à 7 passagers", vehicleComfort: "Climatisation et Wi-Fi", chooseVehicle: "Choisir ce véhicule", selected: "Véhicule sélectionné pour votre demande.", closeVehicle: "Fermer les détails du véhicule", vehiclePhotoAlt: "Van premium noir de transfert à Dubrovnik"
   }
 }[lang];
 const fastRideMapUrl = "https://www.openstreetmap.org/export/embed.html?bbox=18.0680%2C42.6350%2C18.1320%2C42.6770&layer=mapnik&marker=42.6507%2C18.0944";
@@ -40,7 +40,7 @@ const fastRideMapUrl = "https://www.openstreetmap.org/export/embed.html?bbox=18.
   <h1>{t.title}</h1>
   <p class="page-intro">{t.intro}</p>
 
-  <section class="fast-ride-preview" data-fast-ride-preview hidden data-searching={fastRide.searching} data-found={fastRide.found} data-nearby={fastRide.nearby} data-location-pending={fastRide.locationPending} data-location-error={fastRide.locationError} data-located={fastRide.located}>
+  <section class="fast-ride-preview" data-fast-ride-preview hidden data-searching={fastRide.searching} data-found={fastRide.found} data-nearby={fastRide.nearby} data-location-pending={fastRide.locationPending} data-location-error={fastRide.locationError} data-located={fastRide.located} data-selected={fastRide.selected}>
     <div class="fast-ride-heading">
       <div><span class="section-marker kiwi-marker">{fastRide.tag}</span><h2>{fastRide.title}</h2><p>{fastRide.text}</p></div>
       <span class="fast-ride-live"><i></i>{fastRide.nearby}</span>
@@ -55,23 +55,28 @@ const fastRideMapUrl = "https://www.openstreetmap.org/export/embed.html?bbox=18.
           <p data-fast-ride-message>{fastRide.message}</p>
         </div>
         <ul class="fast-ride-options" aria-label={fastRide.mapTitle}>
-          <li class="selected"><span class="fast-ride-vehicle-icon"><CarFront size={16} /></span><span><strong>{fastRide.nearest}</strong><small>{fastRide.distanceOne}</small></span><b>4 min</b></li>
-          <li><span class="fast-ride-vehicle-icon"><CarFront size={16} /></span><span><strong>{fastRide.vehicleTwo}</strong><small>{fastRide.distanceTwo}</small></span><b>6 min</b></li>
-          <li><span class="fast-ride-vehicle-icon"><CarFront size={16} /></span><span><strong>{fastRide.vehicleThree}</strong><small>{fastRide.distanceThree}</small></span><b>8 min</b></li>
+          <li><button type="button" class="fast-ride-option selected" data-fast-ride-vehicle data-fast-ride-vehicle-id="one" data-fast-ride-vehicle-name={fastRide.nearest} data-fast-ride-vehicle-eta="4 min" data-fast-ride-vehicle-distance={fastRide.distanceOne}><span class="fast-ride-vehicle-icon"><CarFront size={16} /></span><span><strong>{fastRide.nearest}</strong><small>{fastRide.distanceOne}</small></span><b>4 min</b></button></li>
+          <li><button type="button" class="fast-ride-option" data-fast-ride-vehicle data-fast-ride-vehicle-id="two" data-fast-ride-vehicle-name={fastRide.vehicleTwo} data-fast-ride-vehicle-eta="6 min" data-fast-ride-vehicle-distance={fastRide.distanceTwo}><span class="fast-ride-vehicle-icon"><CarFront size={16} /></span><span><strong>{fastRide.vehicleTwo}</strong><small>{fastRide.distanceTwo}</small></span><b>6 min</b></button></li>
+          <li><button type="button" class="fast-ride-option" data-fast-ride-vehicle data-fast-ride-vehicle-id="three" data-fast-ride-vehicle-name={fastRide.vehicleThree} data-fast-ride-vehicle-eta="8 min" data-fast-ride-vehicle-distance={fastRide.distanceThree}><span class="fast-ride-vehicle-icon"><CarFront size={16} /></span><span><strong>{fastRide.vehicleThree}</strong><small>{fastRide.distanceThree}</small></span><b>8 min</b></button></li>
         </ul>
         <button class="pill-button primary fast-ride-action" type="button" data-fast-ride-action><Car size={17} /><span data-fast-ride-action-label>{fastRide.action}</span></button>
+        <p class="fast-ride-selection" data-fast-ride-selection hidden aria-live="polite"></p>
         <p class="fast-ride-preview-note">{fastRide.preview}</p>
       </div>
       <div class="fast-ride-map" aria-label={fastRide.mapTitle}>
         <iframe data-fast-ride-map data-fast-ride-map-src={fastRideMapUrl} title={fastRide.mapTitle} loading="lazy" referrerpolicy="no-referrer"></iframe>
         <span class="fast-ride-map-marker pickup" aria-hidden="true"><MapPin size={20} /></span>
-        <span class="fast-ride-map-marker driver-one" aria-hidden="true"><CarFront size={15} /></span>
-        <span class="fast-ride-map-marker driver-two" aria-hidden="true"><CarFront size={15} /></span>
-        <span class="fast-ride-map-marker driver-three" aria-hidden="true"><CarFront size={15} /></span>
+        <button class="fast-ride-map-marker driver-one" type="button" data-fast-ride-vehicle data-fast-ride-vehicle-id="one" data-fast-ride-vehicle-name={fastRide.nearest} data-fast-ride-vehicle-eta="4 min" data-fast-ride-vehicle-distance={fastRide.distanceOne} aria-label={`${fastRide.nearest}, 4 min`}><CarFront size={15} /></button>
+        <button class="fast-ride-map-marker driver-two" type="button" data-fast-ride-vehicle data-fast-ride-vehicle-id="two" data-fast-ride-vehicle-name={fastRide.vehicleTwo} data-fast-ride-vehicle-eta="6 min" data-fast-ride-vehicle-distance={fastRide.distanceTwo} aria-label={`${fastRide.vehicleTwo}, 6 min`}><CarFront size={15} /></button>
+        <button class="fast-ride-map-marker driver-three" type="button" data-fast-ride-vehicle data-fast-ride-vehicle-id="three" data-fast-ride-vehicle-name={fastRide.vehicleThree} data-fast-ride-vehicle-eta="8 min" data-fast-ride-vehicle-distance={fastRide.distanceThree} aria-label={`${fastRide.vehicleThree}, 8 min`}><CarFront size={15} /></button>
         <span class="fast-ride-map-label"><i></i>{fastRide.nearby}</span>
       </div>
     </div>
   </section>
+  <dialog class="fast-ride-vehicle-dialog" data-fast-ride-vehicle-dialog>
+    <div class="fast-ride-dialog-image"><img data-fast-ride-vehicle-image data-fast-ride-vehicle-image-src="/media/fast-ride-van.png" alt={fastRide.vehiclePhotoAlt} loading="lazy" /><button class="fast-ride-dialog-close" type="button" data-fast-ride-close aria-label={fastRide.closeVehicle}><X size={19} /></button><span data-fast-ride-dialog-eta>4 min</span></div>
+    <div class="fast-ride-dialog-body"><span class="section-marker kiwi-marker">{fastRide.tag}</span><h3 data-fast-ride-dialog-name>{fastRide.nearest}</h3><p>{fastRide.vehicleClass}</p><div class="fast-ride-dialog-meta"><span><Users size={16} />{fastRide.vehicleCapacity}</span><span><MapPin size={16} /><b data-fast-ride-dialog-distance>{fastRide.distanceOne}</b></span><span><Clock3 size={16} />{fastRide.vehicleComfort}</span></div><button class="pill-button primary" type="button" data-fast-ride-choose><Check size={17} />{fastRide.chooseVehicle}</button></div>
+  </dialog>
 
   <div class="booking-layout">
     <div class="service-column">
@@ -415,11 +420,57 @@ const fastRideMapUrl = "https://www.openstreetmap.org/export/embed.html?bbox=18.
     const status = preview.querySelector("[data-fast-ride-status]");
     const eta = preview.querySelector("[data-fast-ride-eta]");
     const message = preview.querySelector("[data-fast-ride-message]");
+    const dialog = document.querySelector("[data-fast-ride-vehicle-dialog]");
+    const dialogImage = dialog?.querySelector("[data-fast-ride-vehicle-image]");
+    const dialogName = dialog?.querySelector("[data-fast-ride-dialog-name]");
+    const dialogEta = dialog?.querySelector("[data-fast-ride-dialog-eta]");
+    const dialogDistance = dialog?.querySelector("[data-fast-ride-dialog-distance]");
+    const selection = preview.querySelector("[data-fast-ride-selection]");
+    let selectedVehicle: Element | undefined;
     const setStatus = (nextStatus, nextEta, nextMessage) => {
       if (status) status.textContent = nextStatus;
       if (eta) eta.textContent = nextEta;
       if (message) message.textContent = nextMessage;
     };
+    const highlightVehicle = (vehicleId: string) => {
+      preview.querySelectorAll(".fast-ride-option[data-fast-ride-vehicle]").forEach((vehicle) => {
+        const isSelected = vehicle.getAttribute("data-fast-ride-vehicle-id") === vehicleId;
+        vehicle.classList.toggle("selected", isSelected);
+        vehicle.setAttribute("aria-pressed", String(isSelected));
+      });
+      preview.querySelectorAll(".fast-ride-map-marker[data-fast-ride-vehicle]").forEach((vehicle) => {
+        const isSelected = vehicle.getAttribute("data-fast-ride-vehicle-id") === vehicleId;
+        vehicle.classList.toggle("is-selected", isSelected);
+        vehicle.setAttribute("aria-pressed", String(isSelected));
+      });
+    };
+    const openVehicleDialog = (vehicle: Element) => {
+      selectedVehicle = vehicle;
+      highlightVehicle(vehicle.getAttribute("data-fast-ride-vehicle-id") || "");
+      if (dialogName) dialogName.textContent = vehicle.getAttribute("data-fast-ride-vehicle-name") || "";
+      if (dialogEta) dialogEta.textContent = vehicle.getAttribute("data-fast-ride-vehicle-eta") || "";
+      if (dialogDistance) dialogDistance.textContent = vehicle.getAttribute("data-fast-ride-vehicle-distance") || "";
+      if (dialogImage instanceof HTMLImageElement) dialogImage.src = dialogImage.getAttribute("data-fast-ride-vehicle-image-src") || "";
+      if (dialog instanceof HTMLDialogElement && !dialog.open) dialog.showModal();
+    };
+    preview.querySelectorAll("[data-fast-ride-vehicle]").forEach((vehicle) => {
+      vehicle.addEventListener("click", () => openVehicleDialog(vehicle));
+    });
+    dialog?.querySelector("[data-fast-ride-close]")?.addEventListener("click", () => {
+      if (dialog instanceof HTMLDialogElement) dialog.close();
+    });
+    dialog?.addEventListener("click", (event) => {
+      if (event.target === dialog && dialog instanceof HTMLDialogElement) dialog.close();
+    });
+    dialog?.querySelector("[data-fast-ride-choose]")?.addEventListener("click", () => {
+      if (!selectedVehicle) return;
+      const name = selectedVehicle.getAttribute("data-fast-ride-vehicle-name") || "";
+      if (selection) {
+        selection.textContent = `${name} · ${preview.getAttribute("data-selected") || ""}`;
+        selection.hidden = false;
+      }
+      if (dialog instanceof HTMLDialogElement) dialog.close();
+    });
     locationButton?.addEventListener("click", () => {
       if (!(pickup instanceof HTMLInputElement)) return;
       const pending = preview.getAttribute("data-location-pending") || "";
