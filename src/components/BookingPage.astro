@@ -6,6 +6,12 @@ import { getContent, type Lang } from "../data/site";
 interface Props { lang: Lang; }
 const { lang } = Astro.props;
 const t = getContent(lang).booking;
+const bookingPhoto = {
+  hr: { alt: "Luka i obala Dubrovnika", label: "Aurora privatni transferi", text: "Od aerodroma do vašeg odredišta, bez stresa." },
+  en: { alt: "Dubrovnik harbour and coast", label: "Aurora private transfers", text: "From the airport to your destination, without the stress." },
+  de: { alt: "Hafen und Küste von Dubrovnik", label: "Aurora Privattransfers", text: "Vom Flughafen zu Ihrem Ziel, ganz entspannt." },
+  fr: { alt: "Port et côte de Dubrovnik", label: "Transferts privés Aurora", text: "De l'aéroport à votre destination, sans stress." },
+}[lang];
 const fastRide = {
   hr: {
     tag: "Brza vožnja · pregled", title: "Vožnja sada, bez čekanja", text: "Unesite polazište i pronaći ćemo najbliže dostupno vozilo.", pickup: "Polazište", samplePickup: "Stari grad, Dubrovnik", useLocation: "Upotrijebi moju lokaciju", locationPending: "Preuzimamo vašu lokaciju...", locationError: "Lokacija nije dostupna. Unesite adresu ručno.", located: "Trenutačna lokacija", nearby: "3 vozila u blizini", eta: "Dolazak za 4–7 min", message: "Konačnu potvrdu dobivate čim vozač prihvati vožnju.", action: "Provjeri dostupnost", searching: "Tražimo najbliže vozilo...", found: "Najbliži vozač može doći za 4 min", preview: "Testni prikaz: vozila i vrijeme dolaska su simulirani.", mapTitle: "Karta dostupnih vozila u Dubrovniku", nearest: "Najbliže vozilo", vehicleTwo: "Aurora vozilo", vehicleThree: "Aurora vozilo", distanceOne: "1,2 km", distanceTwo: "1,8 km", distanceThree: "2,4 km", vehicleClass: "Premium kombi", vehicleCapacity: "Do 7 putnika", vehicleComfort: "Klima i Wi-Fi", chooseVehicle: "Odaberi ovo vozilo", selected: "Vozilo je odabrano za vaš zahtjev.", closeVehicle: "Zatvori detalje vozila", vehiclePhotoAlt: "Crni premium transfer kombi u Dubrovniku"
@@ -63,7 +69,16 @@ const fastRide = {
     <div class="fast-ride-dialog-body"><span class="section-marker kiwi-marker">{fastRide.tag}</span><h3 data-fast-ride-dialog-name>{fastRide.nearest}</h3><p>{fastRide.vehicleClass}</p><div class="fast-ride-dialog-meta"><span><Users size={16} />{fastRide.vehicleCapacity}</span><span><MapPin size={16} /><b data-fast-ride-dialog-distance>{fastRide.distanceOne}</b></span><span><Clock3 size={16} />{fastRide.vehicleComfort}</span></div><button class="pill-button primary" type="button" data-fast-ride-choose><Check size={17} />{fastRide.chooseVehicle}</button></div>
   </dialog>
 
-  <TransferBookingForm lang={lang} variant="page" />
+  <div class="booking-form-layout">
+    <TransferBookingForm lang={lang} variant="page" />
+    <aside class="booking-page-photo">
+      <img src="/media/dubrovnik-harbor.jpg" alt={bookingPhoto.alt} loading="lazy" />
+      <div class="booking-page-photo-note">
+        <strong>{bookingPhoto.label}</strong>
+        <span>{bookingPhoto.text}</span>
+      </div>
+    </aside>
+  </div>
 </section>
 
 <script>

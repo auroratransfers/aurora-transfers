@@ -19,6 +19,12 @@ const bookingFeedback = {
   de: { error: "Ihre Buchung konnte gerade nicht gesendet werden. Bitte versuchen Sie es erneut.", track: "Fahrt verfolgen" },
   fr: { error: "Votre réservation n'a pas pu être envoyée. Veuillez réessayer.", track: "Suivre votre trajet" },
 }[lang];
+const contactPlaceholders = {
+  hr: { email: "ime@primjer.com", phone: "+385 91 000 0000" },
+  en: { email: "name@example.com", phone: "+385 91 000 0000" },
+  de: { email: "name@beispiel.com", phone: "+385 91 000 0000" },
+  fr: { email: "nom@exemple.com", phone: "+385 91 000 0000" },
+}[lang];
 const placeCopy = {
   hr: {
     popular: "Popularna mjesta u Hrvatskoj", loading: "Tražimo mjesta u Hrvatskoj...", empty: "Nema odgovarajućih mjesta u Hrvatskoj.",
@@ -146,8 +152,8 @@ const placeCopy = {
 
     <div class="hero-contact-fields full">
       <label for={`${formId}-name`}>{booking.name}<div class="input-wrap"><User size={16} /><input id={`${formId}-name`} name="name" autocomplete="name" required /></div></label>
-      <label for={`${formId}-email`}>{booking.email}<div class="input-wrap"><Mail size={16} /><input id={`${formId}-email`} name="email" type="email" autocomplete="email" required /></div></label>
-      <label for={`${formId}-phone`}>{booking.phone}<div class="input-wrap"><Phone size={16} /><input id={`${formId}-phone`} name="phone" type="tel" autocomplete="tel" required placeholder="+385 ..." /></div></label>
+      <label for={`${formId}-email`}>{booking.email}<div class="input-wrap"><Mail size={16} /><input id={`${formId}-email`} name="email" type="email" autocomplete="email" required placeholder={contactPlaceholders.email} /></div></label>
+      <label for={`${formId}-phone`}>{booking.phone}<div class="input-wrap"><Phone size={16} /><input id={`${formId}-phone`} name="phone" type="tel" autocomplete="tel" required placeholder={contactPlaceholders.phone} /></div></label>
     </div>
 
     <div class="hero-extra-fields full">
