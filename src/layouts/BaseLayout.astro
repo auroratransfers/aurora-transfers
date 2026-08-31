@@ -45,7 +45,7 @@ const localized = (target: Lang) => Astro.url.pathname === "/" ? (target === "en
     <main><slot /></main>
     <footer class="site-footer">
       <div class="footer-wrap">
-        <a class="wordmark footer-logo" href={lang === "en" && Astro.url.pathname === "/" ? "/" : `/${lang}/`}><span class="logo-symbol"><span>A</span></span><span>Aurora<small>Private Transfers</small></span></a>
+        <a class="wordmark footer-logo" href={lang === "en" && Astro.url.pathname === "/" ? "/" : `/${lang}/`}><img class="footer-brand-logo" src="/media/aurora-logo.svg" alt="Aurora Private Transfers" /></a>
         <p>{t.footer}</p>
         <div class="footer-links"><a href={`/${lang}/services/`}>{t.nav.services}</a><a href={`/${lang}/about/`}>{t.nav.about}</a><a href={`/${lang}/contact/`}>{t.nav.contact}</a><a href={`/${lang}/work-with-us/`}>{t.nav["work-with-us"]}</a><a href={`/${lang}/book/`}>{t.nav.book}</a></div>
       </div>

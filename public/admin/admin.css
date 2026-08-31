@@ -60,25 +60,14 @@ input:focus-visible {
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
   color: var(--ink);
-  font-weight: 900;
   text-decoration: none;
 }
 
-.brand b {
-  color: var(--purple);
-}
-
-.brand-mark {
-  width: 38px;
-  height: 38px;
-  display: grid;
-  place-items: center;
-  border-radius: var(--radius);
-  color: #fff;
-  background: var(--purple);
-  font-size: 18px;
+.brand-logo {
+  width: 172px;
+  height: auto;
+  display: block;
 }
 
 .login-shell {
