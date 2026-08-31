@@ -6,7 +6,13 @@ const { createAdminSession, secureEqual, setAdminCookie } = require("../lib/secu
 module.exports = async (req, res) => {
   if (!method(req, res, ["POST"])) return;
   try {
-    if (!process.env.ADMIN_PASSWORD || !process.env.ADMIN_SESSION_SECRET) throw Object.assign(new Error("Admin security is not configured"), { status: 503 });
+    const passwordless = process.env.ADMIN_ALLOW_PASSWORDLESS_LOGIN === "true";
+    if (!process.env.ADMIN_SESSION_SECRET) throw Object.assign(new Error("Admin security is not configured"), { status: 503 });
+    if (passwordless) {
+      setAdminCookie(res, createAdminSession());
+      return res.status(200).json({ ok: true, passwordless: true });
+    }
+    if (!process.env.ADMIN_PASSWORD) throw Object.assign(new Error("Admin security is not configured"), { status: 503 });
     const ip = String(req.headers["x-forwarded-for"] || req.socket?.remoteAddress || "unknown").split(",")[0].trim();
     const ipHash = crypto.createHash("sha256").update(ip).digest("hex");
     await withDatabase(async (sql) => {

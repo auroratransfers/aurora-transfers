@@ -135,6 +135,11 @@ function setLastUpdated(value = new Date(), error = false) {
 
 async function session() {
   const data = await api("/api/admin-session");
+  if (data.passwordless) {
+    $("[data-password-label]").hidden = true;
+    $("[data-password-input]").hidden = true;
+    $("[data-password-input]").required = false;
+  }
   if (data.authenticated) {
     setLoggedIn(true);
     await showView("overview");
