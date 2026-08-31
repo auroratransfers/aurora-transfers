@@ -45,9 +45,16 @@ const localized = (target: Lang) => Astro.url.pathname === "/" ? (target === "en
     <main><slot /></main>
     <footer class="site-footer">
       <div class="footer-wrap">
-        <a class="wordmark footer-logo" href={lang === "en" && Astro.url.pathname === "/" ? "/" : `/${lang}/`}><img class="footer-brand-logo" src="/media/aurora-logo.svg" alt="Aurora Private Transfers" /></a>
-        <p>{t.footer}</p>
-        <div class="footer-links"><a href={`/${lang}/services/`}>{t.nav.services}</a><a href={`/${lang}/routes/`}>{t.nav.routes}</a><a href={`/${lang}/business/`}>{t.nav.business}</a><a href={`/${lang}/concierge/`}>{t.nav.concierge}</a><a href={`/${lang}/help/`}>{t.nav.help}</a><a href={`/${lang}/work-with-us/`}>{t.nav["work-with-us"]}</a><a href={`/${lang}/contact/`}>{t.nav.contact}</a><a href={`/${lang}/book/`}>{t.nav.book}</a></div>
+        <div class="footer-brand">
+          <a class="wordmark footer-logo" href={lang === "en" && Astro.url.pathname === "/" ? "/" : `/${lang}/`}><img class="footer-brand-logo" src="/media/aurora-logo.svg" alt="Aurora Private Transfers" /></a>
+          <div class="footer-socials">
+            <a href="https://www.instagram.com/auroratransfers/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.4" cy="6.6" r="1"></circle></svg></a>
+            <a href="https://www.facebook.com/auroratransfers/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" title="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 8h3V4h-3c-3 0-5 2-5 5v3H6v4h3v4h4v-4h3l1-4h-4V9c0-.6.4-1 1-1Z"></path></svg></a>
+            <a href="https://wa.me/385000000000" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" title="WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 11.8a8.5 8.5 0 0 1-12.6 7.4L3 20.7l1.5-4.6a8.5 8.5 0 1 1 16-4.3Z"></path><path d="M8.6 7.8c.3-.7.7-.7 1-.7h.5c.2 0 .4.1.5.4l.8 1.9c.1.3.1.5-.1.7l-.5.6c-.2.2-.2.4-.1.6.5.9 1.2 1.6 2.1 2.1.2.1.4.1.6-.1l.6-.5c.2-.2.4-.2.7-.1l1.9.8c.3.1.4.3.4.5v.5c0 .3 0 .7-.7 1-1 .5-2.6.3-4.6-.8-1.4-.8-2.6-2-3.4-3.4-1.1-2-.9-3.6-.4-4.6Z"></path></svg></a>
+          </div>
+        </div>
+        <nav class="footer-menu" aria-label="Aurora navigation"><a href={`/${lang}/services/`}>{t.nav.services}</a><a href={`/${lang}/routes/`}>{t.nav.routes}</a><a href={`/${lang}/business/`}>{t.nav.business}</a><a href={`/${lang}/concierge/`}>{t.nav.concierge}</a><a href={`/${lang}/help/`}>{t.nav.help}</a><a href={`/${lang}/work-with-us/`}>{t.nav["work-with-us"]}</a><a href={`/${lang}/contact/`}>{t.nav.contact}</a><a href={`/${lang}/book/`}>{t.nav.book}</a></nav>
+        <div class="footer-info"><p>{t.footer}</p><a href="tel:+385000000000">+385 00 000 0000</a><a href="mailto:booking@auroratransfers.com">booking@auroratransfers.com</a></div>
       </div>
       <div class="footer-bottom">© {new Date().getFullYear()} Aurora Private Transfers · {ui.country}</div>
     </footer>
