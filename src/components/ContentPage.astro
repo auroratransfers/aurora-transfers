@@ -1,5 +1,5 @@
 ---
-import { ArrowRight, Car, CarFront, Check, Compass, MapPin, Plane, ShieldCheck } from "@lucide/astro";
+import { ArrowRight, Car, Check, Compass, MapPin, Plane, ShieldCheck } from "@lucide/astro";
 import { getContent, getInterfaceContent, type Lang, type Page } from "../data/site";
 import { getMarketingPageContent, isMarketingPage } from "../data/pageCopy";
 
@@ -25,8 +25,8 @@ const cardIcons = [Plane, Car, MapPin, Compass];
       {marketingContent.cards.map((card, index) => {
         const Icon = cardIcons[index] || Compass;
         return <article class:list={[{ "fleet-content-card": page === "fleet" }]}>
-          {page === "fleet" && <div class="fleet-image-placeholder"><CarFront size={38} /><span>{ui.pages.fleetPhotoPlaceholder}</span></div>}
-          <span><Icon size={23} /></span><h2>{card.title}</h2><p>{card.text}</p><a href={`/${lang}/book/`}>{card.cta}<ArrowRight size={14} /></a>
+          {page === "fleet" && <div class="fleet-image-placeholder" role="img" aria-label={ui.pages.fleetPhotoPlaceholder}><span class="fleet-image-ghost" aria-hidden="true"><span></span><span></span><span></span></span></div>}
+          {page !== "fleet" && <span><Icon size={23} /></span>}<h2>{card.title}</h2><p>{card.text}</p><a href={`/${lang}/book/`}>{card.cta}<ArrowRight size={14} /></a>
         </article>;
       })}
     </div>
