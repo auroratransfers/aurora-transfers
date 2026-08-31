@@ -1,0 +1,19 @@
+---
+import { ArrowRight, Check, MapPin } from "@lucide/astro";
+import { getRouteCopy, type AuroraRoute } from "../data/routes";
+import type { Lang } from "../data/site";
+
+interface Props { lang: Lang; route: AuroraRoute; }
+const { lang, route } = Astro.props;
+const content = getRouteCopy(lang);
+const bookingParams = new URLSearchParams({ pickup: route.from, destination: route.to }).toString();
+---
+
+<section class="route-detail-page soft-page">
+  <span class="section-marker pink-marker">{content.tag}</span>
+  <h1>{content.routeTitle(route)}</h1>
+  <p class="page-intro">{content.intro(route)}</p>
+  <div class="route-detail-facts"><article><span>{content.facts[0]}</span><strong>{route.fromPrice}</strong></article><article><span>{content.facts[1]}</span><strong>{route.duration}</strong></article><article><span>{content.facts[2]}</span><strong>{route.distanceKm} km</strong></article></div>
+  <section class="route-detail-plan"><div class="route-detail-points"><span><MapPin size={17} />{route.from}</span><i></i><span><MapPin size={17} />{route.to}</span></div><div><span class="section-marker kiwi-marker">{content.tag}</span><h2>{content.includedTitle}</h2><ul>{content.included.map((item) => <li><Check size={16} />{item}</li>)}</ul><a class="pill-button primary" href={`/${lang}/book/?${bookingParams}`}>{content.cta}<ArrowRight size={16} /></a></div></section>
+  <section class="route-faq"><h2>{content.faqTitle}</h2>{content.faqs.map((faq, index) => <details open={index === 0}><summary>{faq.question}</summary><p>{faq.answer}</p></details>)}</section>
+</section>

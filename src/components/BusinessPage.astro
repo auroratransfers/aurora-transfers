@@ -1,0 +1,75 @@
+---
+import { ArrowRight, Check, ShieldCheck } from "@lucide/astro";
+import { getPlatformContent } from "../data/platformPages";
+import type { Lang } from "../data/site";
+
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const content = getPlatformContent(lang).business;
+---
+
+<section class="business-page soft-page" data-business-page data-language={lang} data-sending={content.form.sending} data-error={content.form.error}>
+  <div class="business-hero-grid">
+    <div class="business-copy">
+      <span class="section-marker kiwi-marker">{content.tag}</span>
+      <h1>{content.title}</h1>
+      <p>{content.intro}</p>
+      <strong class="business-statement">{content.statement}</strong>
+      <div class="business-benefit-list">
+        {content.benefits.map((benefit) => <article><span><Check size={15} /></span><div><h2>{benefit.title}</h2><p>{benefit.text}</p>{benefit.badge && <em>{benefit.badge}</em>}</div></article>)}
+      </div>
+    </div>
+
+    <div class="business-form-surface">
+      <div class="business-form-heading"><span><ShieldCheck size={19} /></span><div><h2>{content.form.title}</h2><p>{content.form.intro}</p></div></div>
+      <form data-business-form>
+        <input type="hidden" name="language" value={lang} />
+        <label><span>{content.form.companyName}</span><input name="companyName" autocomplete="organization" required /></label>
+        <label><span>{content.form.contactName}</span><input name="contactName" autocomplete="name" required /></label>
+        <label><span>{content.form.email}</span><input name="email" type="email" autocomplete="email" required /></label>
+        <label><span>{content.form.phone}</span><input name="phone" type="tel" autocomplete="tel" /></label>
+        <label><span>{content.form.companyType}</span><select name="companyType" required><option value="" disabled selected></option>{content.form.types.map(([value, label]) => <option value={value}>{label}</option>)}</select></label>
+        <label><span>{content.form.monthlyRides}</span><input name="monthlyRides" inputmode="numeric" /></label>
+        <label class="business-form-full"><span>{content.form.cities}</span><input name="operatingCities" required /></label>
+        <label class="business-form-full"><span>{content.form.message}</span><textarea name="message" rows="5" required></textarea></label>
+        <p class="business-form-error business-form-full" data-business-error hidden></p>
+        <button class="pill-button primary business-form-full" type="submit" data-business-submit>{content.form.submit}<ArrowRight size={16} /></button>
+      </form>
+      <div class="business-form-success" data-business-success hidden><span><Check size={23} /></span><h2>{content.form.successTitle}</h2><p>{content.form.successText}</p><strong data-business-reference><small>{content.form.reference}</small></strong></div>
+    </div>
+  </div>
+
+  <section class="business-package-section">
+    <div class="section-heading"><div><span class="section-marker pink-marker">{content.tag}</span><h2>{content.statement}</h2></div><p>{content.intro}</p></div>
+    <div class="business-package-grid">{content.packages.map((item) => <article><h3>{item.title}</h3><p>{item.text}</p><a href={`/${lang}/book/`}>{content.form.submit}<ArrowRight size={14} /></a></article>)}</div>
+  </section>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-business-page]").forEach((page) => {
+    const form = page.querySelector<HTMLFormElement>("[data-business-form]");
+    const success = page.querySelector<HTMLElement>("[data-business-success]");
+    const error = page.querySelector<HTMLElement>("[data-business-error]");
+    const submit = page.querySelector<HTMLButtonElement>("[data-business-submit]");
+    form?.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      const original = submit?.innerHTML || "";
+      if (error) error.hidden = true;
+      if (submit) { submit.disabled = true; submit.textContent = page.dataset.sending || ""; }
+      try {
+        const payload = Object.fromEntries(new FormData(form).entries());
+        const response = await fetch("/api/business-inquiry", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.error || "Business inquiry failed");
+        const reference = page.querySelector<HTMLElement>("[data-business-reference]");
+        if (reference) reference.textContent = result.reference || "";
+        form.hidden = true;
+        if (success) success.hidden = false;
+      } catch (_) {
+        if (error) { error.textContent = page.dataset.error || ""; error.hidden = false; }
+        if (submit) { submit.disabled = false; submit.innerHTML = original; }
+      }
+    });
+  });
+</script>

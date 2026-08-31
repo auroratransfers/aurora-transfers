@@ -29,8 +29,12 @@ Admin confirms a ride and starts dispatch. Up to five eligible drivers receive 3
 ### Public
 
 - `POST /api/book`: creates one ride or two linked legs for a return booking.
+- `POST /api/quote`: returns a clearly labelled, short-lived test estimate until the commercial pricing engine is configured.
+- `GET /api/flight-status?flight=...&date=YYYY-MM-DD`: returns flight status from Aviationstack when `AVIATIONSTACK_API_KEY` is configured; otherwise returns visibly labelled demo data without blocking a booking.
+- `GET /api/availability`: returns public-safe nearby vehicle availability only when fresh, real tracker or driver-app telemetry exists. The public Fast Ride preview remains labelled as a pilot when no live vehicle data is available.
+- `POST /api/business-inquiry`: stores and optionally emails a corporate-account inquiry.
 - `GET /api/v1/tracking?token=...`: returns passenger-safe ride, driver, vehicle and location data.
-- `POST /api/v1/tracking`: rider issue report, completion confirmation or rating.
+- `POST /api/v1/tracking`: rider issue report, completion confirmation, rating, cancellation request or booking-change request.
 
 ### Driver app
 
@@ -49,6 +53,15 @@ Admin confirms a ride and starts dispatch. Up to five eligible drivers receive 3
 - `POST /api/admin-login`, `GET /api/admin-session`, `POST /api/admin-logout`.
 - `GET /api/admin-data?resource=overview|fleet|rides|drivers|vehicles|incidents|ride`.
 - `POST /api/admin-data`: create entities, confirm/assign/dispatch rides, set price, resolve incidents and issue device tokens.
+- Flight monitoring and business enquiries are available as dedicated admin views. An admin can refresh a watched flight on demand; an automated provider poll must be added with a protected Vercel Cron schedule after a commercial flight-data plan is selected.
+
+## Booking expansion and commercial rollout
+
+- The shared booking form supports private transfer, airport arrival, hourly chauffeur, group transfer, airport concierge and Aurora Now pilot selection.
+- Vehicle classes and booking extras are persisted with the ride: Comfort, Business, Van, Executive, flight monitoring, meet and greet, child seat, luggage, accessibility and pet travel.
+- Quote totals, concierge availability and online payment are intentionally marked as test or on-request states until pricing rules, supplier capacity and payment webhooks are approved.
+- Route pages are public SEO pages only. They should be expanded from verified pricing and cross-border operating rules, not generated from speculative routes.
+- Run `pnpm db:migrate` before enabling these booking fields in production. The migration adds only the new quote, flight-watch, booking-change and B2B tables/columns.
 
 ## Live operations console
 

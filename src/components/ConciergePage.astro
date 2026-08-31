@@ -1,0 +1,26 @@
+---
+import { ArrowRight, Check, Plane } from "@lucide/astro";
+import { getPlatformContent } from "../data/platformPages";
+import type { Lang } from "../data/site";
+
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const content = getPlatformContent(lang).concierge;
+---
+
+<section class="concierge-page soft-page">
+  <div class="concierge-intro">
+    <span class="section-marker pink-marker">{content.tag}</span>
+    <h1>{content.title}</h1>
+    <p>{content.intro}</p>
+    <strong>{content.statement}</strong>
+    <a class="pill-button primary" href={`/${lang}/book/?service=airport-concierge`}>{content.cta}<ArrowRight size={16} /></a>
+  </div>
+
+  <div class="concierge-package-grid">{content.packages.map((item, index) => <article><span>{index === 0 ? <Plane size={21} /> : <Check size={21} />}</span>{item.badge && <em>{item.badge}</em>}<h2>{item.title}</h2><p>{item.text}</p></article>)}</div>
+
+  <section class="concierge-details">
+    <div><span class="section-marker kiwi-marker">{content.tag}</span><h2>{content.includedTitle}</h2><ul>{content.included.map((item) => <li><Check size={16} />{item}</li>)}</ul></div>
+    <aside><span>{content.note}</span><a class="pill-button outline" href={`/${lang}/book/?service=airport-concierge`}>{content.cta}<ArrowRight size={16} /></a></aside>
+  </section>
+</section>

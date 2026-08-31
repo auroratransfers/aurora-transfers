@@ -1,0 +1,16 @@
+---
+import { ArrowRight, MapPin } from "@lucide/astro";
+import { auroraRoutes, getRouteCopy } from "../data/routes";
+import type { Lang } from "../data/site";
+
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const content = getRouteCopy(lang);
+---
+
+<section class="routes-page soft-page">
+  <span class="section-marker kiwi-marker">{content.tag}</span>
+  <h1>{content.indexTitle}</h1>
+  <p class="page-intro">{content.indexIntro}</p>
+  <div class="route-page-grid">{auroraRoutes.map((route) => <article><div class="route-page-points"><span><MapPin size={16} />{route.from}</span><i></i><span><MapPin size={16} />{route.to}</span></div><div class="route-page-meta"><span>{route.duration}</span><span>{route.distanceKm} km</span><strong>{content.facts[0]}: {route.fromPrice}</strong></div><a href={`/${lang}/routes/${route.slug}/`}>{content.cta}<ArrowRight size={15} /></a></article>)}</div>
+</section>

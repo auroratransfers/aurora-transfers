@@ -3,16 +3,23 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import BookingPage from "../../components/BookingPage.astro";
 import ContentPage from "../../components/ContentPage.astro";
 import PartnerApplicationPage from "../../components/PartnerApplicationPage.astro";
+import BusinessPage from "../../components/BusinessPage.astro";
+import ConciergePage from "../../components/ConciergePage.astro";
+import HelpPage from "../../components/HelpPage.astro";
 import { getContent, languages, pages, type Lang, type Page } from "../../data/site";
 import { getMarketingPageContent, isMarketingPage } from "../../data/pageCopy";
 import { getPartnerApplicationContent } from "../../data/partnerApplication";
+import { getPlatformContent } from "../../data/platformPages";
 export function getStaticPaths() { return languages.flatMap((lang) => pages.map((page) => ({ params: { lang, page } }))); }
 const lang = Astro.params.lang as Lang;
 const page = Astro.params.page as Page;
 const t = getContent(lang);
 const marketingContent = isMarketingPage(page) ? getMarketingPageContent(lang, page) : null;
 const partnerContent = page === "work-with-us" ? getPartnerApplicationContent(lang) : null;
-const title = page === "book" ? `${t.booking.title} | Aurora Private Transfers` : partnerContent ? `${partnerContent.title} | Aurora Private Transfers` : marketingContent ? `${marketingContent.title} | Aurora Private Transfers` : `${t.nav[page]} | Aurora Private Transfers`;
-const description = page === "book" ? t.booking.intro : partnerContent?.intro || marketingContent?.seoDescription || t.hero.text;
+const platform = getPlatformContent(lang);
+const customTitle = page === "business" ? platform.business.title : page === "concierge" ? platform.concierge.title : page === "help" ? platform.help.title : null;
+const customDescription = page === "business" ? platform.business.intro : page === "concierge" ? platform.concierge.intro : page === "help" ? platform.help.intro : null;
+const title = page === "book" ? `${t.booking.title} | Aurora Private Transfers` : partnerContent ? `${partnerContent.title} | Aurora Private Transfers` : marketingContent ? `${marketingContent.title} | Aurora Private Transfers` : customTitle ? `${customTitle} | Aurora Private Transfers` : `${t.nav[page]} | Aurora Private Transfers`;
+const description = page === "book" ? t.booking.intro : partnerContent?.intro || marketingContent?.seoDescription || customDescription || t.hero.text;
 ---
-<BaseLayout lang={lang} active={page} title={title} description={description}>{page === "book" ? <BookingPage lang={lang} /> : page === "work-with-us" ? <PartnerApplicationPage lang={lang} /> : <ContentPage lang={lang} page={page} />}</BaseLayout>
+<BaseLayout lang={lang} active={page} title={title} description={description}>{page === "book" ? <BookingPage lang={lang} /> : page === "work-with-us" ? <PartnerApplicationPage lang={lang} /> : page === "business" ? <BusinessPage lang={lang} /> : page === "concierge" ? <ConciergePage lang={lang} /> : page === "help" ? <HelpPage lang={lang} /> : <ContentPage lang={lang} page={page} />}</BaseLayout>

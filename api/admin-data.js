@@ -2,6 +2,7 @@ const { withDatabase } = require("../lib/db.cjs");
 const { body, fail, method } = require("../lib/http.cjs");
 const { clean, hashToken, randomToken, requireAdmin } = require("../lib/security.cjs");
 const { appendEvent, transitionRide } = require("../lib/rides.cjs");
+const { lookupFlight } = require("../lib/flight-status.cjs");
 
 function query(req) {
   return new URL(req.url, "https://aurora.local").searchParams;
@@ -159,6 +160,14 @@ async function getData(sql, req) {
   if (resource === "partner_applications") return {
     applications: await sql`select id,status,applicant_type,full_name,company_name,email,phone,country,base_city,years_experience,vehicle_make,vehicle_model,vehicle_year,plate_number,seats,created_at,updated_at from partner_applications order by created_at desc limit 250`,
   };
+  if (resource === "business_inquiries") return {
+    inquiries: await sql`select id,reference,language,company_name,contact_name,email,phone,company_type,operating_cities,monthly_rides,message,status,created_at,updated_at from business_inquiries order by created_at desc limit 250`,
+  };
+  if (resource === "flight_watches") return {
+    watches: await sql`select fw.*,r.reference,r.status ride_status,r.scheduled_at,r.pickup_address,r.destination_address,ri.full_name rider_name,ri.phone rider_phone
+      from flight_watches fw join rides r on r.id=fw.ride_id join riders ri on ri.id=r.rider_id
+      order by coalesce(fw.last_checked_at,fw.created_at) asc limit 500`,
+  };
   if (resource === "incidents") return {
     incidents: await sql`select i.*,r.reference,r.status ride_status,r.driver_id,r.vehicle_id,
         d.full_name driver_name,v.plate_number
@@ -276,6 +285,16 @@ async function postAction(sql, req) {
     const [ride]=await sql`update rides set quoted_price=${price},currency=${clean(data.currency||"EUR",3).toUpperCase()},updated_at=now() where id=${clean(data.rideId,40)} returning *`;
     if (!ride) throw Object.assign(new Error("Ride not found"), { status:404 });
     await appendEvent(sql,ride.id,"price_set","admin","admin",ride.status,ride.status,{price,currency:ride.currency}); return {ride};
+  }
+  if (action === "refresh_flight_watch") {
+    const watchId=clean(data.watchId,40);
+    const [watch]=await sql`select fw.*,r.scheduled_at from flight_watches fw join rides r on r.id=fw.ride_id where fw.id=${watchId}`;
+    if (!watch) throw Object.assign(new Error("Flight watch not found"), { status:404 });
+    const result=await lookupFlight(watch.flight_number,new Date(watch.scheduled_at).toISOString().slice(0,10));
+    const [updated]=await sql`update flight_watches set provider=${result.provider},last_status=${sql.json(result.flight)},last_checked_at=now(),updated_at=now() where id=${watch.id} returning *`;
+    await sql`update rides set flight_status=${sql.json(result.flight)},updated_at=now() where id=${watch.ride_id}`;
+    await appendEvent(sql,watch.ride_id,"flight_status_refreshed","admin","admin",null,null,{provider:result.provider,isLive:result.isLive,status:result.flight.status});
+    return { watch: updated, flight: result.flight, isLive: result.isLive };
   }
   if (action === "create_device_token") {
     const token=randomToken(32), kind=data.kind === "vehicle_tracker" ? "vehicle_tracker" : "driver_app";

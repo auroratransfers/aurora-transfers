@@ -2,12 +2,14 @@
 import { ArrowRight, Car, Check, Compass, MapPin, Plane, ShieldCheck } from "@lucide/astro";
 import { getContent, getInterfaceContent, type Lang, type Page } from "../data/site";
 import { getMarketingPageContent, isMarketingPage } from "../data/pageCopy";
+import { getPlatformContent } from "../data/platformPages";
 
 interface Props { lang: Lang; page: Page; }
 const { lang, page } = Astro.props;
 const t = getContent(lang);
 const ui = getInterfaceContent(lang);
 const marketingContent = isMarketingPage(page) ? getMarketingPageContent(lang, page) : null;
+const platform = getPlatformContent(lang);
 const cardIcons = [Plane, Car, MapPin, Compass];
 const fleetVehicleImageAlt = {
   hr: "Aurora premium vozilo za privatne transfere",
@@ -47,6 +49,12 @@ const fleetVehicleImageAlt = {
         <a class="pill-button primary" href={`/${lang}/book/`}>{marketingContent.detail.cta}<ArrowRight size={16} /></a>
       </div>
     </section>
+
+    {page === "services" && <section class="service-expansion">
+      <div class="section-heading"><div><span class="section-marker kiwi-marker">{platform.serviceExpansion.tag}</span><h2>{platform.serviceExpansion.title}</h2></div><p>{platform.serviceExpansion.text}</p></div>
+      <div class="service-expansion-grid">{platform.serviceExpansion.cards.map((card, index) => { const Icon = cardIcons[index] || Car; return <article><span><Icon size={20} /></span>{card.badge && <em>{card.badge}</em>}<h3>{card.title}</h3><p>{card.text}</p></article>; })}</div>
+      <a class="pill-button primary" href={`/${lang}/book/`}>{platform.serviceExpansion.cta}<ArrowRight size={16} /></a>
+    </section>}
 
     <div class="page-cta">
       <div><h2>{marketingContent.final.title}</h2><p>{marketingContent.final.text}</p></div>

@@ -16,6 +16,8 @@ const state = {
   vehicles: [],
   fleet: [],
   incidents: [],
+  flightWatches: [],
+  businessInquiries: [],
   view: "overview",
   fleetFilter: "all",
   selectedVehicleId: null,
@@ -619,6 +621,47 @@ async function loadIncidents() {
   bindIncidentActions($("#safetyList"));
 }
 
+function flightWatchCard(watch) {
+  const flight = watch.last_status && typeof watch.last_status === "object" ? watch.last_status : {};
+  const arrival = flight.arrival && typeof flight.arrival === "object" ? flight.arrival : {};
+  const source = watch.provider === "aviationstack" ? "Live provider" : watch.provider === "client" ? "Passenger check" : watch.provider === "demo" ? "Demo data" : "Pending";
+  return `<article class="flight-watch-card">
+    <header><div><span class="section-kicker">${esc(source)}</span><h3>${esc(watch.flight_number)}</h3><p>${esc(watch.reference)} · ${esc(watch.rider_name)} · ${dateTime(watch.scheduled_at)}</p></div>${status(flight.status || "pending")}</header>
+    <div class="flight-watch-facts"><div><span>Arrival airport</span><strong>${esc(arrival.airport || "Not available")}</strong></div><div><span>Terminal / gate</span><strong>${esc([arrival.terminal ? `T${arrival.terminal}` : "", arrival.gate ? `G${arrival.gate}` : ""].filter(Boolean).join(" · ") || "Not available")}</strong></div><div><span>Last check</span><strong>${relativeTime(watch.last_checked_at)}</strong></div></div>
+    <footer><button class="secondary-button" type="button" data-ride-id="${esc(watch.ride_id)}">Open ride</button><button class="primary-button compact" type="button" data-refresh-flight="${esc(watch.id)}">Refresh flight</button></footer>
+  </article>`;
+}
+
+async function loadFlightWatches() {
+  const data = await api("/api/admin-data?resource=flight_watches");
+  state.flightWatches = data.watches || [];
+  $("#flightWatchList").innerHTML = state.flightWatches.length
+    ? state.flightWatches.map(flightWatchCard).join("")
+    : '<p class="empty">No flights are being monitored yet.</p>';
+  bindRideClicks($("#flightWatchList"));
+  $$('[data-refresh-flight]', $("#flightWatchList")).forEach((element) => {
+    element.onclick = async () => {
+      element.disabled = true;
+      try {
+        const result = await api("/api/admin-data", { method: "POST", body: JSON.stringify({ action: "refresh_flight_watch", watchId: element.dataset.refreshFlight }) });
+        notify(result.isLive ? "Live flight status updated." : "Flight refreshed with demo data. Add AVIATIONSTACK_API_KEY for live status.");
+        await loadFlightWatches();
+      } catch (error) {
+        notify(error.message, true);
+        element.disabled = false;
+      }
+    };
+  });
+}
+
+async function loadBusinessInquiries() {
+  const data = await api("/api/admin-data?resource=business_inquiries");
+  state.businessInquiries = data.inquiries || [];
+  $("#businessInquiryList").innerHTML = state.businessInquiries.length
+    ? state.businessInquiries.map((inquiry) => `<article class="business-inquiry-card"><header><div><span class="section-kicker">${esc(inquiry.company_type.replaceAll("-", " "))}</span><h3>${esc(inquiry.company_name)}</h3><p>${esc(inquiry.contact_name)} · ${esc(inquiry.email)}${inquiry.phone ? ` · ${esc(inquiry.phone)}` : ""}</p></div>${status(inquiry.status)}</header><div class="business-inquiry-facts"><div><span>Coverage</span><strong>${esc(inquiry.operating_cities || "Not provided")}</strong></div><div><span>Monthly rides</span><strong>${esc(inquiry.monthly_rides || "Not provided")}</strong></div><div><span>Received</span><strong>${dateTime(inquiry.created_at)}</strong></div></div><p class="business-inquiry-message">${esc(inquiry.message)}</p></article>`).join("")
+    : '<p class="empty">No business enquiries have been received.</p>';
+}
+
 function customSelectMarkup(id, items, currentValue, placeholder) {
   const selected = items.find((item) => String(item.value) === String(currentValue));
   return `<div class="custom-filter" id="${esc(id)}" data-custom-select data-value="${esc(currentValue || "")}">
@@ -837,6 +880,8 @@ async function showView(view) {
     drivers: "Driver operations",
     vehicles: "Fleet operations",
     incidents: "Safety center",
+    flightWatches: "Flight monitoring",
+    business: "Business enquiries",
   }[view];
   closeMenu();
   if (view === "overview" || view === "dispatch") await loadOperations();
@@ -844,6 +889,8 @@ async function showView(view) {
   if (view === "drivers") await loadDrivers();
   if (view === "vehicles") await loadVehicles();
   if (view === "incidents") await loadIncidents();
+  if (view === "flightWatches") await loadFlightWatches();
+  if (view === "business") await loadBusinessInquiries();
   scheduleLiveRefresh();
   if (view === "overview" && state.map) window.setTimeout(() => state.map.invalidateSize(), 0);
 }
@@ -880,6 +927,7 @@ $("#refreshButton").addEventListener("click", async () => {
     $("#refreshButton").disabled = false;
   }
 });
+$("#refreshFlights").addEventListener("click", () => loadFlightWatches().catch((error) => notify(error.message, true)));
 $("#rideSearch").addEventListener("input", renderRides);
 $("#rideFilter").addEventListener("change", renderRides);
 $("#liveRefresh").addEventListener("change", scheduleLiveRefresh);

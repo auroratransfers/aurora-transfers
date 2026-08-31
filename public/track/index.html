@@ -27,9 +27,10 @@
       <article class="driver-panel"><span class="eyebrow pink" data-i18n="yourDriver">Your driver</span><div id="driverDetails" class="driver-empty">Driver and vehicle will appear after confirmation.</div></article>
     </section>
     <section class="progress-panel"><div class="panel-head"><div><span class="eyebrow kiwi" data-i18n="progress">Ride progress</span><h2 id="progressTitle">Request received</h2></div><span id="lastUpdate"></span></div><ol id="progressSteps"></ol></section>
-    <footer><button id="reportButton" data-i18n="report">Report a problem</button><a href="tel:+385" data-i18n="call">Call Aurora</a></footer>
+    <footer><button id="manageButton" data-i18n="manage">Manage booking</button><button id="reportButton" data-i18n="report">Report a problem</button><a href="tel:+385" data-i18n="call">Call Aurora</a></footer>
   </main>
   <dialog id="reportDialog"><form id="reportForm"><div><span class="eyebrow pink" data-i18n="support">Safety support</span><button type="button" id="closeReport" aria-label="Close" data-i18n-aria="close">&times;</button></div><h2 data-i18n="tellUs">Tell us what happened</h2><textarea id="reportMessage" required maxlength="1000"></textarea><button class="primary" type="submit" data-i18n="send">Send report</button><p id="reportResult"></p></form></dialog>
+  <dialog id="manageDialog"><form id="manageForm"><div><span class="eyebrow kiwi" data-i18n="manageRide">Manage your ride</span><button type="button" id="closeManage" aria-label="Close" data-i18n-aria="close">&times;</button></div><h2 data-i18n="manageTitle">Send a booking request</h2><label><span data-i18n="manageType">Request type</span><select id="manageType"><option value="change" data-i18n="change">Change a ride</option><option value="cancel" data-i18n="cancel">Cancel a ride</option></select></label><textarea id="manageMessage" required maxlength="1000"></textarea><button class="primary" type="submit" data-i18n="sendRequest">Send request</button><p id="manageResult"></p></form></dialog>
   <script src="https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.js"></script>
   <script src="/track/track.js" defer></script>
 </body>

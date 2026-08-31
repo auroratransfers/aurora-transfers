@@ -49,6 +49,8 @@
         <button class="nav-item" type="button" data-view="drivers"><span>04</span>Drivers</button>
         <button class="nav-item" type="button" data-view="vehicles"><span>05</span>Fleet</button>
         <button class="nav-item" type="button" data-view="incidents"><span>06</span>Safety</button>
+        <button class="nav-item" type="button" data-view="flightWatches"><span>07</span>Flight monitoring</button>
+        <button class="nav-item" type="button" data-view="business"><span>08</span>Business enquiries</button>
       </nav>
       <div class="sidebar-foot">
         <span class="system-dot"></span><span>Operations online</span>
@@ -166,6 +168,16 @@
         <div class="view-intro"><div><span class="eyebrow pink">Safety</span><h2>Incident center</h2><p>Review GPS, fraud and rider alerts with a complete operational trail.</p></div></div>
         <div class="incident-summary" id="incidentSummary"></div>
         <div class="safety-list" id="safetyList"></div>
+      </section>
+
+      <section id="flightWatchesView" class="view" hidden>
+        <div class="split-heading"><div><span class="eyebrow kiwi">Flight operations</span><h2>Flight monitoring</h2><p>Refresh a confirmed flight before dispatch. Live data appears only when the provider key is connected; otherwise it remains visibly marked as demo data.</p></div><button class="secondary-button" id="refreshFlights" type="button">Refresh list</button></div>
+        <div class="flight-watch-list" id="flightWatchList"></div>
+      </section>
+
+      <section id="businessView" class="view" hidden>
+        <div class="view-intro"><div><span class="eyebrow kiwi">B2B pipeline</span><h2>Business enquiries</h2><p>Incoming hotel, agency, event and corporate partnership requests.</p></div></div>
+        <div class="business-inquiry-list" id="businessInquiryList"></div>
       </section>
     </main>
   </div>

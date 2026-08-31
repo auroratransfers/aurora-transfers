@@ -1,0 +1,13 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import RouteDetailPage from "../../../components/RouteDetailPage.astro";
+import { languages, type Lang } from "../../../data/site";
+import { auroraRoutes, getRouteBySlug, getRouteCopy } from "../../../data/routes";
+
+export function getStaticPaths() { return languages.flatMap((lang) => auroraRoutes.map((route) => ({ params: { lang, slug: route.slug } }))); }
+const lang = Astro.params.lang as Lang;
+const route = getRouteBySlug(Astro.params.slug)!;
+const content = getRouteCopy(lang);
+---
+
+<BaseLayout lang={lang} active="routes" title={`${content.routeTitle(route)} | Aurora Private Transfers`} description={content.intro(route)}><RouteDetailPage lang={lang} route={route} /></BaseLayout>

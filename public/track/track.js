@@ -8,6 +8,15 @@ const copy = {
     destination: "Destination",
     yourDriver: "Your driver",
     progress: "Ride progress",
+    manage: "Manage booking",
+    manageRide: "Manage your ride",
+    manageTitle: "Send a booking request",
+    manageType: "Request type",
+    change: "Change a ride",
+    cancel: "Cancel a ride",
+    sendRequest: "Send request",
+    requestSent: "Your request was sent to Aurora.",
+    requestFailed: "The request could not be sent. Please try again.",
     report: "Report a problem",
     call: "Call Aurora",
     support: "Safety support",
@@ -44,6 +53,15 @@ const copy = {
     destination: "Odredište",
     yourDriver: "Vaš vozač",
     progress: "Tijek vožnje",
+    manage: "Upravljaj rezervacijom",
+    manageRide: "Upravljajte svojom vožnjom",
+    manageTitle: "Pošaljite zahtjev za rezervaciju",
+    manageType: "Vrsta zahtjeva",
+    change: "Promijeni vožnju",
+    cancel: "Otkaži vožnju",
+    sendRequest: "Pošalji zahtjev",
+    requestSent: "Vaš zahtjev poslan je Aurori.",
+    requestFailed: "Zahtjev nije moguće poslati. Pokušajte ponovno.",
     report: "Prijavi problem",
     call: "Nazovi Auroru",
     support: "Sigurnosna podrška",
@@ -80,6 +98,15 @@ const copy = {
     destination: "Ziel",
     yourDriver: "Ihr Fahrer",
     progress: "Fahrtstatus",
+    manage: "Buchung verwalten",
+    manageRide: "Ihre Fahrt verwalten",
+    manageTitle: "Buchungsanfrage senden",
+    manageType: "Art der Anfrage",
+    change: "Fahrt ändern",
+    cancel: "Fahrt stornieren",
+    sendRequest: "Anfrage senden",
+    requestSent: "Ihre Anfrage wurde an Aurora gesendet.",
+    requestFailed: "Die Anfrage konnte nicht gesendet werden. Bitte versuchen Sie es erneut.",
     report: "Problem melden",
     call: "Aurora anrufen",
     support: "Sicherheit",
@@ -116,6 +143,15 @@ const copy = {
     destination: "Destination",
     yourDriver: "Votre chauffeur",
     progress: "Progression",
+    manage: "Gérer la réservation",
+    manageRide: "Gérez votre trajet",
+    manageTitle: "Envoyer une demande de réservation",
+    manageType: "Type de demande",
+    change: "Modifier un trajet",
+    cancel: "Annuler un trajet",
+    sendRequest: "Envoyer la demande",
+    requestSent: "Votre demande a été envoyée à Aurora.",
+    requestFailed: "La demande n'a pas pu être envoyée. Réessayez.",
     report: "Signaler un problème",
     call: "Appeler Aurora",
     support: "Assistance sécurité",
@@ -297,6 +333,25 @@ $("#reportForm").onsubmit = async (event) => {
   $("#reportResult").textContent = response.ok
     ? tr("reportSent")
     : tr("reportFailed");
+};
+$("#manageButton").onclick = () => $("#manageDialog").showModal();
+$("#closeManage").onclick = () => $("#manageDialog").close();
+$("#manageForm").onsubmit = async (event) => {
+  event.preventDefault();
+  const type = $("#manageType").value;
+  const response = await fetch("/api/v1/tracking", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      token,
+      action: type === "cancel" ? "request_cancel" : "request_change",
+      message: $("#manageMessage").value,
+    }),
+  });
+  await response.json().catch(() => ({}));
+  $("#manageResult").textContent = response.ok
+    ? tr("requestSent")
+    : tr("requestFailed");
 };
 translate();
 refresh();

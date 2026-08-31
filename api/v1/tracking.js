@@ -29,10 +29,18 @@ module.exports=async(req,res)=>{
           await sql`insert into ride_ratings(ride_id,author_type,rating,comment) values(${ride.id},'rider',${rating},${clean(body(req).comment,1000)||null}) on conflict(ride_id,author_type) do update set rating=excluded.rating,comment=excluded.comment`;
           return {rated:true};
         }
+        if(action==="request_change"||action==="request_cancel"){
+          if(["completed","cancelled","no_show"].includes(ride.status)) throw Object.assign(new Error("This ride can no longer be changed"),{status:409});
+          const message=clean(body(req).message,1000); if(!message) throw Object.assign(new Error("A message is required"),{status:400});
+          const requestType=action==="request_cancel"?"cancel":"change";
+          const [request]=await sql`insert into booking_change_requests(ride_id,request_type,message) values(${ride.id},${requestType},${message}) returning id,status,created_at`;
+          await appendEvent(sql,ride.id,"rider_change_requested","rider",null,ride.status,ride.status,{requestId:request.id,requestType});
+          return {requested:true,request};
+        }
         throw Object.assign(new Error("Unknown action"),{status:400});
       }
       const positions=await sql`select latitude,longitude,heading,speed_kph,recorded_at from ride_positions where ride_id=${ride.id} order by recorded_at desc limit 100`;
-      const safeRide={reference:ride.reference,language:ride.preferred_language,status:ride.status,pickupAddress:ride.pickup_address,destinationAddress:ride.destination_address,scheduledAt:ride.scheduled_at,arrivedAt:ride.arrived_at,startedAt:ride.started_at,completedAt:ride.completed_at,driver:ride.driver_name?{name:ride.driver_name,photo:ride.driver_photo}:null,vehicle:ride.plate_number?{make:ride.vehicle_make,model:ride.vehicle_model,color:ride.vehicle_color,plate:ride.plate_number}:null,lastLocation:ride.last_lat==null?null:{latitude:ride.last_lat,longitude:ride.last_lng,heading:ride.last_heading,updatedAt:ride.last_location_at}};
+      const safeRide={reference:ride.reference,language:ride.preferred_language,status:ride.status,service:ride.service,vehicleClass:ride.vehicle_class,addons:Array.isArray(ride.addons)?ride.addons:[],flightNumber:ride.flight_number,flightStatus:ride.flight_status,pickupAddress:ride.pickup_address,destinationAddress:ride.destination_address,scheduledAt:ride.scheduled_at,arrivedAt:ride.arrived_at,startedAt:ride.started_at,completedAt:ride.completed_at,driver:ride.driver_name?{name:ride.driver_name,photo:ride.driver_photo}:null,vehicle:ride.plate_number?{make:ride.vehicle_make,model:ride.vehicle_model,color:ride.vehicle_color,plate:ride.plate_number}:null,lastLocation:ride.last_lat==null?null:{latitude:ride.last_lat,longitude:ride.last_lng,heading:ride.last_heading,updatedAt:ride.last_location_at}};
       return {ride:safeRide,positions:positions.reverse()};
     });
     return res.status(200).json({ok:true,...result});

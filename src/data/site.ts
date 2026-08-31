@@ -1,11 +1,11 @@
 export const languages = ["hr", "en", "de", "fr"] as const;
 export type Lang = (typeof languages)[number];
-export const pages = ["services", "destinations", "fleet", "about", "contact", "book", "work-with-us"] as const;
+export const pages = ["services", "destinations", "fleet", "about", "contact", "book", "work-with-us", "business", "concierge", "help"] as const;
 export type Page = (typeof pages)[number];
 
 const content = {
   hr: {
-    nav: { home: "Naslovnica", services: "Usluge", destinations: "Destinacije", fleet: "Vozila", about: "O nama", contact: "Kontakt", book: "Rezerviraj", "work-with-us": "Radi s nama" },
+    nav: { home: "Naslovnica", services: "Usluge", destinations: "Destinacije", fleet: "Vozila", about: "O nama", contact: "Kontakt", book: "Rezerviraj", "work-with-us": "Radi s nama", business: "Za poslovne partnere", concierge: "Airport concierge", help: "Pomoć i sigurnost", routes: "Rute" },
     hero: { badge: "Aurora privatni transferi", title: "Privatni transferi kroz Hrvatsku i srednju Europu.", statement: "Idite dalje, bez napora.", text: "Vožnje od vrata do vrata iz Dubrovnika i Zagreba prema Austriji, Mađarskoj, Sloveniji, Njemačkoj i šire.", primary: "Rezerviraj transfer", secondary: "Istraži destinacije" },
     stats: ["Putnika", "Destinacija", "Godina iskustva"],
     welcome: { tag: "Dobrodošli", title: "Aurora Private Transfers", p1: "Profesionalna smo agencija za privatne transfere koja putnicima pruža sigurnu, udobnu i pouzdanu uslugu prijevoza.", p2: "Naši iskusni vozači i moderna vozila brinu da svako putovanje bude ugodno, točno i bez stresa - bez obzira dolazite li poslovno ili turistički." },
@@ -17,7 +17,7 @@ const content = {
     footer: "Privatni transferi kroz Hrvatsku i srednju Europu - sigurno, udobno i pouzdano."
   },
   en: {
-    nav: { home: "Home", services: "Services", destinations: "Destinations", fleet: "Fleet", about: "About", contact: "Contact", book: "Book", "work-with-us": "Work with us" },
+    nav: { home: "Home", services: "Services", destinations: "Destinations", fleet: "Fleet", about: "About", contact: "Contact", book: "Book", "work-with-us": "Work with us", business: "For business", concierge: "Airport concierge", help: "Help and safety", routes: "Routes" },
     hero: { badge: "Aurora Private Transfers", title: "Private transfers across Croatia and Central Europe.", statement: "Go further, effortlessly.", text: "Door-to-door rides from Dubrovnik and Zagreb to Austria, Hungary, Slovenia, Germany and beyond.", primary: "Book a transfer", secondary: "Explore destinations" },
     stats: ["Passengers", "Destinations", "Years of experience"],
     welcome: { tag: "Welcome", title: "Aurora Private Transfers", p1: "We are a professional private transfer agency providing safe, comfortable and reliable passenger transport.", p2: "Our experienced drivers and modern vehicles make every journey pleasant, punctual and stress-free - whether you travel for business or leisure." },
@@ -29,7 +29,7 @@ const content = {
     footer: "Private transfers across Croatia and Central Europe - safe, comfortable and reliable."
   },
   de: {
-    nav: { home: "Start", services: "Leistungen", destinations: "Ziele", fleet: "Fahrzeuge", about: "Über uns", contact: "Kontakt", book: "Buchen", "work-with-us": "Mit uns arbeiten" },
+    nav: { home: "Start", services: "Leistungen", destinations: "Ziele", fleet: "Fahrzeuge", about: "Über uns", contact: "Kontakt", book: "Buchen", "work-with-us": "Mit uns arbeiten", business: "Für Unternehmen", concierge: "Airport Concierge", help: "Hilfe und Sicherheit", routes: "Routen" },
     hero: { badge: "Aurora Private Transfers", title: "Private Transfers durch Kroatien und Mitteleuropa.", statement: "Weiter reisen, mühelos.", text: "Tür-zu-Tür-Fahrten von Dubrovnik und Zagreb nach Österreich, Ungarn, Slowenien, Deutschland und darüber hinaus.", primary: "Transfer buchen", secondary: "Ziele entdecken" },
     stats: ["Fahrgäste", "Reiseziele", "Jahre Erfahrung"],
     welcome: { tag: "Willkommen", title: "Aurora Private Transfers", p1: "Wir sind eine professionelle Agentur für sichere, komfortable und zuverlässige Privattransfers.", p2: "Erfahrene Fahrer und moderne Fahrzeuge sorgen für eine pünktliche und stressfreie Fahrt - geschäftlich oder privat." },
@@ -41,7 +41,7 @@ const content = {
     footer: "Private Transfers durch Kroatien und Mitteleuropa - sicher, komfortabel und zuverlässig."
   },
   fr: {
-    nav: { home: "Accueil", services: "Services", destinations: "Destinations", fleet: "Véhicules", about: "À propos", contact: "Contact", book: "Réserver", "work-with-us": "Travailler avec nous" },
+    nav: { home: "Accueil", services: "Services", destinations: "Destinations", fleet: "Véhicules", about: "À propos", contact: "Contact", book: "Réserver", "work-with-us": "Travailler avec nous", business: "Professionnels", concierge: "Concierge aéroport", help: "Aide et sécurité", routes: "Itinéraires" },
     hero: { badge: "Aurora Private Transfers", title: "Transferts privés à travers la Croatie et l'Europe centrale.", statement: "Allez plus loin, sans effort.", text: "Des trajets de porte à porte depuis Dubrovnik et Zagreb vers l'Autriche, la Hongrie, la Slovénie, l'Allemagne et au-delà.", primary: "Réserver un transfert", secondary: "Voir les destinations" },
     stats: ["Passagers", "Destinations", "Années d'expérience"],
     welcome: { tag: "Bienvenue", title: "Aurora Private Transfers", p1: "Nous sommes une agence professionnelle spécialisée dans les transferts privés, offrant un transport sûr, confortable et fiable.", p2: "Nos chauffeurs expérimentés et nos véhicules modernes garantissent un trajet agréable, ponctuel et sans stress, que vous voyagiez pour affaires ou pour vos loisirs." },

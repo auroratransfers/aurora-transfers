@@ -1,0 +1,16 @@
+---
+import { ArrowRight, ShieldCheck } from "@lucide/astro";
+import { getPlatformContent } from "../data/platformPages";
+import type { Lang } from "../data/site";
+
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const content = getPlatformContent(lang).help;
+---
+
+<section class="help-page soft-page">
+  <div class="help-page-heading"><span class="section-marker kiwi-marker">{content.tag}</span><h1>{content.title}</h1><p>{content.intro}</p></div>
+  <div class="help-trust-grid">{content.cards.map((card) => <article><span><ShieldCheck size={21} /></span><h2>{card.title}</h2><p>{card.text}</p></article>)}</div>
+  <section class="help-faq"><div><span class="section-marker pink-marker">{content.tag}</span><h2>{content.faqTitle}</h2></div><div>{content.faqs.map((faq, index) => <details open={index === 0}><summary>{faq.question}</summary><p>{faq.answer}</p></details>)}</div></section>
+  <section class="help-cta"><div><strong>{content.support}</strong><p>{content.intro}</p></div><a class="pill-button light" href={`/${lang}/book/`}>{content.cta}<ArrowRight size={16} /></a></section>
+</section>

@@ -1,6 +1,7 @@
 ---
 import { ArrowLeftRight, ArrowRight, CalendarCheck, Car, Check, ChevronDown, ChevronLeft, ChevronRight, Clock3, Mail, MapPin, MessageCircle, Minus, Phone, Plane, Plus, User, Users } from "@lucide/astro";
 import { getContent, getInterfaceContent, type Lang } from "../data/site";
+import { getBookingExperience } from "../data/bookingExperience";
 
 interface Props {
   lang: Lang;
@@ -11,6 +12,7 @@ const { lang, variant } = Astro.props;
 const t = getContent(lang);
 const ui = getInterfaceContent(lang);
 const booking = t.booking;
+const experience = getBookingExperience(lang);
 const formId = `transfer-booking-${variant}-${lang}`;
 const times = Array.from({ length: 96 }, (_, index) => `${String(Math.floor(index / 4)).padStart(2, "0")}:${String((index % 4) * 15).padStart(2, "0")}`);
 const bookingFeedback = {
@@ -64,6 +66,16 @@ const placeCopy = {
   data-place-old-town={placeCopy.oldTown}
   data-place-attraction={placeCopy.attraction}
   data-place-default={placeCopy.place}
+  data-estimate-loading={experience.estimateLoading}
+  data-estimate-empty={experience.estimateEmpty}
+  data-estimate-ready={experience.estimateReady}
+  data-estimate-route={experience.estimateRoute}
+  data-estimate-time={experience.estimateTime}
+  data-estimate-includes={experience.estimateIncludes}
+  data-flight-checking={experience.flightChecking}
+  data-flight-live={experience.flightLive}
+  data-flight-demo={experience.flightDemo}
+  data-flight-unavailable={experience.flightUnavailable}
 >
   {variant === "hero" ? (
     <div class="hero-booking-heading"><span><CalendarCheck size={18} /></span><div><strong>{booking.title}</strong><small>{booking.intro}</small></div></div>
@@ -73,7 +85,20 @@ const placeCopy = {
 
   <form class="hero-booking-form transfer-booking-form" action="/api/book" method="post" autocomplete="off">
     <input type="hidden" name="lang" value={lang} />
-    <input type="hidden" name="service" value="private-transfer" />
+    <input type="hidden" name="service" value="private-transfer" data-service-input />
+
+    <section class="booking-experience-section full" aria-label={experience.serviceLabel}>
+      <div class="booking-experience-heading"><div><span>{experience.serviceLabel}</span><small>{experience.serviceHint}</small></div></div>
+      <div class="booking-service-grid" role="group" aria-label={experience.serviceLabel}>
+        {experience.services.map((service) => <button type="button" class:list={["booking-service-option", { active: service.value === "private-transfer" }]} data-booking-service={service.value} aria-pressed={service.value === "private-transfer" ? "true" : "false"}>
+          <span class="booking-service-icon">
+            {service.value === "airport-arrival" || service.value === "airport-concierge" ? <Plane size={17} /> : service.value === "hourly-chauffeur" ? <Clock3 size={17} /> : service.value === "group-transfer" ? <Users size={17} /> : service.value === "aurora-now" ? <MapPin size={17} /> : <Car size={17} />}
+          </span>
+          <span class="booking-service-copy"><strong>{service.title}</strong><small>{service.text}</small></span>
+          {service.badge && <em>{service.badge}</em>}
+        </button>)}
+      </div>
+    </section>
 
     <label for={`${formId}-pickup`}>
       {booking.pickup}
@@ -130,6 +155,13 @@ const placeCopy = {
       <div class="quick-menu" data-quick-panel hidden>{times.map((time) => <button type="button" data-value={time}>{time}</button>)}</div>
     </div>
 
+    <div class="booking-hourly-control full" data-hourly-control hidden>
+      <span>{experience.hoursLabel}</span>
+      <small>{experience.hoursHint}</small>
+      <input type="hidden" name="hourlyHours" value="3" data-hourly-hours />
+      <div class="hourly-stepper"><Clock3 size={16} /><button type="button" data-hourly-minus aria-label="Decrease hours"><Minus size={15} /></button><strong data-hourly-count>3 {experience.hoursSuffix}</strong><button type="button" data-hourly-plus aria-label="Increase hours"><Plus size={15} /></button></div>
+    </div>
+
     <div class="quick-return full" data-quick-return hidden>
       <div class="quick-control" data-quick-date="returnDate">
         <span>{booking.returnDate}</span>
@@ -157,9 +189,42 @@ const placeCopy = {
 
     <div class="hero-extra-fields full">
       <label for={`${formId}-phone`}>{booking.phone}<div class="input-wrap"><Phone size={16} /><input id={`${formId}-phone`} name="phone" type="tel" autocomplete="tel" required placeholder={contactPlaceholders.phone} /></div></label>
-      <label for={`${formId}-flight`}>{booking.flight}<div class="input-wrap flight-input-wrap"><Plane size={16} /><input id={`${formId}-flight`} name="flight" autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" /></div></label>
+      <label for={`${formId}-flight`}>{booking.flight}<div class="flight-input-row"><div class="input-wrap flight-input-wrap"><Plane size={16} /><input id={`${formId}-flight`} name="flight" autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-flight-input /></div><button class="flight-check-button" type="button" data-flight-check>{experience.flightCheck}</button></div><input type="hidden" name="flightStatus" data-flight-status-output /><small class="flight-field-hint">{experience.flightHint}</small><span class="flight-check-result" data-flight-result hidden aria-live="polite"></span></label>
       <label class="full" for={`${formId}-message`}>{booking.message}<div class="input-wrap"><MessageCircle size={16} /><input id={`${formId}-message`} name="message" autocomplete="off" /></div></label>
     </div>
+
+    <details class="booking-advanced full">
+      <summary><span>{experience.vehicleLabel}</span><small>{experience.vehicleHint}</small></summary>
+      <div class="booking-advanced-content">
+        <input type="hidden" name="vehicleClass" value="comfort" data-vehicle-class-output />
+        <div class="vehicle-class-grid" role="group" aria-label={experience.vehicleLabel}>
+          {experience.vehicles.map((vehicle) => <button type="button" class:list={["vehicle-class-option", { active: vehicle.value === "comfort" }]} data-vehicle-class={vehicle.value} aria-pressed={vehicle.value === "comfort" ? "true" : "false"}>
+            <span class="vehicle-class-top"><Car size={18} /><b>{vehicle.from}</b></span>
+            <strong>{vehicle.title}</strong><small>{vehicle.text}</small>
+            <span class="vehicle-class-meta"><span>{vehicle.passengers}</span><span>{vehicle.luggage}</span></span>
+          </button>)}
+        </div>
+
+        <div class="booking-addon-heading"><div><strong>{experience.addonLabel}</strong><small>{experience.addonHint}</small></div></div>
+        <input type="hidden" name="addons" value="[]" data-addon-output />
+        <div class="booking-addon-grid">
+          {experience.addons.map((addon) => <label class="booking-addon-option"><input type="checkbox" value={addon.value} data-addon-input checked={addon.included} /><span class="booking-addon-check"><Check size={13} /></span><span class="booking-addon-copy"><strong>{addon.title}</strong><small>{addon.text}</small></span><b>{addon.price}</b></label>)}
+        </div>
+
+        <section class="booking-estimate" data-booking-estimate aria-live="polite">
+          <div><span>{experience.estimateLabel}</span><strong data-estimate-heading>{experience.estimateEmpty}</strong><small data-estimate-meta></small></div>
+          <button type="button" class="pill-button outline" data-quote-action>{experience.estimateAction}</button>
+          <input type="hidden" name="quoteId" data-quote-id />
+          <input type="hidden" name="quoteAmount" data-quote-amount />
+          <p data-estimate-note>{experience.estimateNote}</p>
+        </section>
+
+        <div class="booking-assurance-grid">
+          <article><strong>{experience.paymentLabel}</strong><p>{experience.paymentText}</p><span>{experience.paymentAction}</span></article>
+          <article><strong>{experience.manageLabel}</strong><p>{experience.manageText}</p><span>{experience.manageAction}</span></article>
+        </div>
+      </div>
+    </details>
 
     <p class="booking-error full" data-booking-error hidden>{bookingFeedback.error}</p>
     <div class="hero-booking-actions full">
@@ -180,6 +245,8 @@ const placeCopy = {
 
   document.querySelectorAll<HTMLElement>("[data-transfer-booking]").forEach((booking) => {
     const locale = booking.dataset.lang || "en";
+    const languageInput = booking.querySelector<HTMLInputElement>('[name="lang"]');
+    if (languageInput) languageInput.value = locale;
     const panels = booking.querySelectorAll<HTMLElement>("[data-quick-panel]");
     const placeFields = booking.querySelectorAll<HTMLElement>("[data-place-autocomplete]");
     const closePanels = (except?: HTMLElement | null) => panels.forEach((panel) => {
@@ -225,6 +292,7 @@ const placeCopy = {
       };
       stepper.querySelector("[data-passenger-minus]")?.addEventListener("click", () => update(Number(input?.value || 1) - 1));
       stepper.querySelector("[data-passenger-plus]")?.addEventListener("click", () => update(Number(input?.value || 1) + 1));
+      update(Number(input?.value || 1));
     });
 
     const today = new Date();
@@ -338,6 +406,53 @@ const placeCopy = {
       if (value !== "return") returnCalendar?.clear(); else returnCalendar?.render();
     };
     booking.querySelectorAll<HTMLButtonElement>("[data-quick-trip]").forEach((button) => button.addEventListener("click", () => setTripType(button.dataset.quickTrip || "one-way")));
+    setTripType("one-way");
+
+    const serviceInput = booking.querySelector<HTMLInputElement>("[data-service-input]");
+    const hourlyControl = booking.querySelector<HTMLElement>("[data-hourly-control]");
+    const setService = (value: string) => {
+      if (serviceInput) serviceInput.value = value;
+      hourlyControl?.toggleAttribute("hidden", value !== "hourly-chauffeur");
+      booking.querySelectorAll<HTMLButtonElement>("[data-booking-service]").forEach((item) => {
+        const active = item.dataset.bookingService === value;
+        item.classList.toggle("active", active);
+        item.setAttribute("aria-pressed", String(active));
+      });
+    };
+    booking.querySelectorAll<HTMLButtonElement>("[data-booking-service]").forEach((button) => button.addEventListener("click", () => setService(button.dataset.bookingService || "private-transfer")));
+    setService("private-transfer");
+
+    const hourlyInput = booking.querySelector<HTMLInputElement>("[data-hourly-hours]");
+    const hourlyCount = booking.querySelector<HTMLElement>("[data-hourly-count]");
+    const updateHourly = (next: number) => {
+      const value = Math.min(12, Math.max(2, next));
+      if (hourlyInput) hourlyInput.value = String(value);
+      if (hourlyCount) hourlyCount.textContent = `${value} ${hourlyCount.dataset.hoursSuffix || "hours"}`;
+    };
+    if (hourlyCount) hourlyCount.dataset.hoursSuffix = hourlyCount.textContent?.replace(/^3\s*/, "") || "hours";
+    booking.querySelector("[data-hourly-minus]")?.addEventListener("click", () => updateHourly(Number(hourlyInput?.value || 3) - 1));
+    booking.querySelector("[data-hourly-plus]")?.addEventListener("click", () => updateHourly(Number(hourlyInput?.value || 3) + 1));
+    updateHourly(3);
+
+    const vehicleClassOutput = booking.querySelector<HTMLInputElement>("[data-vehicle-class-output]");
+    const setVehicleClass = (value: string) => {
+      if (vehicleClassOutput) vehicleClassOutput.value = value;
+      booking.querySelectorAll<HTMLButtonElement>("[data-vehicle-class]").forEach((item) => {
+        const active = item.dataset.vehicleClass === value;
+        item.classList.toggle("active", active);
+        item.setAttribute("aria-pressed", String(active));
+      });
+    };
+    booking.querySelectorAll<HTMLButtonElement>("[data-vehicle-class]").forEach((button) => button.addEventListener("click", () => setVehicleClass(button.dataset.vehicleClass || "comfort")));
+    setVehicleClass("comfort");
+
+    const addonOutput = booking.querySelector<HTMLInputElement>("[data-addon-output]");
+    const syncAddons = () => {
+      const values = [...booking.querySelectorAll<HTMLInputElement>("[data-addon-input]:checked")].map((input) => input.value);
+      if (addonOutput) addonOutput.value = JSON.stringify(values);
+    };
+    booking.querySelectorAll<HTMLInputElement>("[data-addon-input]").forEach((input) => input.addEventListener("change", syncAddons));
+    syncAddons();
 
     const categoryLabel = (category?: string) => {
       const labels: Record<string, string | undefined> = {
@@ -488,6 +603,8 @@ const placeCopy = {
     });
     const tripParam = params.get("tripType");
     if (tripParam === "return") setTripType("return");
+    const serviceParam = params.get("service");
+    if (serviceParam && booking.querySelector(`[data-booking-service="${CSS.escape(serviceParam)}"]`)) setService(serviceParam);
     const departureParam = params.get("date");
     if (departureParam) departureCalendar?.set(departureParam);
     const returnParam = params.get("returnDate");
@@ -503,6 +620,87 @@ const placeCopy = {
 
     const form = booking.querySelector<HTMLFormElement>("form");
     const success = booking.querySelector<HTMLElement>("[data-booking-success]");
+
+    const flightInput = booking.querySelector<HTMLInputElement>("[data-flight-input]");
+    const flightButton = booking.querySelector<HTMLButtonElement>("[data-flight-check]");
+    const flightResult = booking.querySelector<HTMLElement>("[data-flight-result]");
+    const flightStatusOutput = booking.querySelector<HTMLInputElement>("[data-flight-status-output]");
+    const resetFlightStatus = () => {
+      if (flightStatusOutput) flightStatusOutput.value = "";
+      if (flightResult) { flightResult.hidden = true; flightResult.textContent = ""; }
+    };
+    flightInput?.addEventListener("input", resetFlightStatus);
+    flightButton?.addEventListener("click", async () => {
+      const flight = flightInput?.value.trim();
+      if (!flight) { flightInput?.focus(); return; }
+      const original = flightButton.textContent || "";
+      flightButton.disabled = true;
+      flightButton.textContent = booking.dataset.flightChecking || original;
+      if (flightResult) { flightResult.hidden = false; flightResult.textContent = booking.dataset.flightChecking || ""; }
+      try {
+        const date = booking.querySelector<HTMLInputElement>('[name="date"]')?.value || "";
+        const response = await fetch(`/api/flight-status?flight=${encodeURIComponent(flight)}&date=${encodeURIComponent(date)}`, { cache: "no-store" });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok || !result.flight) throw new Error("Flight lookup failed");
+        const arrival = result.flight.arrival || {};
+        const sourceLabel = result.isLive ? booking.dataset.flightLive : booking.dataset.flightDemo;
+        const detail = [result.flight.number, result.flight.status, arrival.airport, arrival.terminal ? `T${arrival.terminal}` : "", arrival.gate ? `G${arrival.gate}` : ""].filter(Boolean).join(" · ");
+        if (flightResult) flightResult.textContent = `${sourceLabel || ""}: ${detail}`;
+        if (flightStatusOutput) flightStatusOutput.value = JSON.stringify(result.flight);
+      } catch (_) {
+        if (flightResult) flightResult.textContent = booking.dataset.flightUnavailable || "";
+      } finally {
+        flightButton.disabled = false;
+        flightButton.textContent = original;
+      }
+    });
+
+    const quoteAction = booking.querySelector<HTMLButtonElement>("[data-quote-action]");
+    const estimateHeading = booking.querySelector<HTMLElement>("[data-estimate-heading]");
+    const estimateMeta = booking.querySelector<HTMLElement>("[data-estimate-meta]");
+    const quoteId = booking.querySelector<HTMLInputElement>("[data-quote-id]");
+    const quoteAmount = booking.querySelector<HTMLInputElement>("[data-quote-amount]");
+    const clearQuote = () => {
+      if (quoteId) quoteId.value = "";
+      if (quoteAmount) quoteAmount.value = "";
+      if (estimateHeading) estimateHeading.textContent = booking.dataset.estimateEmpty || "";
+      if (estimateMeta) estimateMeta.textContent = "";
+    };
+    booking.querySelectorAll<HTMLInputElement>('[name="pickup"], [name="destination"]').forEach((field) => field.addEventListener("input", clearQuote));
+    booking.addEventListener("click", (event) => {
+      if (!(event.target instanceof Element)) return;
+      if (event.target.closest("[data-booking-service], [data-vehicle-class], [data-addon-input], [data-hourly-minus], [data-hourly-plus], [data-passenger-minus], [data-passenger-plus], [data-quick-trip], [data-day], [data-value]")) clearQuote();
+    });
+    quoteAction?.addEventListener("click", async () => {
+      if (!form) return;
+      const pickup = form.querySelector<HTMLInputElement>('[name="pickup"]');
+      const destination = form.querySelector<HTMLInputElement>('[name="destination"]');
+      if (!pickup?.value.trim()) { pickup?.focus(); return; }
+      if (!destination?.value.trim()) { destination?.focus(); return; }
+      const original = quoteAction.textContent || "";
+      quoteAction.disabled = true;
+      quoteAction.textContent = booking.dataset.estimateLoading || original;
+      if (estimateHeading) estimateHeading.textContent = booking.dataset.estimateLoading || "";
+      if (estimateMeta) estimateMeta.textContent = "";
+      try {
+        const payload = Object.fromEntries(new FormData(form).entries());
+        const response = await fetch("/api/quote", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok || !result.quote) throw new Error("Quote failed");
+        const quote = result.quote;
+        const currency = new Intl.NumberFormat(locale, { style: "currency", currency: quote.currency || "EUR", maximumFractionDigits: 0 }).format(Number(quote.total || 0));
+        if (estimateHeading) estimateHeading.textContent = `${booking.dataset.estimateReady || ""} · ${currency}`;
+        if (estimateMeta) estimateMeta.textContent = `${booking.dataset.estimateRoute || ""}: ${Math.round(Number(quote.distanceKm || 0))} km · ${booking.dataset.estimateTime || ""}: ${Math.round(Number(quote.durationMinutes || 0))} min`;
+        if (quoteId) quoteId.value = quote.id || "";
+        if (quoteAmount) quoteAmount.value = String(quote.total || "");
+      } catch (_) {
+        if (estimateHeading) estimateHeading.textContent = booking.dataset.estimateNote || "";
+      } finally {
+        quoteAction.disabled = false;
+        quoteAction.textContent = original;
+      }
+    });
+
     form?.addEventListener("submit", async (event) => {
       event.preventDefault();
       if (!form.reportValidity()) return;
@@ -542,6 +740,12 @@ const placeCopy = {
       returnCalendar?.clear();
       outbound = "";
       setTripType("one-way");
+      setService("private-transfer");
+      setVehicleClass("comfort");
+      updateHourly(3);
+      syncAddons();
+      resetFlightStatus();
+      clearQuote();
       booking.querySelectorAll<HTMLElement>("[data-quick-label]").forEach((label) => { label.textContent = label.dataset.quickEmpty || ""; });
       booking.querySelectorAll<HTMLElement>("[data-place-autocomplete]").forEach((field) => {
         field.querySelector<HTMLInputElement>("[data-place-id]")?.setAttribute("value", "");

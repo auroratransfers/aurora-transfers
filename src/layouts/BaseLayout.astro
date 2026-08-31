@@ -47,7 +47,7 @@ const localized = (target: Lang) => Astro.url.pathname === "/" ? (target === "en
       <div class="footer-wrap">
         <a class="wordmark footer-logo" href={lang === "en" && Astro.url.pathname === "/" ? "/" : `/${lang}/`}><img class="footer-brand-logo" src="/media/aurora-logo.svg" alt="Aurora Private Transfers" /></a>
         <p>{t.footer}</p>
-        <div class="footer-links"><a href={`/${lang}/services/`}>{t.nav.services}</a><a href={`/${lang}/about/`}>{t.nav.about}</a><a href={`/${lang}/contact/`}>{t.nav.contact}</a><a href={`/${lang}/work-with-us/`}>{t.nav["work-with-us"]}</a><a href={`/${lang}/book/`}>{t.nav.book}</a></div>
+        <div class="footer-links"><a href={`/${lang}/services/`}>{t.nav.services}</a><a href={`/${lang}/routes/`}>{t.nav.routes}</a><a href={`/${lang}/business/`}>{t.nav.business}</a><a href={`/${lang}/concierge/`}>{t.nav.concierge}</a><a href={`/${lang}/help/`}>{t.nav.help}</a><a href={`/${lang}/work-with-us/`}>{t.nav["work-with-us"]}</a><a href={`/${lang}/contact/`}>{t.nav.contact}</a><a href={`/${lang}/book/`}>{t.nav.book}</a></div>
       </div>
       <div class="footer-bottom">© {new Date().getFullYear()} Aurora Private Transfers · {ui.country}</div>
     </footer>
