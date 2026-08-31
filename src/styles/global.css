@@ -130,8 +130,8 @@ main { width: min(1152px, calc(100% - 32px)); margin-inline: auto; padding-top: 
 .hourly-stepper strong { min-width: 63px; color: var(--ink); font-size: .73rem; text-align: center; }
 .hero-contact-fields { display: grid; gap: 11px; }
 .hero-contact-fields input { min-width: 0; }
-.hero-extra-fields { display: grid; gap: 11px; }
-.hero-extra-fields label { min-width: 0; display: grid; gap: 5px; color: #625a67; font-size: .72rem; font-weight: 600; }
+.hero-extra-fields { display: grid; align-items: start; gap: 11px; }
+.hero-extra-fields label { min-width: 0; align-self: start; display: grid; gap: 5px; color: #625a67; font-size: .72rem; font-weight: 600; }
 .hero-extra-fields input { min-width: 0; }
 .flight-input-row { min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px; }
 .flight-check-button { min-height: 41px; padding: 0 9px; border: 1px solid #ddd8e2; border-radius: var(--radius); color: var(--purple); background: white; font-size: .68rem; font-weight: 800; cursor: pointer; white-space: nowrap; }
