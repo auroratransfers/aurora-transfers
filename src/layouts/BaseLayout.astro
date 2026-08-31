@@ -18,6 +18,7 @@ const localized = (target: Lang) => Astro.url.pathname === "/" ? (target === "en
     <meta name="description" content={description} />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={canonical} />
     {languages.map((target) => <link rel="alternate" hreflang={target} href={new URL(localized(target), Astro.site)} />)}
     <link rel="alternate" hreflang="x-default" href={new URL(localized("en"), Astro.site)} />
