@@ -96,7 +96,6 @@ const placeCopy = {
             <span class="booking-service-copy">
               <span class="booking-service-title"><span class="booking-service-icon">{service.value === "airport-arrival" || service.value === "airport-concierge" ? <Plane size={14} /> : service.value === "hourly-chauffeur" ? <Clock3 size={14} /> : service.value === "group-transfer" ? <Users size={14} /> : service.value === "aurora-now" ? <MapPin size={14} /> : <Car size={14} />}</span><strong>{service.title}</strong></span>
               <small>{service.text}</small>
-              {service.badge && <em>{service.badge}</em>}
             </span>
           </button>)}
         </div>
