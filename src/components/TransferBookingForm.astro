@@ -93,11 +93,11 @@ const placeCopy = {
         <button class="booking-service-scroll-control previous" type="button" data-service-scroll-prev aria-controls={`${formId}-service-options`} aria-label={experience.serviceScrollPrevious} title={experience.serviceScrollPrevious}><ChevronLeft size={16} /></button>
         <div id={`${formId}-service-options`} class="booking-service-grid" role="group" aria-label={experience.serviceLabel}>
           {experience.services.map((service) => <button type="button" class:list={["booking-service-option", { active: service.value === "private-transfer" }]} data-booking-service={service.value} aria-pressed={service.value === "private-transfer" ? "true" : "false"}>
-            <span class="booking-service-icon">
-              {service.value === "airport-arrival" || service.value === "airport-concierge" ? <Plane size={17} /> : service.value === "hourly-chauffeur" ? <Clock3 size={17} /> : service.value === "group-transfer" ? <Users size={17} /> : service.value === "aurora-now" ? <MapPin size={17} /> : <Car size={17} />}
+            <span class="booking-service-copy">
+              <span class="booking-service-title"><span class="booking-service-icon">{service.value === "airport-arrival" || service.value === "airport-concierge" ? <Plane size={14} /> : service.value === "hourly-chauffeur" ? <Clock3 size={14} /> : service.value === "group-transfer" ? <Users size={14} /> : service.value === "aurora-now" ? <MapPin size={14} /> : <Car size={14} />}</span><strong>{service.title}</strong></span>
+              <small>{service.text}</small>
+              {service.badge && <em>{service.badge}</em>}
             </span>
-            <span class="booking-service-copy"><strong>{service.title}</strong><small>{service.text}</small></span>
-            {service.badge && <em>{service.badge}</em>}
           </button>)}
         </div>
         <button class="booking-service-scroll-control next" type="button" data-service-scroll-next aria-controls={`${formId}-service-options`} aria-label={experience.serviceScrollNext} title={experience.serviceScrollNext}><ChevronRight size={16} /></button>
