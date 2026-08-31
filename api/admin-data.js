@@ -156,6 +156,9 @@ async function getData(sql, req) {
     devices: await sql`select id,label,kind,driver_id,vehicle_id,active,last_seen_at,created_at,revoked_at from device_credentials order by created_at desc`,
   };
   if (resource === "vehicles") return { vehicles: await fleetRows(sql) };
+  if (resource === "partner_applications") return {
+    applications: await sql`select id,status,applicant_type,full_name,company_name,email,phone,country,base_city,years_experience,vehicle_make,vehicle_model,vehicle_year,plate_number,seats,created_at,updated_at from partner_applications order by created_at desc limit 250`,
+  };
   if (resource === "incidents") return {
     incidents: await sql`select i.*,r.reference,r.status ride_status,r.driver_id,r.vehicle_id,
         d.full_name driver_name,v.plate_number

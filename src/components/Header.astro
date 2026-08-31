@@ -17,13 +17,14 @@ const links = [
   ["destinations", `/${lang}/destinations/`, t.nav.destinations],
   ["fleet", `/${lang}/fleet/`, t.nav.fleet],
   ["about", `/${lang}/about/`, t.nav.about],
-  ["contact", `/${lang}/contact/`, t.nav.contact]
+  ["contact", `/${lang}/contact/`, t.nav.contact],
+  ["work-with-us", `/${lang}/work-with-us/`, t.nav["work-with-us"]]
 ] as const;
 ---
 <header class="site-header" data-header>
   <nav class="nav-wrap">
     <a class="wordmark header-wordmark" href={homePath} aria-label={ui.homeLabel}>
-      <span>Aurora<small>Dubrovnik Transfers</small></span>
+      <span>Aurora<small>Private Transfers</small></span>
     </a>
     <div class="desktop-nav" aria-label={ui.mainNavigation}>
       {links.map(([key, href, label]) => <a class:list={["nav-link", { active: active === key }]} href={href}>{label}</a>)}

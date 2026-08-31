@@ -1,6 +1,6 @@
-# Aurora Dubrovnik Transfers
+# Aurora Private Transfers
 
-> Private transfer service based in Dubrovnik, Croatia, providing airport, hotel, marina, intercity and private tour transportation.
+> Private transfer service across Croatia and Central Europe, providing airport, hotel, marina, intercity and private tour transportation.
 
 Primary site: https://aurora-transfers.vercel.app/
 
@@ -15,13 +15,18 @@ Languages: Croatian, English, German and French.
 - About: https://aurora-transfers.vercel.app/hr/about/
 - Booking: https://aurora-transfers.vercel.app/hr/book/
 - Contact: https://aurora-transfers.vercel.app/hr/contact/
+- Work with us: https://aurora-transfers.vercel.app/hr/work-with-us/
 
 ## Core services
 
 - Dubrovnik Airport private transfers
 - Dubrovnik hotel, villa, marina and cruise port transfers
-- Private rides to Split, Mostar and Kotor
+- Private rides across Croatia, Austria, Hungary, Slovenia, Germany and the wider region
 - Tailor-made private day tours
+
+## Driver partners
+
+Professional independent drivers and licensed transport companies can apply through the Work with us page. Applications collect driver qualifications, supported passenger languages, vehicle details, service area, availability and vehicle photos for review.
 
 Full context: https://aurora-transfers.vercel.app/llms-full.txt
 Structured context: https://aurora-transfers.vercel.app/.well-known/agent-context.json

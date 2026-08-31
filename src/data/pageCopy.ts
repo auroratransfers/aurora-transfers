@@ -193,7 +193,7 @@ const pageCopy = {
         secondaryCta: "Pogledaj usluge",
         secondaryHref: "services"
       },
-      seoDescription: "Moderna, klimatizirana vozila Aurora Dubrovnik Transfers za dolaske iz zračne luke, duže rute, obitelji i privatne izlete."
+      seoDescription: "Moderna, klimatizirana vozila Aurora Private Transfers za dolaske iz zračne luke, duže rute, obitelji i privatne izlete kroz Hrvatsku i srednju Europu."
     },
     about: {
       tag: "O Aurora Transfers",
@@ -246,7 +246,7 @@ const pageCopy = {
         secondaryCta: "Pogledaj vozila",
         secondaryHref: "fleet"
       },
-      seoDescription: "Upoznajte Aurora Dubrovnik Transfers, privatnu transfer agenciju za međunarodne goste koji putuju u Dubrovnik, Hrvatsku i regiju."
+      seoDescription: "Upoznajte Aurora Private Transfers, agenciju za privatne transfere za međunarodne goste koji putuju kroz Dubrovnik, Hrvatsku i srednju Europu."
     }
   },
   en: {
@@ -460,7 +460,7 @@ const pageCopy = {
         secondaryCta: "View our vehicles",
         secondaryHref: "fleet"
       },
-      seoDescription: "Meet Aurora Dubrovnik Transfers, a private transfer agency for international travellers visiting Dubrovnik, Croatia and the Adriatic region."
+      seoDescription: "Meet Aurora Private Transfers, a private transfer agency for international travellers moving through Dubrovnik, Croatia and Central Europe."
     }
   },
   de: {
@@ -674,7 +674,7 @@ const pageCopy = {
         secondaryCta: "Fahrzeuge ansehen",
         secondaryHref: "fleet"
       },
-      seoDescription: "Lernen Sie Aurora Dubrovnik Transfers kennen, Ihre Agentur für private Transfers für internationale Reisende in Dubrovnik, Kroatien und der Adriaregion."
+      seoDescription: "Lernen Sie Aurora Private Transfers kennen, Ihre Agentur für private Transfers für internationale Reisende in Dubrovnik, Kroatien und Mitteleuropa."
     }
   },
   fr: {
@@ -888,7 +888,7 @@ const pageCopy = {
         secondaryCta: "Voir nos véhicules",
         secondaryHref: "fleet"
       },
-      seoDescription: "Découvrez Aurora Dubrovnik Transfers, une agence de transferts privés pour voyageurs internationaux à Dubrovnik, en Croatie et dans la région adriatique."
+      seoDescription: "Découvrez Aurora Private Transfers, une agence de transferts privés pour voyageurs internationaux à Dubrovnik, en Croatie et en Europe centrale."
     }
   }
 } as const satisfies Record<Lang, Record<MarketingPage, MarketingPageContent>>;

@@ -2,14 +2,17 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import BookingPage from "../../components/BookingPage.astro";
 import ContentPage from "../../components/ContentPage.astro";
+import PartnerApplicationPage from "../../components/PartnerApplicationPage.astro";
 import { getContent, languages, pages, type Lang, type Page } from "../../data/site";
 import { getMarketingPageContent, isMarketingPage } from "../../data/pageCopy";
+import { getPartnerApplicationContent } from "../../data/partnerApplication";
 export function getStaticPaths() { return languages.flatMap((lang) => pages.map((page) => ({ params: { lang, page } }))); }
 const lang = Astro.params.lang as Lang;
 const page = Astro.params.page as Page;
 const t = getContent(lang);
 const marketingContent = isMarketingPage(page) ? getMarketingPageContent(lang, page) : null;
-const title = page === "book" ? t.booking.title : marketingContent ? `${marketingContent.title} | Aurora Dubrovnik Transfers` : `${t.nav[page]} | Aurora Dubrovnik Transfers`;
-const description = page === "book" ? t.booking.intro : marketingContent?.seoDescription || t.hero.text;
+const partnerContent = page === "work-with-us" ? getPartnerApplicationContent(lang) : null;
+const title = page === "book" ? `${t.booking.title} | Aurora Private Transfers` : partnerContent ? `${partnerContent.title} | Aurora Private Transfers` : marketingContent ? `${marketingContent.title} | Aurora Private Transfers` : `${t.nav[page]} | Aurora Private Transfers`;
+const description = page === "book" ? t.booking.intro : partnerContent?.intro || marketingContent?.seoDescription || t.hero.text;
 ---
-<BaseLayout lang={lang} active={page} title={title} description={description}>{page === "book" ? <BookingPage lang={lang} /> : <ContentPage lang={lang} page={page} />}</BaseLayout>
+<BaseLayout lang={lang} active={page} title={title} description={description}>{page === "book" ? <BookingPage lang={lang} /> : page === "work-with-us" ? <PartnerApplicationPage lang={lang} /> : <ContentPage lang={lang} page={page} />}</BaseLayout>

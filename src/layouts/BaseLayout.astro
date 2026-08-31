@@ -22,7 +22,7 @@ const localized = (target: Lang) => Astro.url.pathname === "/" ? (target === "en
     {languages.map((target) => <link rel="alternate" hreflang={target} href={new URL(localized(target), Astro.site)} />)}
     <link rel="alternate" hreflang="x-default" href={new URL(localized("en"), Astro.site)} />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Aurora Dubrovnik Transfers" />
+    <meta property="og:site_name" content="Aurora Private Transfers" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
@@ -32,10 +32,10 @@ const localized = (target: Lang) => Astro.url.pathname === "/" ? (target === "en
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "TaxiService",
-      name: "Aurora Dubrovnik Transfers",
+      name: "Aurora Private Transfers",
       url: Astro.site,
       image: new URL("/media/dubrovnik-harbor.jpg", Astro.site),
-      areaServed: ["Dubrovnik", "Croatia", "Montenegro", "Bosnia and Herzegovina"],
+      areaServed: ["Croatia", "Central Europe", "Austria", "Hungary", "Slovenia", "Germany"],
       availableLanguage: ["Croatian", "English", "German", "French"]
     })} />
   </head>
@@ -44,11 +44,11 @@ const localized = (target: Lang) => Astro.url.pathname === "/" ? (target === "en
     <main><slot /></main>
     <footer class="site-footer">
       <div class="footer-wrap">
-        <a class="wordmark footer-logo" href={lang === "en" && Astro.url.pathname === "/" ? "/" : `/${lang}/`}><span class="logo-symbol"><span>A</span></span><span>Aurora<small>Dubrovnik Transfers</small></span></a>
+        <a class="wordmark footer-logo" href={lang === "en" && Astro.url.pathname === "/" ? "/" : `/${lang}/`}><span class="logo-symbol"><span>A</span></span><span>Aurora<small>Private Transfers</small></span></a>
         <p>{t.footer}</p>
-        <div class="footer-links"><a href={`/${lang}/services/`}>{t.nav.services}</a><a href={`/${lang}/about/`}>{t.nav.about}</a><a href={`/${lang}/contact/`}>{t.nav.contact}</a><a href={`/${lang}/book/`}>{t.nav.book}</a></div>
+        <div class="footer-links"><a href={`/${lang}/services/`}>{t.nav.services}</a><a href={`/${lang}/about/`}>{t.nav.about}</a><a href={`/${lang}/contact/`}>{t.nav.contact}</a><a href={`/${lang}/work-with-us/`}>{t.nav["work-with-us"]}</a><a href={`/${lang}/book/`}>{t.nav.book}</a></div>
       </div>
-      <div class="footer-bottom">© {new Date().getFullYear()} Aurora Dubrovnik Transfers · Dubrovnik, {ui.country}</div>
+      <div class="footer-bottom">© {new Date().getFullYear()} Aurora Private Transfers · {ui.country}</div>
     </footer>
     <script>
       const menuButton = document.querySelector("[data-menu-toggle]");
