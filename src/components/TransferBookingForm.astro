@@ -639,7 +639,7 @@ const placeCopy = {
       if (flightResult) { flightResult.hidden = false; flightResult.textContent = booking.dataset.flightChecking || ""; }
       try {
         const date = booking.querySelector<HTMLInputElement>('[name="date"]')?.value || "";
-        const response = await fetch(`/api/flight-status?flight=${encodeURIComponent(flight)}&date=${encodeURIComponent(date)}`, { cache: "no-store" });
+        const response = await fetch(`/api/platform?action=flight-status&flight=${encodeURIComponent(flight)}&date=${encodeURIComponent(date)}`, { cache: "no-store" });
         const result = await response.json().catch(() => ({}));
         if (!response.ok || !result.flight) throw new Error("Flight lookup failed");
         const arrival = result.flight.arrival || {};
@@ -684,7 +684,7 @@ const placeCopy = {
       if (estimateMeta) estimateMeta.textContent = "";
       try {
         const payload = Object.fromEntries(new FormData(form).entries());
-        const response = await fetch("/api/quote", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+        const response = await fetch("/api/platform?action=quote", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
         const result = await response.json().catch(() => ({}));
         if (!response.ok || !result.quote) throw new Error("Quote failed");
         const quote = result.quote;

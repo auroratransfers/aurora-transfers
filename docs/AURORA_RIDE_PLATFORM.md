@@ -29,10 +29,10 @@ Admin confirms a ride and starts dispatch. Up to five eligible drivers receive 3
 ### Public
 
 - `POST /api/book`: creates one ride or two linked legs for a return booking.
-- `POST /api/quote`: returns a clearly labelled, short-lived test estimate until the commercial pricing engine is configured.
-- `GET /api/flight-status?flight=...&date=YYYY-MM-DD`: returns flight status from Aviationstack when `AVIATIONSTACK_API_KEY` is configured; otherwise returns visibly labelled demo data without blocking a booking.
-- `GET /api/availability`: returns public-safe nearby vehicle availability only when fresh, real tracker or driver-app telemetry exists. The public Fast Ride preview remains labelled as a pilot when no live vehicle data is available.
-- `POST /api/business-inquiry`: stores and optionally emails a corporate-account inquiry.
+- `POST /api/platform?action=quote`: returns a clearly labelled, short-lived test estimate until the commercial pricing engine is configured.
+- `GET /api/platform?action=flight-status&flight=...&date=YYYY-MM-DD`: returns flight status from Aviationstack when `AVIATIONSTACK_API_KEY` is configured; otherwise returns visibly labelled demo data without blocking a booking.
+- `GET /api/platform?action=availability`: returns public-safe nearby vehicle availability only when fresh, real tracker or driver-app telemetry exists. The public Fast Ride preview remains labelled as a pilot when no live vehicle data is available.
+- `POST /api/platform?action=business-inquiry`: stores and optionally emails a corporate-account inquiry.
 - `GET /api/v1/tracking?token=...`: returns passenger-safe ride, driver, vehicle and location data.
 - `POST /api/v1/tracking`: rider issue report, completion confirmation, rating, cancellation request or booking-change request.
 

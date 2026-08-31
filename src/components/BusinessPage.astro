@@ -59,7 +59,7 @@ const content = getPlatformContent(lang).business;
       if (submit) { submit.disabled = true; submit.textContent = page.dataset.sending || ""; }
       try {
         const payload = Object.fromEntries(new FormData(form).entries());
-        const response = await fetch("/api/business-inquiry", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+        const response = await fetch("/api/platform?action=business-inquiry", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
         const result = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(result.error || "Business inquiry failed");
         const reference = page.querySelector<HTMLElement>("[data-business-reference]");

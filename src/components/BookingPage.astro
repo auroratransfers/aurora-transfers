@@ -200,7 +200,7 @@ const fastRide = {
       if (first && leafletMap && Number.isFinite(first.latitude) && Number.isFinite(first.longitude)) leafletMap.panTo([first.latitude, first.longitude], { animate: true, duration: 0.5 });
     };
     const checkLiveAvailability = async () => {
-      const response = await fetch(`/api/availability?lat=${encodeURIComponent(String(pickupCoordinates[0]))}&lng=${encodeURIComponent(String(pickupCoordinates[1]))}`, { cache: "no-store" });
+      const response = await fetch(`/api/platform?action=availability&lat=${encodeURIComponent(String(pickupCoordinates[0]))}&lng=${encodeURIComponent(String(pickupCoordinates[1]))}`, { cache: "no-store" });
       const data = await response.json().catch(() => ({}));
       if (!response.ok || data.source !== "live" || !Array.isArray(data.vehicles) || !data.vehicles.length) return false;
       applyLiveAvailability(data.vehicles);
