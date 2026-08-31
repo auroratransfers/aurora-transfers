@@ -1,5 +1,5 @@
 ---
-import { ArrowRight, Check, ShieldCheck } from "@lucide/astro";
+import { ArrowRight, Check, ChevronDown, ShieldCheck } from "@lucide/astro";
 import { getPlatformContent } from "../data/platformPages";
 import type { Lang } from "../data/site";
 
@@ -28,7 +28,7 @@ const content = getPlatformContent(lang).business;
         <label><span>{content.form.contactName}</span><input name="contactName" autocomplete="name" required /></label>
         <label><span>{content.form.email}</span><input name="email" type="email" autocomplete="email" required /></label>
         <label><span>{content.form.phone}</span><input name="phone" type="tel" autocomplete="tel" /></label>
-        <label><span>{content.form.companyType}</span><select name="companyType" required><option value="" disabled selected></option>{content.form.types.map(([value, label]) => <option value={value}>{label}</option>)}</select></label>
+        <label><span>{content.form.companyType}</span><div class="business-custom-select" data-business-select data-business-select-value=""><input type="hidden" name="companyType" data-business-select-input /><button class="business-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" data-business-select-trigger><span data-business-select-label>&nbsp;</span><ChevronDown size={17} strokeWidth={2.2} /></button><div class="business-select-menu" role="listbox" hidden data-business-select-menu>{content.form.types.map(([value, label]) => <button type="button" role="option" aria-selected="false" data-business-select-option={value}>{label}</button>)}</div></div></label>
         <label><span>{content.form.monthlyRides}</span><input name="monthlyRides" inputmode="numeric" /></label>
         <label class="business-form-full"><span>{content.form.cities}</span><input name="operatingCities" required /></label>
         <label class="business-form-full"><span>{content.form.message}</span><textarea name="message" rows="5" required></textarea></label>
@@ -51,14 +51,66 @@ const content = getPlatformContent(lang).business;
     const success = page.querySelector<HTMLElement>("[data-business-success]");
     const error = page.querySelector<HTMLElement>("[data-business-error]");
     const submit = page.querySelector<HTMLButtonElement>("[data-business-submit]");
+    const select = page.querySelector<HTMLElement>("[data-business-select]");
+    const selectInput = page.querySelector<HTMLInputElement>("[data-business-select-input]");
+    const selectTrigger = page.querySelector<HTMLButtonElement>("[data-business-select-trigger]");
+    const selectLabel = page.querySelector<HTMLElement>("[data-business-select-label]");
+    const selectMenu = page.querySelector<HTMLElement>("[data-business-select-menu]");
+    const closeSelect = () => {
+      if (!select || !selectMenu || !selectTrigger) return;
+      select.classList.remove("open");
+      selectMenu.hidden = true;
+      selectTrigger.setAttribute("aria-expanded", "false");
+    };
+    selectTrigger?.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const next = selectMenu?.hidden !== false;
+      closeSelect();
+      if (next && select && selectMenu) {
+        select.classList.add("open");
+        selectMenu.hidden = false;
+        selectTrigger.setAttribute("aria-expanded", "true");
+      }
+    });
+    select?.querySelectorAll<HTMLButtonElement>("[data-business-select-option]").forEach((option) => {
+      option.addEventListener("click", () => {
+        const value = option.dataset.businessSelectOption || "";
+        if (select) select.dataset.businessSelectValue = value;
+        if (selectInput) {
+          selectInput.value = value;
+          selectInput.setAttribute("value", value);
+        }
+        if (selectLabel) selectLabel.textContent = option.textContent || "";
+        select?.querySelectorAll("[data-business-select-option]").forEach((item) => item.setAttribute("aria-selected", String(item === option)));
+        select?.classList.remove("invalid");
+        closeSelect();
+      });
+    });
+    document.addEventListener("click", (event) => {
+      if (select && !select.contains(event.target as Node)) closeSelect();
+    });
+    selectTrigger?.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeSelect();
+      if (["ArrowDown", "ArrowUp"].includes(event.key) && selectMenu?.hidden) {
+        event.preventDefault();
+        selectTrigger.click();
+      }
+    });
     form?.addEventListener("submit", async (event) => {
       event.preventDefault();
       if (!form.reportValidity()) return;
+      const companyType = select?.dataset.businessSelectValue || "";
+      if (!companyType) {
+        select?.classList.add("invalid");
+        selectTrigger?.focus();
+        return;
+      }
       const original = submit?.innerHTML || "";
       if (error) error.hidden = true;
       if (submit) { submit.disabled = true; submit.textContent = page.dataset.sending || ""; }
       try {
         const payload = Object.fromEntries(new FormData(form).entries());
+        payload.companyType = companyType;
         const response = await fetch("/api/platform?action=business-inquiry", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
         const result = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(result.error || "Business inquiry failed");

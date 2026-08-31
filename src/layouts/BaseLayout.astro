@@ -61,10 +61,28 @@ const localized = (target: Lang) => Astro.url.pathname === "/" ? (target === "en
     <script>
       const menuButton = document.querySelector("[data-menu-toggle]");
       const mobileMenu = document.querySelector("[data-mobile-menu]");
+      const mobileCollaboration = document.querySelector("[data-mobile-collaboration]");
+      const mobileCollaborationTrigger = document.querySelector("[data-mobile-collaboration-trigger]");
+      const mobileCollaborationMenu = document.querySelector("[data-mobile-collaboration-menu]");
+      const collaboration = document.querySelector("[data-collaboration]");
+      const collaborationTrigger = document.querySelector("[data-collaboration-trigger]");
+      const collaborationMenu = document.querySelector("[data-collaboration-menu]");
+      const desktopCollaborationMenu = window.matchMedia("(min-width: 980px)");
+      const setCollaborationMenu = (open) => {
+        collaboration?.classList.toggle("open", open);
+        collaborationMenu?.toggleAttribute("hidden", !open);
+        collaborationTrigger?.setAttribute("aria-expanded", String(open));
+      };
+      const setMobileCollaborationMenu = (open) => {
+        mobileCollaboration?.classList.toggle("open", open);
+        mobileCollaborationMenu?.toggleAttribute("hidden", !open);
+        mobileCollaborationTrigger?.setAttribute("aria-expanded", String(open));
+      };
       const closeMobileMenu = () => {
         mobileMenu?.setAttribute("hidden", "");
         menuButton?.classList.remove("open");
         menuButton?.setAttribute("aria-expanded", "false");
+        setMobileCollaborationMenu(false);
       };
       menuButton?.addEventListener("click", () => {
         const open = mobileMenu?.hasAttribute("hidden") ?? true;
@@ -73,6 +91,31 @@ const localized = (target: Lang) => Astro.url.pathname === "/" ? (target === "en
         menuButton.setAttribute("aria-expanded", String(open));
       });
       mobileMenu?.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeMobileMenu));
+      mobileCollaborationTrigger?.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const open = mobileCollaborationMenu?.hasAttribute("hidden") ?? true;
+        setMobileCollaborationMenu(open);
+      });
+      collaborationTrigger?.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const open = !collaboration?.classList.contains("open");
+        setCollaborationMenu(open);
+      });
+      collaboration?.addEventListener("mouseenter", () => {
+        if (desktopCollaborationMenu.matches) setCollaborationMenu(true);
+      });
+      collaboration?.addEventListener("mouseleave", () => {
+        if (desktopCollaborationMenu.matches) setCollaborationMenu(false);
+      });
+      collaboration?.addEventListener("focusin", () => {
+        if (desktopCollaborationMenu.matches) setCollaborationMenu(true);
+      });
+      collaboration?.addEventListener("focusout", () => {
+        if (!desktopCollaborationMenu.matches) return;
+        requestAnimationFrame(() => {
+          if (!collaboration?.contains(document.activeElement)) setCollaborationMenu(false);
+        });
+      });
       const language = document.querySelector("[data-language]");
       const languageButton = language?.querySelector("button");
       const languageMenu = language?.querySelector(".language-menu");
@@ -128,6 +171,9 @@ const localized = (target: Lang) => Astro.url.pathname === "/" ? (target === "en
         if (event.target instanceof Node && !mobileMenu?.contains(event.target) && !menuButton?.contains(event.target)) closeMobileMenu();
         if (event.target instanceof Node && !language?.contains(event.target)) {
           setLanguageMenu(false);
+        }
+        if (event.target instanceof Node && !collaboration?.contains(event.target)) {
+          setCollaborationMenu(false);
         }
       });
     </script>

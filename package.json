@@ -7,6 +7,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "db:migrate": "node scripts/migrate.cjs",
+    "db:seed-demo": "node --env-file=.env.local scripts/demo-data.cjs seed",
+    "db:clear-demo": "node --env-file=.env.local scripts/demo-data.cjs clear",
     "test": "node --test test/*.test.cjs"
   },
   "dependencies": {

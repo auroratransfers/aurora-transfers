@@ -18,6 +18,7 @@ const state = {
   incidents: [],
   flightWatches: [],
   businessInquiries: [],
+  partnerApplications: [],
   view: "overview",
   fleetFilter: "all",
   selectedVehicleId: null,
@@ -218,6 +219,7 @@ function renderMetrics() {
     metric(counts.unassigned, "Unassigned", "Needs dispatch", "kiwi") +
     metric(counts.delayed, "Behind schedule", "Requires review", "blue") +
     metric(counts.open_incidents, "Open alerts", "Safety queue", "red") +
+    metric(counts.panic_alerts, "Panic alerts", "Passenger safety", "red") +
     metric(counts.completed_today, "Completed today", "Finished transfers", "neutral") +
     `<span class="metric-data" data-gps-attention="${gpsAttention}" hidden></span>`;
 }
@@ -600,10 +602,12 @@ async function loadIncidents() {
   const open = state.incidents.filter((item) => item.status === "open").length;
   const acknowledged = state.incidents.filter((item) => item.status === "acknowledged").length;
   const critical = state.incidents.filter((item) => ["critical", "high"].includes(item.severity) && ["open", "acknowledged"].includes(item.status)).length;
+  const panic = state.incidents.filter((item) => item.type === "rider_panic" && ["open", "acknowledged"].includes(item.status)).length;
   $("#incidentSummary").innerHTML = `
     <div><span>Open</span><strong>${open}</strong></div>
     <div><span>Acknowledged</span><strong>${acknowledged}</strong></div>
     <div><span>High priority</span><strong>${critical}</strong></div>
+    <div><span>Panic alerts</span><strong>${panic}</strong></div>
     <div><span>Total history</span><strong>${state.incidents.length}</strong></div>
   `;
   $("#safetyList").innerHTML = state.incidents.length
@@ -611,11 +615,17 @@ async function loadIncidents() {
         const details = item.details && typeof item.details === "object"
           ? Object.entries(item.details).slice(0, 4).map(([key, value]) => `<span><b>${esc(key.replaceAll("_", " "))}</b>${esc(value)}</span>`).join("")
           : "";
+        const latitude = item.details?.latitude == null ? Number.NaN : Number(item.details.latitude);
+        const longitude = item.details?.longitude == null ? Number.NaN : Number(item.details.longitude);
+        const panicLocation = item.type === "rider_panic" && Number.isFinite(latitude) && Number.isFinite(longitude)
+          ? `<a class="danger-button" href="https://www.openstreetmap.org/?mlat=${encodeURIComponent(latitude)}&mlon=${encodeURIComponent(longitude)}#map=17/${encodeURIComponent(latitude)}/${encodeURIComponent(longitude)}" target="_blank" rel="noopener">Open panic location</a>`
+          : "";
         return `<article class="safety-record">
           <header><div><span class="status severity-${esc(item.severity)}">${esc(item.severity)}</span>${status(item.status)}</div><time>${dateTime(item.created_at)}</time></header>
           <div class="safety-main"><div><span class="section-kicker">${esc(item.type.replaceAll("_", " "))}</span><h3>${esc(item.title)}</h3><p>${esc(item.reference || "System event")} · ${esc(item.driver_name || "No driver")} · ${esc(item.plate_number || "No vehicle")}</p></div><div class="safety-details">${details}</div></div>
           <footer>
             ${item.ride_id ? `<button class="secondary-button" type="button" data-ride-id="${esc(item.ride_id)}">Open ride</button>` : ""}
+            ${panicLocation}
             ${item.status === "open" ? `<button class="secondary-button" type="button" data-incident-action="acknowledge" data-incident-id="${esc(item.id)}">Acknowledge</button>` : ""}
             ${["open", "acknowledged"].includes(item.status) ? `<button class="primary-button compact" type="button" data-incident-action="resolve" data-incident-id="${esc(item.id)}">Resolve</button><button class="text-button muted" type="button" data-incident-action="dismiss" data-incident-id="${esc(item.id)}">Dismiss</button>` : ""}
           </footer>
@@ -665,6 +675,39 @@ async function loadBusinessInquiries() {
   $("#businessInquiryList").innerHTML = state.businessInquiries.length
     ? state.businessInquiries.map((inquiry) => `<article class="business-inquiry-card"><header><div><span class="section-kicker">${esc(inquiry.company_type.replaceAll("-", " "))}</span><h3>${esc(inquiry.company_name)}</h3><p>${esc(inquiry.contact_name)} · ${esc(inquiry.email)}${inquiry.phone ? ` · ${esc(inquiry.phone)}` : ""}</p></div>${status(inquiry.status)}</header><div class="business-inquiry-facts"><div><span>Coverage</span><strong>${esc(inquiry.operating_cities || "Not provided")}</strong></div><div><span>Monthly rides</span><strong>${esc(inquiry.monthly_rides || "Not provided")}</strong></div><div><span>Received</span><strong>${dateTime(inquiry.created_at)}</strong></div></div><p class="business-inquiry-message">${esc(inquiry.message)}</p></article>`).join("")
     : '<p class="empty">No business enquiries have been received.</p>';
+}
+
+function listText(value) {
+  return Array.isArray(value) ? value.map((item) => String(item).replaceAll("-", " ")).join(", ") : "Not provided";
+}
+
+function partnerActions(application) {
+  if (application.status === "received") {
+    return `<button class="secondary-button" type="button" data-partner-id="${esc(application.id)}" data-partner-status="under_review">Start review</button>`;
+  }
+  if (application.status === "under_review") {
+    return `<button class="primary-button compact" type="button" data-partner-id="${esc(application.id)}" data-partner-status="approved">Approve</button><button class="danger-button" type="button" data-partner-id="${esc(application.id)}" data-partner-status="declined">Decline</button>`;
+  }
+  if (["approved", "declined"].includes(application.status)) {
+    return `<button class="secondary-button" type="button" data-partner-id="${esc(application.id)}" data-partner-status="archived">Archive</button>`;
+  }
+  return `<button class="secondary-button" type="button" data-partner-id="${esc(application.id)}" data-partner-status="received">Reopen</button>`;
+}
+
+async function loadPartnerApplications() {
+  const data = await api("/api/admin-data?resource=partner_applications");
+  state.partnerApplications = data.applications || [];
+  $("#partnerApplicationList").innerHTML = state.partnerApplications.length
+    ? state.partnerApplications.map((application) => `<article class="partner-application-card">
+      <header><div><span class="section-kicker">${esc(application.applicant_type.replaceAll("-", " "))}</span><h3>${esc(application.company_name || application.full_name)}</h3><p>${esc(application.full_name)} · ${esc(application.email)} · ${esc(application.phone)}</p></div>${status(application.status)}</header>
+      <div class="partner-application-facts"><div><span>Base</span><strong>${esc(application.base_city)}, ${esc(application.country)}</strong></div><div><span>Vehicle</span><strong>${esc(`${application.vehicle_make} ${application.vehicle_model} · ${application.vehicle_year}`)}</strong></div><div><span>Seats / luggage</span><strong>${esc(`${application.seats} seats · ${application.luggage_capacity} bags`)}</strong></div><div><span>Languages</span><strong>${esc(listText(application.languages))}</strong></div><div><span>Coverage</span><strong>${esc(application.coverage_countries)}</strong></div><div><span>Received</span><strong>${dateTime(application.created_at)}</strong></div></div>
+      <p class="partner-application-routes"><strong>Routes:</strong> ${esc(application.usual_routes)}</p>
+      <div class="entity-actions">${partnerActions(application)}</div>
+    </article>`).join("")
+    : '<p class="empty">No partner applications have been received.</p>';
+  $$('[data-partner-status]', $("#partnerApplicationList")).forEach((element) => {
+    element.onclick = () => entityAction({ action: "set_partner_application_status", applicationId: element.dataset.partnerId, status: element.dataset.partnerStatus }, loadPartnerApplications);
+  });
 }
 
 function customSelectMarkup(id, items, currentValue, placeholder) {
@@ -887,6 +930,7 @@ async function showView(view) {
     incidents: "Safety center",
     flightWatches: "Flight monitoring",
     business: "Business enquiries",
+    partners: "Partner applications",
   }[view];
   closeMenu();
   if (view === "overview" || view === "dispatch") await loadOperations();
@@ -896,6 +940,7 @@ async function showView(view) {
   if (view === "incidents") await loadIncidents();
   if (view === "flightWatches") await loadFlightWatches();
   if (view === "business") await loadBusinessInquiries();
+  if (view === "partners") await loadPartnerApplications();
   scheduleLiveRefresh();
   if (view === "overview" && state.map) window.setTimeout(() => state.map.invalidateSize(), 0);
 }

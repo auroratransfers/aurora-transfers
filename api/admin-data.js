@@ -100,7 +100,8 @@ async function getData(sql, req) {
                  count(*) filter(where status in ('requested','confirmed') and driver_id is null)::int unassigned,
                  count(*) filter(where status in ('requested','confirmed','assigned') and scheduled_at<now())::int delayed,
                  count(*) filter(where status='completed' and completed_at::date=current_date)::int completed_today,
-                 (select count(*)::int from incidents where status in ('open','acknowledged')) open_incidents
+                 (select count(*)::int from incidents where status in ('open','acknowledged')) open_incidents,
+                 (select count(*)::int from incidents where type='rider_panic' and status in ('open','acknowledged')) panic_alerts
           from rides`,
       sql`select r.*,ri.full_name rider_name,ri.phone rider_phone,d.full_name driver_name,v.plate_number,v.make vehicle_make,v.model vehicle_model
           from rides r join riders ri on ri.id=r.rider_id left join drivers d on d.id=r.driver_id left join vehicles v on v.id=r.vehicle_id
@@ -158,7 +159,12 @@ async function getData(sql, req) {
   };
   if (resource === "vehicles") return { vehicles: await fleetRows(sql) };
   if (resource === "partner_applications") return {
-    applications: await sql`select id,status,applicant_type,full_name,company_name,email,phone,country,base_city,years_experience,vehicle_make,vehicle_model,vehicle_year,plate_number,seats,created_at,updated_at from partner_applications order by created_at desc limit 250`,
+    applications: await sql`select
+        id,status,language,applicant_type,full_name,company_name,email,phone,country,base_city,years_experience,
+        license_number,transport_permit,insurance_valid_until,languages,other_languages,availability,
+        vehicle_make,vehicle_model,vehicle_year,plate_number,vehicle_color,vehicle_type,seats,luggage_capacity,
+        amenities,service_base,coverage_countries,usual_routes,notes,photo_manifest,created_at,updated_at
+      from partner_applications order by created_at desc limit 250`,
   };
   if (resource === "business_inquiries") return {
     inquiries: await sql`select id,reference,language,company_name,contact_name,email,phone,company_type,operating_cities,monthly_rides,message,status,created_at,updated_at from business_inquiries order by created_at desc limit 250`,
@@ -285,6 +291,13 @@ async function postAction(sql, req) {
     const [ride]=await sql`update rides set quoted_price=${price},currency=${clean(data.currency||"EUR",3).toUpperCase()},updated_at=now() where id=${clean(data.rideId,40)} returning *`;
     if (!ride) throw Object.assign(new Error("Ride not found"), { status:404 });
     await appendEvent(sql,ride.id,"price_set","admin","admin",ride.status,ride.status,{price,currency:ride.currency}); return {ride};
+  }
+  if (action === "set_partner_application_status") {
+    const applicationId=clean(data.applicationId,40), status=clean(data.status,30);
+    if (!['received','under_review','approved','declined','archived'].includes(status)) throw Object.assign(new Error("Invalid partner application status"), { status:400 });
+    const [application]=await sql`update partner_applications set status=${status},updated_at=now() where id=${applicationId} returning id,status,updated_at`;
+    if (!application) throw Object.assign(new Error("Partner application not found"), { status:404 });
+    return {application};
   }
   if (action === "refresh_flight_watch") {
     const watchId=clean(data.watchId,40);

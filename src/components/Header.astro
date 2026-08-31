@@ -1,5 +1,5 @@
 ---
-import { Menu, Phone, X } from "@lucide/astro";
+import { ChevronDown, Menu, Phone, X } from "@lucide/astro";
 import { getContent, getInterfaceContent, languages, type Lang } from "../data/site";
 
 interface Props { lang: Lang; active?: string; }
@@ -17,9 +17,14 @@ const links = [
   ["destinations", `/${lang}/destinations/`, t.nav.destinations],
   ["fleet", `/${lang}/fleet/`, t.nav.fleet],
   ["about", `/${lang}/about/`, t.nav.about],
-  ["contact", `/${lang}/contact/`, t.nav.contact],
-  ["work-with-us", `/${lang}/work-with-us/`, t.nav["work-with-us"]]
+  ["contact", `/${lang}/contact/`, t.nav.contact]
 ] as const;
+const collaborationLinks = [
+  ["work-with-us", `/${lang}/work-with-us/`, t.nav["work-with-us"]],
+  ["business", `/${lang}/business/`, t.nav.business],
+  ["concierge", `/${lang}/concierge/`, t.nav.concierge]
+] as const;
+const collaborationActive = collaborationLinks.some(([key]) => active === key);
 ---
 <header class="site-header" data-header>
   <nav class="nav-wrap">
@@ -28,6 +33,12 @@ const links = [
     </a>
     <div class="desktop-nav" aria-label={ui.mainNavigation}>
       {links.map(([key, href, label]) => <a class:list={["nav-link", { active: active === key }]} href={href}>{label}</a>)}
+      <div class:list={["nav-collaboration", { active: collaborationActive }]} data-collaboration>
+        <button class="nav-link nav-collaboration-trigger" type="button" aria-haspopup="true" aria-expanded="false" data-collaboration-trigger>{t.nav["work-with-us"]}<ChevronDown size={14} strokeWidth={2.4} /></button>
+        <div class="nav-collaboration-menu" hidden data-collaboration-menu>
+          {collaborationLinks.map(([key, href, label]) => <a class:list={[{ active: active === key }]} href={href}>{label}</a>)}
+        </div>
+      </div>
     </div>
     <div class="nav-tools">
       <div class="language-control" data-language>
@@ -43,5 +54,11 @@ const links = [
   </nav>
   <div class="mobile-menu" data-mobile-menu hidden>
     {links.map(([key, href, label]) => <a class:list={[{ active: active === key }]} href={href}>{label}</a>)}
+    <div class:list={["mobile-collaboration", { active: collaborationActive }]} data-mobile-collaboration>
+      <button type="button" aria-expanded="false" data-mobile-collaboration-trigger>{t.nav["work-with-us"]}<ChevronDown size={15} strokeWidth={2.4} /></button>
+      <div class="mobile-collaboration-links" hidden data-mobile-collaboration-menu>
+        {collaborationLinks.map(([key, href, label]) => <a class:list={[{ active: active === key }]} href={href}>{label}</a>)}
+      </div>
+    </div>
   </div>
 </header>

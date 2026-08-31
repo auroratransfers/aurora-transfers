@@ -18,6 +18,16 @@ const copy = {
     requestSent: "Your request was sent to Aurora.",
     requestFailed: "The request could not be sent. Please try again.",
     report: "Report a problem",
+    panic: "Panic",
+    panicSupport: "Urgent safety support",
+    panicTitle: "Your location is being shared with Aurora.",
+    panicText: "For immediate danger, call emergency services. Aurora receives a critical safety alert with your location.",
+    panicSending: "Sending your panic alert and location...",
+    panicSent: "Panic alert sent. Aurora has been notified.",
+    panicDuplicate: "Your panic alert is already open. Aurora has been notified.",
+    panicFailed: "We could not send your safety alert. Call police or Aurora now.",
+    callPolice: "Call police 112",
+    callAurora: "Call Aurora",
     call: "Call Aurora",
     support: "Safety support",
     tellUs: "Tell us what happened",
@@ -63,6 +73,16 @@ const copy = {
     requestSent: "Vaš zahtjev poslan je Aurori.",
     requestFailed: "Zahtjev nije moguće poslati. Pokušajte ponovno.",
     report: "Prijavi problem",
+    panic: "Panic",
+    panicSupport: "Hitna sigurnosna podrška",
+    panicTitle: "Vaša lokacija šalje se Aurori.",
+    panicText: "Ako ste u neposrednoj opasnosti, nazovite hitne službe. Aurora prima kritično sigurnosno upozorenje s vašom lokacijom.",
+    panicSending: "Šaljemo sigurnosno upozorenje i lokaciju...",
+    panicSent: "Panic upozorenje je poslano. Aurora je obaviještena.",
+    panicDuplicate: "Vaše Panic upozorenje već je otvoreno. Aurora je obaviještena.",
+    panicFailed: "Sigurnosno upozorenje nije poslano. Nazovite policiju ili Auroru odmah.",
+    callPolice: "Nazovi policiju 112",
+    callAurora: "Nazovi Auroru",
     call: "Nazovi Auroru",
     support: "Sigurnosna podrška",
     tellUs: "Recite nam što se dogodilo",
@@ -108,6 +128,16 @@ const copy = {
     requestSent: "Ihre Anfrage wurde an Aurora gesendet.",
     requestFailed: "Die Anfrage konnte nicht gesendet werden. Bitte versuchen Sie es erneut.",
     report: "Problem melden",
+    panic: "Panik",
+    panicSupport: "Dringende Sicherheitsunterstützung",
+    panicTitle: "Ihr Standort wird an Aurora gesendet.",
+    panicText: "Rufen Sie bei unmittelbarer Gefahr den Notruf an. Aurora erhält einen kritischen Sicherheitsalarm mit Ihrem Standort.",
+    panicSending: "Sicherheitsalarm und Standort werden gesendet...",
+    panicSent: "Panikalarm gesendet. Aurora wurde benachrichtigt.",
+    panicDuplicate: "Ihr Panikalarm ist bereits offen. Aurora wurde benachrichtigt.",
+    panicFailed: "Der Sicherheitsalarm konnte nicht gesendet werden. Rufen Sie jetzt die Polizei oder Aurora an.",
+    callPolice: "Polizei 112 anrufen",
+    callAurora: "Aurora anrufen",
     call: "Aurora anrufen",
     support: "Sicherheit",
     tellUs: "Was ist passiert?",
@@ -153,6 +183,16 @@ const copy = {
     requestSent: "Votre demande a été envoyée à Aurora.",
     requestFailed: "La demande n'a pas pu être envoyée. Réessayez.",
     report: "Signaler un problème",
+    panic: "Alerte",
+    panicSupport: "Assistance sécurité urgente",
+    panicTitle: "Votre position est envoyée à Aurora.",
+    panicText: "En cas de danger immédiat, appelez les services d'urgence. Aurora reçoit une alerte critique avec votre position.",
+    panicSending: "Envoi de votre alerte et de votre position...",
+    panicSent: "Alerte envoyée. Aurora a été prévenue.",
+    panicDuplicate: "Votre alerte est déjà ouverte. Aurora a été prévenue.",
+    panicFailed: "Votre alerte n'a pas pu être envoyée. Appelez la police ou Aurora immédiatement.",
+    callPolice: "Appeler la police 112",
+    callAurora: "Appeler Aurora",
     call: "Appeler Aurora",
     support: "Assistance sécurité",
     tellUs: "Que s'est-il passé ?",
@@ -185,7 +225,9 @@ const copy = {
 };
 let lang = copy[requestedLanguage] ? requestedLanguage : "en",
   map,
-  marker;
+  marker,
+  supportPhone = "+385000000000",
+  panicInFlight = false;
 const $ = (s) => document.querySelector(s);
 const esc = (v) =>
   String(v ?? "").replace(
@@ -198,6 +240,13 @@ const esc = (v) =>
 function tr(key) {
   return copy[lang]?.[key] || copy.en[key] || key;
 }
+function setSupportPhone(value) {
+  const normalized = String(value || "").replace(/[^+\d]/g, "");
+  if (normalized) supportPhone = normalized;
+  [$("#callAurora"), $("#panicCallAurora")].forEach((element) => {
+    if (element) element.href = `tel:${supportPhone}`;
+  });
+}
 function translate() {
   document.documentElement.lang = lang;
   document.title = tr("title");
@@ -209,6 +258,7 @@ function translate() {
     .forEach((el) => el.setAttribute("aria-label", tr(el.dataset.i18nAria)));
   $("#mapTitle").textContent = tr("mapTitle");
   $("#mapText").textContent = tr("mapText");
+  setManageType(manageSelect?.dataset.manageSelectValue || "change");
 }
 const labels = {
   requested: "received",
@@ -263,6 +313,7 @@ function updateMap(location) {
 function render(data) {
   const r = data.ride;
   if (copy[r.language]) lang = r.language;
+  setSupportPhone(data.supportPhone);
   translate();
   $("#reference").textContent = r.reference;
   $("#headline").textContent = tr(labels[r.status] || "received");
@@ -334,11 +385,62 @@ $("#reportForm").onsubmit = async (event) => {
     ? tr("reportSent")
     : tr("reportFailed");
 };
-$("#manageButton").onclick = () => $("#manageDialog").showModal();
+const manageSelect = $("[data-manage-select]");
+const manageSelectTrigger = $("[data-manage-select-trigger]");
+const manageSelectMenu = $("[data-manage-select-menu]");
+function closeManageSelect() {
+  manageSelect?.classList.remove("open");
+  manageSelectMenu?.setAttribute("hidden", "");
+  manageSelectTrigger?.setAttribute("aria-expanded", "false");
+}
+function setManageType(value) {
+  const label = $("[data-manage-select-label]");
+  const options = document.querySelectorAll("[data-manage-select-option]");
+  if (!manageSelect || !label) return;
+  const selectedValue = value === "cancel" ? "cancel" : "change";
+  manageSelect.dataset.manageSelectValue = selectedValue;
+  let selected = null;
+  options.forEach((option) => {
+    const active = option.dataset.manageSelectOption === selectedValue;
+    option.setAttribute("aria-selected", String(active));
+    if (active) selected = option;
+  });
+  label.textContent = selected?.textContent || tr(selectedValue);
+}
+manageSelectTrigger?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  const open = manageSelectMenu?.hasAttribute("hidden") ?? true;
+  closeManageSelect();
+  if (open) {
+    manageSelect?.classList.add("open");
+    manageSelectMenu?.removeAttribute("hidden");
+    manageSelectTrigger.setAttribute("aria-expanded", "true");
+  }
+});
+document.querySelectorAll("[data-manage-select-option]").forEach((option) => {
+  option.addEventListener("click", () => {
+    setManageType(option.dataset.manageSelectOption || "change");
+    closeManageSelect();
+  });
+});
+document.addEventListener("click", (event) => {
+  if (event.target instanceof Node && !manageSelect?.contains(event.target)) closeManageSelect();
+});
+manageSelectTrigger?.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") closeManageSelect();
+  if (["ArrowDown", "ArrowUp"].includes(event.key) && manageSelectMenu?.hasAttribute("hidden")) {
+    event.preventDefault();
+    manageSelectTrigger.click();
+  }
+});
+$("#manageButton").onclick = () => {
+  setManageType(manageSelect?.dataset.manageSelectValue || "change");
+  $("#manageDialog").showModal();
+};
 $("#closeManage").onclick = () => $("#manageDialog").close();
 $("#manageForm").onsubmit = async (event) => {
   event.preventDefault();
-  const type = $("#manageType").value;
+  const type = manageSelect?.dataset.manageSelectValue || "change";
   const response = await fetch("/api/v1/tracking", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -353,6 +455,49 @@ $("#manageForm").onsubmit = async (event) => {
     ? tr("requestSent")
     : tr("requestFailed");
 };
+function riderLocation() {
+  return new Promise((resolve) => {
+    if (!navigator.geolocation) return resolve({});
+    navigator.geolocation.getCurrentPosition(
+      (position) => resolve({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        accuracyM: position.coords.accuracy,
+      }),
+      () => resolve({}),
+      { enableHighAccuracy: true, timeout: 10_000, maximumAge: 0 },
+    );
+  });
+}
+async function raisePanic() {
+  if (panicInFlight) return;
+  panicInFlight = true;
+  const button = $("#panicButton");
+  const result = $("#panicResult");
+  button.disabled = true;
+  $("#panicDialog").showModal();
+  result.textContent = tr("panicSending");
+  try {
+    const location = await riderLocation();
+    const response = await fetch("/api/v1/tracking", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token, action: "panic", ...location }),
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || !data.panic) throw new Error("Panic alert failed");
+    setSupportPhone(data.supportPhone);
+    result.textContent = data.duplicate ? tr("panicDuplicate") : tr("panicSent");
+  } catch (_) {
+    result.textContent = tr("panicFailed");
+  } finally {
+    button.disabled = false;
+    panicInFlight = false;
+  }
+}
+$("#panicButton").onclick = raisePanic;
+$("#closePanic").onclick = () => $("#panicDialog").close();
+setSupportPhone(supportPhone);
 translate();
 refresh();
 setInterval(refresh, 10000);

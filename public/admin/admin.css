@@ -995,14 +995,16 @@ input:focus-visible {
 
 .status.in_progress,
 .status.en_route,
-.status.assigned {
+.status.assigned,
+.status.under_review {
   color: #fff;
   background: var(--purple);
 }
 
 .status.arrived,
 .status.completed,
-.status.available {
+.status.available,
+.status.approved {
   color: #314200;
   background: var(--kiwi);
 }
@@ -1028,7 +1030,9 @@ input:focus-visible {
 .status.cancelled,
 .status.no_show,
 .status.offline,
-.status.inactive {
+.status.inactive,
+.status.declined,
+.status.archived {
   color: #665f69;
   background: #e8e5e9;
 }
@@ -1871,13 +1875,15 @@ dialog::backdrop {
 }
 
 .flight-watch-list,
-.business-inquiry-list {
+.business-inquiry-list,
+.partner-application-list {
   display: grid;
   gap: 12px;
 }
 
 .flight-watch-card,
-.business-inquiry-card {
+.business-inquiry-card,
+.partner-application-card {
   padding: 18px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -1885,7 +1891,8 @@ dialog::backdrop {
 }
 
 .flight-watch-card header,
-.business-inquiry-card header {
+.business-inquiry-card header,
+.partner-application-card header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -1893,13 +1900,15 @@ dialog::backdrop {
 }
 
 .flight-watch-card h3,
-.business-inquiry-card h3 {
+.business-inquiry-card h3,
+.partner-application-card h3 {
   margin: 4px 0 0;
   font-size: 1rem;
 }
 
 .flight-watch-card header p,
 .business-inquiry-card header p,
+.partner-application-card header p,
 .business-inquiry-message {
   margin: 5px 0 0;
   color: var(--muted);
@@ -1908,14 +1917,16 @@ dialog::backdrop {
 }
 
 .flight-watch-facts,
-.business-inquiry-facts {
+.business-inquiry-facts,
+.partner-application-facts {
   margin-top: 16px;
   display: grid;
   gap: 8px;
 }
 
 .flight-watch-facts > div,
-.business-inquiry-facts > div {
+.business-inquiry-facts > div,
+.partner-application-facts > div {
   min-width: 0;
   padding: 10px;
   border-radius: var(--radius);
@@ -1923,7 +1934,8 @@ dialog::backdrop {
 }
 
 .flight-watch-facts span,
-.business-inquiry-facts span {
+.business-inquiry-facts span,
+.partner-application-facts span {
   display: block;
   color: var(--muted);
   font-size: 0.59rem;
@@ -1932,7 +1944,8 @@ dialog::backdrop {
 }
 
 .flight-watch-facts strong,
-.business-inquiry-facts strong {
+.business-inquiry-facts strong,
+.partner-application-facts strong {
   display: block;
   margin-top: 4px;
   overflow-wrap: anywhere;
@@ -1950,6 +1963,19 @@ dialog::backdrop {
 .business-inquiry-message {
   padding-top: 14px;
   border-top: 1px solid var(--line);
+}
+
+.partner-application-routes {
+  margin: 14px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+
+.partner-application-routes strong {
+  color: var(--ink);
 }
 
 @media (min-width: 600px) {
@@ -1970,7 +1996,8 @@ dialog::backdrop {
   }
 
   .flight-watch-facts,
-  .business-inquiry-facts {
+  .business-inquiry-facts,
+  .partner-application-facts {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
