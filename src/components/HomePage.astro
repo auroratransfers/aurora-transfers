@@ -1,19 +1,15 @@
 ---
-import { ArrowLeftRight, ArrowRight, CalendarCheck, Car, Check, ChevronDown, ChevronLeft, ChevronRight, Clock3, Compass, Mail, MapPin, Minus, Phone, Plane, Plus, Route, ShieldCheck, Ship, Sparkles, User, Users } from "@lucide/astro";
+import { ArrowRight, CalendarCheck, Car, Check, Clock3, Compass, MapPin, Plane, Route, ShieldCheck, Ship, Sparkles } from "@lucide/astro";
+import TransferBookingForm from "./TransferBookingForm.astro";
 import { getContent, getInterfaceContent, type Lang } from "../data/site";
+
 interface Props { lang: Lang; }
 const { lang } = Astro.props;
 const t = getContent(lang);
 const ui = getInterfaceContent(lang);
 const pillarIcons = [Plane, Route, Ship, Compass];
-const times = Array.from({ length: 96 }, (_, index) => `${String(Math.floor(index / 4)).padStart(2, "0")}:${String((index % 4) * 15).padStart(2, "0")}`);
-const bookingFeedback = {
-  hr: { error: "Rezervacija trenutačno nije poslana. Pokušajte ponovno.", track: "Prati vožnju" },
-  en: { error: "Your booking could not be sent right now. Please try again.", track: "Track your ride" },
-  de: { error: "Ihre Buchung konnte gerade nicht gesendet werden. Bitte versuchen Sie es erneut.", track: "Fahrt verfolgen" },
-  fr: { error: "Votre réservation n'a pas pu être envoyée. Veuillez réessayer.", track: "Suivre votre trajet" },
-}[lang];
 ---
+
 <section class="hero-grid grid-dots">
   <div class="hero-copy">
     <span class="section-marker"><Sparkles size={15} />{t.hero.badge}</span>
@@ -26,177 +22,8 @@ const bookingFeedback = {
     </div>
     <div class="hero-trust"><span><ShieldCheck size={17} />{ui.licensedDrivers}</span><span><Clock3 size={17} />{ui.available247}</span></div>
   </div>
-  <div class="hero-visual hero-booking-card" id="hero-booking" data-home-booking data-lang={lang}>
-    <div class="hero-booking-heading"><span><CalendarCheck size={18} /></span><div><strong>{t.booking.title}</strong><small>{t.booking.intro}</small></div></div>
-    <form class="hero-booking-form" action="/api/book" method="post" autocomplete="off">
-      <input type="hidden" name="lang" value={lang} />
-      <input type="hidden" name="service" value="private-transfer" />
-      <label>{t.booking.pickup}<div class="input-wrap"><MapPin size={16} /><input name="pickup" required placeholder={ui.pickupPlaceholder} autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" /></div></label>
-      <label>{t.booking.destination}<div class="input-wrap"><MapPin size={16} /><input name="destination" required placeholder={ui.destinationPlaceholder} autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" /></div></label>
-      <div class="hero-trip full"><span>{t.booking.tripType}</span><input type="hidden" name="tripType" value="one-way" data-quick-trip-input /><div class="trip-type-toggle"><button type="button" class="active" data-quick-trip="one-way"><Car size={15} />{t.booking.oneWay}</button><button type="button" data-quick-trip="return"><ArrowLeftRight size={15} />{t.booking.returnTrip}</button></div></div>
-      <div class="quick-control" data-quick-date="date"><span>{t.booking.date}</span><input type="hidden" name="date" /><button type="button" class="quick-trigger" data-quick-trigger><CalendarCheck size={16} /><b data-quick-label>{t.booking.date}</b><ChevronDown size={15} /></button><div class="quick-calendar" data-quick-panel hidden><div class="calendar-header"><button type="button" data-cal-prev aria-label={ui.previousMonth}><ChevronLeft size={17} /></button><strong data-cal-title></strong><button type="button" data-cal-next aria-label={ui.nextMonth}><ChevronRight size={17} /></button></div><div class="calendar-weekdays" data-cal-weekdays></div><div class="calendar-days" data-cal-days></div></div></div>
-      <div class="quick-control" data-quick-select><span>{t.booking.time}</span><input type="hidden" name="time" /><button type="button" class="quick-trigger" data-quick-trigger><Clock3 size={16} /><b data-quick-label>{t.booking.selectTime}</b><ChevronDown size={15} /></button><div class="quick-menu" data-quick-panel hidden>{times.map((time) => <button type="button" data-value={time}>{time}</button>)}</div></div>
-      <div class="quick-return full" data-quick-return hidden>
-        <div class="quick-control" data-quick-date="returnDate"><span>{t.booking.returnDate}</span><input type="hidden" name="returnDate" /><button type="button" class="quick-trigger" data-quick-trigger><CalendarCheck size={16} /><b data-quick-label>{t.booking.returnDate}</b><ChevronDown size={15} /></button><div class="quick-calendar" data-quick-panel hidden><div class="calendar-header"><button type="button" data-cal-prev aria-label={ui.previousMonth}><ChevronLeft size={17} /></button><strong data-cal-title></strong><button type="button" data-cal-next aria-label={ui.nextMonth}><ChevronRight size={17} /></button></div><div class="calendar-weekdays" data-cal-weekdays></div><div class="calendar-days" data-cal-days></div></div></div>
-        <div class="quick-control" data-quick-select><span>{t.booking.returnTime}</span><input type="hidden" name="returnTime" /><button type="button" class="quick-trigger" data-quick-trigger><Clock3 size={16} /><b data-quick-label>{t.booking.selectTime}</b><ChevronDown size={15} /></button><div class="quick-menu" data-quick-panel hidden>{times.map((time) => <button type="button" data-value={time}>{time}</button>)}</div></div>
-      </div>
-      <div class="hero-contact-fields full">
-        <label>{t.booking.name}<div class="input-wrap"><User size={16} /><input name="name" autocomplete="name" required /></div></label>
-        <label>{t.booking.email}<div class="input-wrap"><Mail size={16} /><input name="email" type="email" autocomplete="email" required /></div></label>
-        <label>{t.booking.phone}<div class="input-wrap"><Phone size={16} /><input name="phone" type="tel" autocomplete="tel" required placeholder="+385 ..." /></div></label>
-      </div>
-      <p class="booking-error full" data-booking-error hidden>{bookingFeedback.error}</p>
-      <div class="hero-booking-actions full">
-        <div class="quick-control" data-passenger-stepper><span>{t.booking.passengers}</span><input type="hidden" name="passengers" value="1" /><div class="passenger-stepper"><Users size={16} /><button type="button" data-passenger-minus aria-label={ui.decreasePassengers}><Minus size={15} /></button><strong data-passenger-count>1</strong><button type="button" data-passenger-plus aria-label={ui.increasePassengers}><Plus size={15} /></button></div></div>
-        <button class="pill-button primary hero-booking-submit" type="submit">{t.hero.primary}<ArrowRight size={16} /></button>
-      </div>
-    </form>
-    <div class="booking-success hero-booking-success" data-hero-booking-success hidden><span><Check size={23} /></span><h3>{ui.successTitle}</h3><p>{ui.successText}</p><a class="pill-button primary" data-tracking-link hidden>{bookingFeedback.track}</a><button type="button" data-hero-booking-again>{ui.successAgain}</button></div>
-  </div>
+  <TransferBookingForm lang={lang} variant="hero" />
 </section>
-
-<script>
-  document.querySelectorAll("[data-home-booking]").forEach((booking) => {
-    const locale = booking.getAttribute("data-lang") || "en";
-    const panels = booking.querySelectorAll("[data-quick-panel]");
-    const closePanels = (except) => panels.forEach((panel) => { if (panel !== except) panel.hidden = true; });
-
-    booking.querySelectorAll("[data-quick-trigger]").forEach((trigger) => trigger.addEventListener("click", () => {
-      const panel = trigger.parentElement?.querySelector("[data-quick-panel]");
-      const shouldOpen = panel?.hasAttribute("hidden") ?? false;
-      closePanels(panel);
-      if (panel) panel.hidden = !shouldOpen;
-    }));
-
-    booking.querySelectorAll("[data-quick-select]").forEach((select) => {
-      const input = select.querySelector('input[type="hidden"]');
-      const label = select.querySelector("[data-quick-label]");
-      const panel = select.querySelector("[data-quick-panel]");
-      select.querySelectorAll("[data-value]").forEach((option) => option.addEventListener("click", () => {
-        const value = option.getAttribute("data-value") || "";
-        if (input instanceof HTMLInputElement) input.value = value;
-        if (label) label.textContent = option.textContent || value;
-        if (panel) panel.hidden = true;
-        select.querySelector("[data-quick-trigger]")?.classList.remove("invalid");
-      }));
-    });
-
-    booking.querySelectorAll("[data-passenger-stepper]").forEach((stepper) => {
-      const input = stepper.querySelector('input[name="passengers"]');
-      const count = stepper.querySelector("[data-passenger-count]");
-      const update = (next) => {
-        const value = Math.min(8, Math.max(1, next));
-        if (input instanceof HTMLInputElement) input.value = String(value);
-        if (count) count.textContent = value === 8 ? "8+" : String(value);
-      };
-      stepper.querySelector("[data-passenger-minus]")?.addEventListener("click", () => update(Number(input instanceof HTMLInputElement ? input.value : 1) - 1));
-      stepper.querySelector("[data-passenger-plus]")?.addEventListener("click", () => update(Number(input instanceof HTMLInputElement ? input.value : 1) + 1));
-    });
-
-    const today = new Date(); today.setHours(0, 0, 0, 0);
-    const monday = new Date(2024, 0, 1);
-    let outbound = "";
-    let returnCalendar;
-    const makeCalendar = (picker, minimumDate, onSelect) => {
-      const input = picker.querySelector('input[type="hidden"]');
-      const label = picker.querySelector("[data-quick-label]");
-      const panel = picker.querySelector("[data-quick-panel]");
-      const title = picker.querySelector("[data-cal-title]");
-      const weekdays = picker.querySelector("[data-cal-weekdays]");
-      const days = picker.querySelector("[data-cal-days]");
-      let month = new Date(today.getFullYear(), today.getMonth(), 1);
-      let selected = "";
-      if (weekdays) weekdays.innerHTML = Array.from({ length: 7 }, (_, index) => { const date = new Date(monday); date.setDate(monday.getDate() + index); return `<span>${new Intl.DateTimeFormat(locale, { weekday: "short" }).format(date).slice(0, 2)}</span>`; }).join("");
-      const render = () => {
-        if (!title || !days) return;
-        const minimum = minimumDate();
-        title.textContent = new Intl.DateTimeFormat(locale, { month: "long", year: "numeric" }).format(month);
-        const offset = (month.getDay() + 6) % 7;
-        const count = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
-        days.innerHTML = `${'<span></span>'.repeat(offset)}${Array.from({ length: count }, (_, index) => {
-          const day = index + 1; const date = new Date(month.getFullYear(), month.getMonth(), day);
-          const iso = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-          return `<button type="button" data-day="${iso}" ${date < minimum ? "disabled" : ""} class="${selected === iso ? "selected" : ""}">${day}</button>`;
-        }).join("")}`;
-        days.querySelectorAll("[data-day]").forEach((button) => button.addEventListener("click", () => {
-          selected = button.getAttribute("data-day") || "";
-          if (input instanceof HTMLInputElement) input.value = selected;
-          if (label) label.textContent = new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", year: "numeric" }).format(new Date(`${selected}T12:00:00`));
-          picker.querySelector("[data-quick-trigger]")?.classList.remove("invalid");
-          if (panel) panel.hidden = true;
-          render(); onSelect?.(selected);
-        }));
-      };
-      const goPrevious = () => { const previous = new Date(month.getFullYear(), month.getMonth() - 1, 1); const minimum = minimumDate(); if (previous >= new Date(minimum.getFullYear(), minimum.getMonth(), 1)) month = previous; render(); };
-      const goNext = () => { month = new Date(month.getFullYear(), month.getMonth() + 1, 1); render(); };
-      picker.querySelector("[data-cal-prev]")?.addEventListener("click", goPrevious);
-      picker.querySelector("[data-cal-next]")?.addEventListener("click", goNext);
-      let swipeStart;
-      panel?.addEventListener("pointerdown", (event) => { swipeStart = { x: event.clientX, y: event.clientY }; });
-      panel?.addEventListener("pointerup", (event) => {
-        if (!swipeStart) return;
-        const deltaX = event.clientX - swipeStart.x;
-        const deltaY = event.clientY - swipeStart.y;
-        swipeStart = undefined;
-        if (Math.abs(deltaX) < 45 || Math.abs(deltaX) <= Math.abs(deltaY) * 1.25) return;
-        if (deltaX < 0) goNext(); else goPrevious();
-      });
-      panel?.addEventListener("pointercancel", () => { swipeStart = undefined; });
-      render();
-      return { input, render, clear: () => { selected = ""; if (input instanceof HTMLInputElement) input.value = ""; render(); } };
-    };
-    const departureElement = booking.querySelector('[data-quick-date="date"]');
-    const returnElement = booking.querySelector('[data-quick-date="returnDate"]');
-    const departureCalendar = departureElement ? makeCalendar(departureElement, () => today, (value) => { outbound = value; if (returnCalendar?.input instanceof HTMLInputElement && returnCalendar.input.value < value) returnCalendar.clear(); returnCalendar?.render(); }) : null;
-    if (returnElement) returnCalendar = makeCalendar(returnElement, () => outbound ? new Date(`${outbound}T00:00:00`) : today);
-
-    const tripInput = booking.querySelector("[data-quick-trip-input]");
-    const returnFields = booking.querySelector("[data-quick-return]");
-    booking.querySelectorAll("[data-quick-trip]").forEach((button) => button.addEventListener("click", () => {
-      const value = button.getAttribute("data-quick-trip") || "one-way";
-      if (tripInput instanceof HTMLInputElement) tripInput.value = value;
-      booking.querySelectorAll("[data-quick-trip]").forEach((item) => item.classList.toggle("active", item === button));
-      if (returnFields instanceof HTMLElement) returnFields.hidden = value !== "return";
-      if (value !== "return") returnCalendar?.clear(); else returnCalendar?.render();
-    }));
-
-    const form = booking.querySelector("form");
-    const success = booking.querySelector("[data-hero-booking-success]");
-    form?.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      if (!(form instanceof HTMLFormElement) || !form.reportValidity()) return;
-      const isReturn = tripInput instanceof HTMLInputElement && tripInput.value === "return";
-      const required = [departureCalendar?.input, booking.querySelector('[name="time"]'), ...(isReturn ? [returnCalendar?.input, booking.querySelector('[name="returnTime"]')] : [])];
-      let valid = true;
-      required.forEach((input) => { if (!(input instanceof HTMLInputElement) || !input.value) { input?.parentElement?.querySelector("[data-quick-trigger]")?.classList.add("invalid"); valid = false; } });
-      if (!valid) return;
-      const payload = Object.fromEntries(new FormData(form).entries());
-      const errorMessage = booking.querySelector("[data-booking-error]");
-      if (errorMessage) errorMessage.hidden = true;
-      try {
-        const response = await fetch("/api/book", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-        const result = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(result.error || "Booking failed");
-        const trackingLink = booking.querySelector("[data-tracking-link]");
-        if (trackingLink instanceof HTMLAnchorElement && result.trackingUrls?.[0]) { trackingLink.href = result.trackingUrls[0]; trackingLink.hidden = false; }
-      } catch (_) { if (errorMessage) errorMessage.hidden = false; return; }
-      form.hidden = true;
-      if (success) success.hidden = false;
-    });
-    booking.querySelector("[data-hero-booking-again]")?.addEventListener("click", () => {
-      if (form instanceof HTMLFormElement) form.reset();
-      departureCalendar?.clear();
-      returnCalendar?.clear();
-      outbound = "";
-      if (tripInput instanceof HTMLInputElement) tripInput.value = "one-way";
-      booking.querySelectorAll("[data-quick-trip]").forEach((item) => item.classList.toggle("active", item.getAttribute("data-quick-trip") === "one-way"));
-      if (returnFields instanceof HTMLElement) returnFields.hidden = true;
-      if (form) form.hidden = false;
-      if (success) success.hidden = true;
-    });
-    document.addEventListener("click", (event) => { if (event.target instanceof Node && !booking.contains(event.target)) closePanels(); });
-  });
-</script>
 
 <section class="intro-section intro-with-image section-rule">
   <div class="image-card">

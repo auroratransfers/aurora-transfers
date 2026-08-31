@@ -1,6 +1,7 @@
 const http = require("node:http");
 const fs = require("node:fs");
 const path = require("node:path");
+const { searchCroatiaPlaces } = require("../lib/croatia-places.cjs");
 
 const port = Number(process.env.PORT || 4323);
 const root = path.resolve(__dirname, "../dist");
@@ -50,6 +51,10 @@ function serve(req, res) {
 }
 
 http.createServer((req, res) => {
+  if (req.url.startsWith("/api/places")) {
+    const query = new URL(req.url, "http://localhost").searchParams.get("q") || "";
+    return json(res, 200, { ok:true, country:"HR", provider:"catalog", places:searchCroatiaPlaces(query, 8) });
+  }
   if (req.url.startsWith("/api/admin-session")) return json(res, 200, { ok:true, authenticated:false, configured:true, database:true });
   if (req.url.startsWith("/api/admin-login")) return json(res, 200, { ok:true });
   if (req.url.startsWith("/api/admin-logout")) return json(res, 200, { ok:true });

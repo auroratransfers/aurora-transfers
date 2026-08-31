@@ -1,0 +1,556 @@
+---
+import { ArrowLeftRight, ArrowRight, CalendarCheck, Car, Check, ChevronDown, ChevronLeft, ChevronRight, Clock3, Mail, MapPin, MessageCircle, Minus, Phone, Plane, Plus, User, Users } from "@lucide/astro";
+import { getContent, getInterfaceContent, type Lang } from "../data/site";
+
+interface Props {
+  lang: Lang;
+  variant: "hero" | "page";
+}
+
+const { lang, variant } = Astro.props;
+const t = getContent(lang);
+const ui = getInterfaceContent(lang);
+const booking = t.booking;
+const formId = `transfer-booking-${variant}-${lang}`;
+const times = Array.from({ length: 96 }, (_, index) => `${String(Math.floor(index / 4)).padStart(2, "0")}:${String((index % 4) * 15).padStart(2, "0")}`);
+const bookingFeedback = {
+  hr: { error: "Rezervacija trenutačno nije poslana. Pokušajte ponovno.", track: "Prati vožnju" },
+  en: { error: "Your booking could not be sent right now. Please try again.", track: "Track your ride" },
+  de: { error: "Ihre Buchung konnte gerade nicht gesendet werden. Bitte versuchen Sie es erneut.", track: "Fahrt verfolgen" },
+  fr: { error: "Votre réservation n'a pas pu être envoyée. Veuillez réessayer.", track: "Suivre votre trajet" },
+}[lang];
+const placeCopy = {
+  hr: {
+    popular: "Popularna mjesta u Hrvatskoj", loading: "Tražimo mjesta u Hrvatskoj...", empty: "Nema odgovarajućih mjesta u Hrvatskoj.",
+    airport: "Zračna luka", city: "Grad / mjesto", hotel: "Hotel", port: "Luka / pristanište", marina: "Marina", oldTown: "Stari grad", attraction: "Atrakcija", place: "Mjesto",
+  },
+  en: {
+    popular: "Popular places in Croatia", loading: "Searching places in Croatia...", empty: "No matching places found in Croatia.",
+    airport: "Airport", city: "City / town", hotel: "Hotel", port: "Port / pier", marina: "Marina", oldTown: "Old town", attraction: "Attraction", place: "Place",
+  },
+  de: {
+    popular: "Beliebte Orte in Kroatien", loading: "Orte in Kroatien werden gesucht...", empty: "Keine passenden Orte in Kroatien gefunden.",
+    airport: "Flughafen", city: "Stadt / Ort", hotel: "Hotel", port: "Hafen / Anlegestelle", marina: "Marina", oldTown: "Altstadt", attraction: "Sehenswürdigkeit", place: "Ort",
+  },
+  fr: {
+    popular: "Lieux populaires en Croatie", loading: "Recherche de lieux en Croatie...", empty: "Aucun lieu correspondant trouvé en Croatie.",
+    airport: "Aéroport", city: "Ville / lieu", hotel: "Hôtel", port: "Port / embarcadère", marina: "Marina", oldTown: "Vieille ville", attraction: "Attraction", place: "Lieu",
+  },
+}[lang];
+---
+
+<div
+  id={variant === "hero" ? "hero-booking" : "booking-form"}
+  class:list={[
+    "transfer-booking-card",
+    { "hero-visual": variant === "hero", "hero-booking-card": variant === "hero", "booking-card": variant === "page" },
+  ]}
+  data-transfer-booking
+  data-lang={lang}
+  data-place-popular={placeCopy.popular}
+  data-place-loading={placeCopy.loading}
+  data-place-empty={placeCopy.empty}
+  data-place-airport={placeCopy.airport}
+  data-place-city={placeCopy.city}
+  data-place-hotel={placeCopy.hotel}
+  data-place-port={placeCopy.port}
+  data-place-marina={placeCopy.marina}
+  data-place-old-town={placeCopy.oldTown}
+  data-place-attraction={placeCopy.attraction}
+  data-place-default={placeCopy.place}
+>
+  {variant === "hero" ? (
+    <div class="hero-booking-heading"><span><CalendarCheck size={18} /></span><div><strong>{booking.title}</strong><small>{booking.intro}</small></div></div>
+  ) : (
+    <h2>{booking.details}</h2>
+  )}
+
+  <form class="hero-booking-form transfer-booking-form" action="/api/book" method="post" autocomplete="off">
+    <input type="hidden" name="lang" value={lang} />
+    <input type="hidden" name="service" value="private-transfer" />
+
+    <label for={`${formId}-pickup`}>
+      {booking.pickup}
+      <div class="input-wrap place-input-wrap" data-place-autocomplete>
+        <MapPin size={16} />
+        <input id={`${formId}-pickup`} name="pickup" required placeholder={ui.pickupPlaceholder} autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-place-input aria-autocomplete="list" aria-expanded="false" aria-controls={`${formId}-pickup-options`} />
+        <input type="hidden" name="pickupPlaceId" data-place-id />
+        <input type="hidden" name="pickupLatitude" data-place-latitude />
+        <input type="hidden" name="pickupLongitude" data-place-longitude />
+        <div id={`${formId}-pickup-options`} class="place-suggestions" data-place-menu role="listbox" hidden>
+          <p class="place-suggestion-status" data-place-status aria-live="polite" hidden></p>
+        </div>
+      </div>
+    </label>
+
+    <label for={`${formId}-destination`}>
+      {booking.destination}
+      <div class="input-wrap place-input-wrap" data-place-autocomplete>
+        <MapPin size={16} />
+        <input id={`${formId}-destination`} name="destination" required placeholder={ui.destinationPlaceholder} autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-place-input aria-autocomplete="list" aria-expanded="false" aria-controls={`${formId}-destination-options`} />
+        <input type="hidden" name="destinationPlaceId" data-place-id />
+        <input type="hidden" name="destinationLatitude" data-place-latitude />
+        <input type="hidden" name="destinationLongitude" data-place-longitude />
+        <div id={`${formId}-destination-options`} class="place-suggestions" data-place-menu role="listbox" hidden>
+          <p class="place-suggestion-status" data-place-status aria-live="polite" hidden></p>
+        </div>
+      </div>
+    </label>
+
+    <div class="hero-trip full">
+      <span>{booking.tripType}</span>
+      <input type="hidden" name="tripType" value="one-way" data-quick-trip-input />
+      <div class="trip-type-toggle" role="group" aria-label={booking.tripType}>
+        <button type="button" class="active" data-quick-trip="one-way" aria-pressed="true"><Car size={15} />{booking.oneWay}</button>
+        <button type="button" data-quick-trip="return" aria-pressed="false"><ArrowLeftRight size={15} />{booking.returnTrip}</button>
+      </div>
+    </div>
+
+    <div class="quick-control" data-quick-date="date">
+      <span>{booking.date}</span>
+      <input type="hidden" name="date" />
+      <button type="button" class="quick-trigger" data-quick-trigger aria-expanded="false"><CalendarCheck size={16} /><b data-quick-label data-quick-empty={booking.date}>{booking.date}</b><ChevronDown size={15} /></button>
+      <div class="quick-calendar" data-quick-panel hidden>
+        <div class="calendar-header"><button type="button" data-cal-prev aria-label={ui.previousMonth}><ChevronLeft size={17} /></button><strong data-cal-title></strong><button type="button" data-cal-next aria-label={ui.nextMonth}><ChevronRight size={17} /></button></div>
+        <div class="calendar-weekdays" data-cal-weekdays></div>
+        <div class="calendar-days" data-cal-days></div>
+      </div>
+    </div>
+
+    <div class="quick-control" data-quick-select>
+      <span>{booking.time}</span>
+      <input type="hidden" name="time" />
+      <button type="button" class="quick-trigger" data-quick-trigger aria-expanded="false"><Clock3 size={16} /><b data-quick-label data-quick-empty={booking.selectTime}>{booking.selectTime}</b><ChevronDown size={15} /></button>
+      <div class="quick-menu" data-quick-panel hidden>{times.map((time) => <button type="button" data-value={time}>{time}</button>)}</div>
+    </div>
+
+    <div class="quick-return full" data-quick-return hidden>
+      <div class="quick-control" data-quick-date="returnDate">
+        <span>{booking.returnDate}</span>
+        <input type="hidden" name="returnDate" />
+        <button type="button" class="quick-trigger" data-quick-trigger aria-expanded="false"><CalendarCheck size={16} /><b data-quick-label data-quick-empty={booking.returnDate}>{booking.returnDate}</b><ChevronDown size={15} /></button>
+        <div class="quick-calendar" data-quick-panel hidden>
+          <div class="calendar-header"><button type="button" data-cal-prev aria-label={ui.previousMonth}><ChevronLeft size={17} /></button><strong data-cal-title></strong><button type="button" data-cal-next aria-label={ui.nextMonth}><ChevronRight size={17} /></button></div>
+          <div class="calendar-weekdays" data-cal-weekdays></div>
+          <div class="calendar-days" data-cal-days></div>
+        </div>
+      </div>
+
+      <div class="quick-control" data-quick-select>
+        <span>{booking.returnTime}</span>
+        <input type="hidden" name="returnTime" />
+        <button type="button" class="quick-trigger" data-quick-trigger aria-expanded="false"><Clock3 size={16} /><b data-quick-label data-quick-empty={booking.selectTime}>{booking.selectTime}</b><ChevronDown size={15} /></button>
+        <div class="quick-menu" data-quick-panel hidden>{times.map((time) => <button type="button" data-value={time}>{time}</button>)}</div>
+      </div>
+    </div>
+
+    <div class="hero-contact-fields full">
+      <label for={`${formId}-name`}>{booking.name}<div class="input-wrap"><User size={16} /><input id={`${formId}-name`} name="name" autocomplete="name" required /></div></label>
+      <label for={`${formId}-email`}>{booking.email}<div class="input-wrap"><Mail size={16} /><input id={`${formId}-email`} name="email" type="email" autocomplete="email" required /></div></label>
+      <label for={`${formId}-phone`}>{booking.phone}<div class="input-wrap"><Phone size={16} /><input id={`${formId}-phone`} name="phone" type="tel" autocomplete="tel" required placeholder="+385 ..." /></div></label>
+    </div>
+
+    <div class="hero-extra-fields full">
+      <label for={`${formId}-flight`}>{booking.flight}<div class="input-wrap flight-input-wrap"><Plane size={16} /><input id={`${formId}-flight`} name="flight" autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" /></div></label>
+      <label for={`${formId}-message`}>{booking.message}<div class="input-wrap"><MessageCircle size={16} /><input id={`${formId}-message`} name="message" autocomplete="off" /></div></label>
+    </div>
+
+    <p class="booking-error full" data-booking-error hidden>{bookingFeedback.error}</p>
+    <div class="hero-booking-actions full">
+      <div class="quick-control" data-passenger-stepper>
+        <span>{booking.passengers}</span>
+        <input type="hidden" name="passengers" value="1" />
+        <div class="passenger-stepper"><Users size={16} /><button type="button" data-passenger-minus aria-label={ui.decreasePassengers}><Minus size={15} /></button><strong data-passenger-count>1</strong><button type="button" data-passenger-plus aria-label={ui.increasePassengers}><Plus size={15} /></button></div>
+      </div>
+      <button class="pill-button primary hero-booking-submit" type="submit">{variant === "hero" ? t.hero.primary : booking.submit}<ArrowRight size={16} /></button>
+    </div>
+  </form>
+
+  <div class="booking-success hero-booking-success" data-booking-success hidden><span><Check size={23} /></span><h3>{ui.successTitle}</h3><p>{ui.successText}</p><a class="pill-button primary" data-tracking-link hidden>{bookingFeedback.track}</a><button type="button" data-booking-again>{ui.successAgain}</button></div>
+</div>
+
+<script>
+  type Place = { id: string; name: string; detail?: string; category?: string; latitude?: number; longitude?: number };
+
+  document.querySelectorAll<HTMLElement>("[data-transfer-booking]").forEach((booking) => {
+    const locale = booking.dataset.lang || "en";
+    const panels = booking.querySelectorAll<HTMLElement>("[data-quick-panel]");
+    const placeFields = booking.querySelectorAll<HTMLElement>("[data-place-autocomplete]");
+    const closePanels = (except?: HTMLElement | null) => panels.forEach((panel) => {
+      if (panel !== except) panel.hidden = true;
+      if (panel !== except) panel.parentElement?.querySelector<HTMLButtonElement>("[data-quick-trigger]")?.setAttribute("aria-expanded", "false");
+    });
+    const closePlaceMenus = (except?: HTMLElement | null) => placeFields.forEach((field) => {
+      if (field === except) return;
+      field.querySelector<HTMLElement>("[data-place-menu]")?.setAttribute("hidden", "");
+      field.querySelector<HTMLInputElement>("[data-place-input]")?.setAttribute("aria-expanded", "false");
+    });
+
+    booking.querySelectorAll<HTMLButtonElement>("[data-quick-trigger]").forEach((trigger) => trigger.addEventListener("click", () => {
+      const panel = trigger.parentElement?.querySelector<HTMLElement>("[data-quick-panel]");
+      const shouldOpen = panel?.hasAttribute("hidden") ?? false;
+      closePanels(panel);
+      closePlaceMenus();
+      if (panel) panel.hidden = !shouldOpen;
+      trigger.setAttribute("aria-expanded", String(shouldOpen));
+    }));
+
+    booking.querySelectorAll<HTMLElement>("[data-quick-select]").forEach((select) => {
+      const input = select.querySelector<HTMLInputElement>('input[type="hidden"]');
+      const label = select.querySelector<HTMLElement>("[data-quick-label]");
+      const panel = select.querySelector<HTMLElement>("[data-quick-panel]");
+      select.querySelectorAll<HTMLButtonElement>("[data-value]").forEach((option) => option.addEventListener("click", () => {
+        const value = option.dataset.value || "";
+        if (input) input.value = value;
+        if (label) label.textContent = option.textContent || value;
+        if (panel) panel.hidden = true;
+        select.querySelector<HTMLButtonElement>("[data-quick-trigger]")?.setAttribute("aria-expanded", "false");
+        select.querySelector<HTMLButtonElement>("[data-quick-trigger]")?.classList.remove("invalid");
+      }));
+    });
+
+    booking.querySelectorAll<HTMLElement>("[data-passenger-stepper]").forEach((stepper) => {
+      const input = stepper.querySelector<HTMLInputElement>('input[name="passengers"]');
+      const count = stepper.querySelector<HTMLElement>("[data-passenger-count]");
+      const update = (next: number) => {
+        const value = Math.min(8, Math.max(1, next));
+        if (input) input.value = String(value);
+        if (count) count.textContent = value === 8 ? "8+" : String(value);
+      };
+      stepper.querySelector("[data-passenger-minus]")?.addEventListener("click", () => update(Number(input?.value || 1) - 1));
+      stepper.querySelector("[data-passenger-plus]")?.addEventListener("click", () => update(Number(input?.value || 1) + 1));
+    });
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const monday = new Date(2024, 0, 1);
+    let outbound = "";
+    let returnCalendar: ReturnType<typeof makeCalendar> | undefined;
+
+    function makeCalendar(picker: HTMLElement, minimumDate: () => Date, onSelect?: (value: string) => void) {
+      const input = picker.querySelector<HTMLInputElement>('input[type="hidden"]');
+      const label = picker.querySelector<HTMLElement>("[data-quick-label]");
+      const panel = picker.querySelector<HTMLElement>("[data-quick-panel]");
+      const title = picker.querySelector<HTMLElement>("[data-cal-title]");
+      const weekdays = picker.querySelector<HTMLElement>("[data-cal-weekdays]");
+      const days = picker.querySelector<HTMLElement>("[data-cal-days]");
+      let month = new Date(today.getFullYear(), today.getMonth(), 1);
+      let selected = "";
+
+      if (weekdays) weekdays.innerHTML = Array.from({ length: 7 }, (_, index) => {
+        const date = new Date(monday);
+        date.setDate(monday.getDate() + index);
+        return `<span>${new Intl.DateTimeFormat(locale, { weekday: "short" }).format(date).slice(0, 2)}</span>`;
+      }).join("");
+
+      const render = () => {
+        if (!title || !days) return;
+        const minimum = minimumDate();
+        title.textContent = new Intl.DateTimeFormat(locale, { month: "long", year: "numeric" }).format(month);
+        const offset = (month.getDay() + 6) % 7;
+        const count = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
+        days.innerHTML = `${"<span></span>".repeat(offset)}${Array.from({ length: count }, (_, index) => {
+          const day = index + 1;
+          const date = new Date(month.getFullYear(), month.getMonth(), day);
+          const iso = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+          return `<button type="button" data-day="${iso}" ${date < minimum ? "disabled" : ""} class="${selected === iso ? "selected" : ""}">${day}</button>`;
+        }).join("")}`;
+        days.querySelectorAll<HTMLButtonElement>("[data-day]").forEach((button) => button.addEventListener("click", () => {
+          selected = button.dataset.day || "";
+          if (input) input.value = selected;
+          if (label) label.textContent = new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", year: "numeric" }).format(new Date(`${selected}T12:00:00`));
+          picker.querySelector<HTMLButtonElement>("[data-quick-trigger]")?.classList.remove("invalid");
+          if (panel) panel.hidden = true;
+          picker.querySelector<HTMLButtonElement>("[data-quick-trigger]")?.setAttribute("aria-expanded", "false");
+          render();
+          onSelect?.(selected);
+        }));
+      };
+
+      const goPrevious = () => {
+        const previous = new Date(month.getFullYear(), month.getMonth() - 1, 1);
+        const minimum = minimumDate();
+        if (previous >= new Date(minimum.getFullYear(), minimum.getMonth(), 1)) month = previous;
+        render();
+      };
+      const goNext = () => { month = new Date(month.getFullYear(), month.getMonth() + 1, 1); render(); };
+      picker.querySelector("[data-cal-prev]")?.addEventListener("click", goPrevious);
+      picker.querySelector("[data-cal-next]")?.addEventListener("click", goNext);
+      let swipeStart: { x: number; y: number } | undefined;
+      panel?.addEventListener("pointerdown", (event) => { swipeStart = { x: event.clientX, y: event.clientY }; });
+      panel?.addEventListener("pointerup", (event) => {
+        if (!swipeStart) return;
+        const deltaX = event.clientX - swipeStart.x;
+        const deltaY = event.clientY - swipeStart.y;
+        swipeStart = undefined;
+        if (Math.abs(deltaX) < 45 || Math.abs(deltaX) <= Math.abs(deltaY) * 1.25) return;
+        if (deltaX < 0) goNext(); else goPrevious();
+      });
+      panel?.addEventListener("pointercancel", () => { swipeStart = undefined; });
+      render();
+      return {
+        input,
+        render,
+        clear: () => {
+          selected = "";
+          if (input) input.value = "";
+          if (label) label.textContent = label.dataset.quickEmpty || "";
+          render();
+        },
+        set: (value: string) => {
+          if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return;
+          selected = value;
+          const date = new Date(`${value}T12:00:00`);
+          month = new Date(date.getFullYear(), date.getMonth(), 1);
+          if (input) input.value = value;
+          if (label) label.textContent = new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", year: "numeric" }).format(date);
+          render();
+          onSelect?.(value);
+        },
+      };
+    }
+
+    const departureElement = booking.querySelector<HTMLElement>('[data-quick-date="date"]');
+    const returnElement = booking.querySelector<HTMLElement>('[data-quick-date="returnDate"]');
+    const departureCalendar = departureElement ? makeCalendar(departureElement, () => today, (value) => {
+      outbound = value;
+      if (returnCalendar?.input?.value && returnCalendar.input.value < value) returnCalendar.clear();
+      returnCalendar?.render();
+    }) : undefined;
+    if (returnElement) returnCalendar = makeCalendar(returnElement, () => outbound ? new Date(`${outbound}T00:00:00`) : today);
+
+    const tripInput = booking.querySelector<HTMLInputElement>("[data-quick-trip-input]");
+    const returnFields = booking.querySelector<HTMLElement>("[data-quick-return]");
+    const setTripType = (value: string) => {
+      if (tripInput) tripInput.value = value;
+      if (returnFields) returnFields.hidden = value !== "return";
+      booking.querySelectorAll<HTMLButtonElement>("[data-quick-trip]").forEach((item) => {
+        const active = item.dataset.quickTrip === value;
+        item.classList.toggle("active", active);
+        item.setAttribute("aria-pressed", String(active));
+      });
+      if (value !== "return") returnCalendar?.clear(); else returnCalendar?.render();
+    };
+    booking.querySelectorAll<HTMLButtonElement>("[data-quick-trip]").forEach((button) => button.addEventListener("click", () => setTripType(button.dataset.quickTrip || "one-way")));
+
+    const categoryLabel = (category?: string) => {
+      const labels: Record<string, string | undefined> = {
+        airport: booking.dataset.placeAirport,
+        city: booking.dataset.placeCity,
+        hotel: booking.dataset.placeHotel,
+        port: booking.dataset.placePort,
+        marina: booking.dataset.placeMarina,
+        "old-town": booking.dataset.placeOldTown,
+        attraction: booking.dataset.placeAttraction,
+      };
+      return labels[category || ""] || booking.dataset.placeDefault || "";
+    };
+
+    placeFields.forEach((field) => {
+      const input = field.querySelector<HTMLInputElement>("[data-place-input]");
+      const menu = field.querySelector<HTMLElement>("[data-place-menu]");
+      const status = field.querySelector<HTMLElement>("[data-place-status]");
+      const placeId = field.querySelector<HTMLInputElement>("[data-place-id]");
+      const latitude = field.querySelector<HTMLInputElement>("[data-place-latitude]");
+      const longitude = field.querySelector<HTMLInputElement>("[data-place-longitude]");
+      if (!input || !menu || !status) return;
+
+      let results: Place[] = [];
+      let activeIndex = -1;
+      let requestId = 0;
+      let debounce: number | undefined;
+      let controller: AbortController | undefined;
+      const cache = new Map<string, Place[]>();
+      const clearPlaceMeta = () => {
+        if (placeId) placeId.value = "";
+        if (latitude) latitude.value = "";
+        if (longitude) longitude.value = "";
+      };
+      const close = () => {
+        menu.hidden = true;
+        input.setAttribute("aria-expanded", "false");
+        activeIndex = -1;
+      };
+      const selectPlace = (place: Place) => {
+        input.value = [place.name, place.detail].filter(Boolean).join(", ");
+        if (placeId) placeId.value = place.id || "";
+        if (latitude) latitude.value = Number.isFinite(place.latitude) ? String(place.latitude) : "";
+        if (longitude) longitude.value = Number.isFinite(place.longitude) ? String(place.longitude) : "";
+        close();
+      };
+      const render = (next: Place[], message: string, isEmpty = false) => {
+        results = next;
+        activeIndex = -1;
+        status.textContent = message;
+        status.hidden = false;
+        menu.replaceChildren(status);
+        if (isEmpty) {
+          const empty = document.createElement("p");
+          empty.className = "place-suggestion-empty";
+          empty.textContent = booking.dataset.placeEmpty || "";
+          menu.append(empty);
+        } else {
+          next.forEach((place, index) => {
+            const option = document.createElement("button");
+            option.type = "button";
+            option.className = "place-suggestion";
+            option.setAttribute("role", "option");
+            option.dataset.placeIndex = String(index);
+            const marker = document.createElement("span");
+            marker.className = "place-suggestion-marker";
+            marker.setAttribute("aria-hidden", "true");
+            const copy = document.createElement("span");
+            copy.className = "place-suggestion-copy";
+            const name = document.createElement("strong");
+            name.textContent = place.name;
+            const detail = document.createElement("small");
+            detail.textContent = place.detail || categoryLabel(place.category);
+            copy.append(name, detail);
+            const type = document.createElement("span");
+            type.className = "place-suggestion-type";
+            type.textContent = categoryLabel(place.category);
+            option.append(marker, copy, type);
+            option.addEventListener("click", () => selectPlace(place));
+            menu.append(option);
+          });
+        }
+        menu.hidden = false;
+        input.setAttribute("aria-expanded", "true");
+      };
+      const highlight = (nextIndex: number) => {
+        if (!results.length) return;
+        activeIndex = (nextIndex + results.length) % results.length;
+        menu.querySelectorAll<HTMLButtonElement>("[data-place-index]").forEach((option, index) => {
+          const active = index === activeIndex;
+          option.classList.toggle("active", active);
+          option.setAttribute("aria-selected", String(active));
+        });
+      };
+      const load = async (value: string) => {
+        const query = value.trim();
+        const key = query.toLocaleLowerCase(locale);
+        closePanels();
+        closePlaceMenus(field);
+        if (cache.has(key)) {
+          render(cache.get(key) || [], query ? "" : booking.dataset.placePopular || "", !(cache.get(key) || []).length);
+          return;
+        }
+        controller?.abort();
+        controller = new AbortController();
+        const id = ++requestId;
+        status.textContent = booking.dataset.placeLoading || "";
+        status.hidden = false;
+        menu.replaceChildren(status);
+        menu.hidden = false;
+        input.setAttribute("aria-expanded", "true");
+        try {
+          const response = await fetch(`/api/places?q=${encodeURIComponent(query)}&lang=${encodeURIComponent(locale)}`, { signal: controller.signal });
+          const payload = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error("Place lookup failed");
+          if (id !== requestId) return;
+          const places = Array.isArray(payload.places) ? payload.places : [];
+          cache.set(key, places);
+          render(places, query ? "" : booking.dataset.placePopular || "", !places.length);
+        } catch (error) {
+          if (id !== requestId || (error instanceof DOMException && error.name === "AbortError")) return;
+          render([], "", true);
+        }
+      };
+
+      input.addEventListener("focus", () => { void load(input.value); });
+      input.addEventListener("input", () => {
+        clearPlaceMeta();
+        window.clearTimeout(debounce);
+        debounce = window.setTimeout(() => { void load(input.value); }, 160);
+      });
+      input.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") { close(); return; }
+        if (event.key === "ArrowDown") { event.preventDefault(); highlight(activeIndex + 1); return; }
+        if (event.key === "ArrowUp") { event.preventDefault(); highlight(activeIndex - 1); return; }
+        if (event.key === "Enter" && activeIndex >= 0 && results[activeIndex]) {
+          event.preventDefault();
+          selectPlace(results[activeIndex]);
+        }
+      });
+    });
+
+    const params = new URLSearchParams(window.location.search);
+    ["pickup", "destination"].forEach((name) => {
+      const input = booking.querySelector<HTMLInputElement>(`[name="${name}"]`);
+      const value = params.get(name);
+      if (input && value) input.value = value;
+    });
+    const tripParam = params.get("tripType");
+    if (tripParam === "return") setTripType("return");
+    const departureParam = params.get("date");
+    if (departureParam) departureCalendar?.set(departureParam);
+    const returnParam = params.get("returnDate");
+    if (tripParam === "return" && returnParam) returnCalendar?.set(returnParam);
+    ["time", "returnTime", "passengers"].forEach((name) => {
+      const input = booking.querySelector<HTMLInputElement>(`[name="${name}"]`);
+      const value = params.get(name);
+      if (!input || !value) return;
+      input.value = value;
+      const label = input.parentElement?.querySelector<HTMLElement>(name === "passengers" ? "[data-passenger-count]" : "[data-quick-label]");
+      if (label) label.textContent = value === "8" ? "8+" : value;
+    });
+
+    const form = booking.querySelector<HTMLFormElement>("form");
+    const success = booking.querySelector<HTMLElement>("[data-booking-success]");
+    form?.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      const isReturn = tripInput?.value === "return";
+      const required = [departureCalendar?.input, booking.querySelector<HTMLInputElement>('[name="time"]'), ...(isReturn ? [returnCalendar?.input, booking.querySelector<HTMLInputElement>('[name="returnTime"]')] : [])];
+      let valid = true;
+      required.forEach((input) => {
+        if (!input?.value) {
+          input?.parentElement?.querySelector<HTMLButtonElement>("[data-quick-trigger]")?.classList.add("invalid");
+          valid = false;
+        }
+      });
+      if (!valid) return;
+      const payload = Object.fromEntries(new FormData(form).entries());
+      const errorMessage = booking.querySelector<HTMLElement>("[data-booking-error]");
+      if (errorMessage) errorMessage.hidden = true;
+      try {
+        const response = await fetch("/api/book", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.error || "Booking failed");
+        const trackingLink = booking.querySelector<HTMLAnchorElement>("[data-tracking-link]");
+        if (trackingLink && result.trackingUrls?.[0]) {
+          trackingLink.href = result.trackingUrls[0];
+          trackingLink.hidden = false;
+        }
+      } catch (_) {
+        if (errorMessage) errorMessage.hidden = false;
+        return;
+      }
+      form.hidden = true;
+      if (success) success.hidden = false;
+    });
+
+    booking.querySelector("[data-booking-again]")?.addEventListener("click", () => {
+      form?.reset();
+      departureCalendar?.clear();
+      returnCalendar?.clear();
+      outbound = "";
+      setTripType("one-way");
+      booking.querySelectorAll<HTMLElement>("[data-quick-label]").forEach((label) => { label.textContent = label.dataset.quickEmpty || ""; });
+      booking.querySelectorAll<HTMLElement>("[data-place-autocomplete]").forEach((field) => {
+        field.querySelector<HTMLInputElement>("[data-place-id]")?.setAttribute("value", "");
+        field.querySelector<HTMLInputElement>("[data-place-latitude]")?.setAttribute("value", "");
+        field.querySelector<HTMLInputElement>("[data-place-longitude]")?.setAttribute("value", "");
+      });
+      booking.querySelector<HTMLElement>("[data-booking-error]")?.setAttribute("hidden", "");
+      if (form) form.hidden = false;
+      if (success) success.hidden = true;
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!(event.target instanceof Node) || booking.contains(event.target)) return;
+      closePanels();
+      closePlaceMenus();
+    });
+  });
+</script>

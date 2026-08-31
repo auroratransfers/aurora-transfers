@@ -1,24 +1,11 @@
 ---
-import { ArrowLeftRight, CalendarDays, Car, CarFront, Check, ChevronDown, ChevronLeft, ChevronRight, Clock3, LocateFixed, MapPin, Minus, Plane, Plus, Route, Ship, Users, X } from "@lucide/astro";
-import { getContent, getInterfaceContent, type Lang } from "../data/site";
+import { Car, CarFront, Check, Clock3, LocateFixed, MapPin, Users, X } from "@lucide/astro";
+import TransferBookingForm from "./TransferBookingForm.astro";
+import { getContent, type Lang } from "../data/site";
+
 interface Props { lang: Lang; }
 const { lang } = Astro.props;
 const t = getContent(lang).booking;
-const ui = getInterfaceContent(lang);
-const icons = [Plane, Route, Ship, Car];
-const times = Array.from({ length: 96 }, (_, index) => `${String(Math.floor(index / 4)).padStart(2, "0")}:${String((index % 4) * 15).padStart(2, "0")}`);
-const help = {
-  hr: ["Niste sigurni koji transfer odabrati?", "Pošaljite rutu koja vam odgovara. Prije potvrde provjerit ćemo vrijeme, granice i potrebnu veličinu vozila."],
-  en: ["Not sure which transfer to choose?", "Send the route that suits you best. We will check timing, borders and vehicle size before confirmation."],
-  de: ["Nicht sicher, welcher Transfer passt?", "Senden Sie Ihre Wunschroute. Wir prüfen Zeitplan, Grenzübertritte und die passende Fahrzeuggröße."],
-  fr: ["Vous hésitez sur le transfert?", "Envoyez l'itinéraire souhaité. Nous vérifierons les horaires, les frontières et la taille du véhicule."]
-}[lang];
-const bookingFeedback = {
-  hr: { error: "Rezervacija trenutačno nije poslana. Pokušajte ponovno.", track: "Prati vožnju" },
-  en: { error: "Your booking could not be sent right now. Please try again.", track: "Track your ride" },
-  de: { error: "Ihre Buchung konnte gerade nicht gesendet werden. Bitte versuchen Sie es erneut.", track: "Fahrt verfolgen" },
-  fr: { error: "Votre réservation n'a pas pu être envoyée. Veuillez réessayer.", track: "Suivre votre trajet" },
-}[lang];
 const fastRide = {
   hr: {
     tag: "Brza vožnja · pregled", title: "Vožnja sada, bez čekanja", text: "Unesite polazište i pronaći ćemo najbliže dostupno vozilo.", pickup: "Polazište", samplePickup: "Stari grad, Dubrovnik", useLocation: "Upotrijebi moju lokaciju", locationPending: "Preuzimamo vašu lokaciju...", locationError: "Lokacija nije dostupna. Unesite adresu ručno.", located: "Trenutačna lokacija", nearby: "3 vozila u blizini", eta: "Dolazak za 4–7 min", message: "Konačnu potvrdu dobivate čim vozač prihvati vožnju.", action: "Provjeri dostupnost", searching: "Tražimo najbliže vozilo...", found: "Najbliži vozač može doći za 4 min", preview: "Testni prikaz: vozila i vrijeme dolaska su simulirani.", mapTitle: "Karta dostupnih vozila u Dubrovniku", nearest: "Najbliže vozilo", vehicleTwo: "Aurora vozilo", vehicleThree: "Aurora vozilo", distanceOne: "1,2 km", distanceTwo: "1,8 km", distanceThree: "2,4 km", vehicleClass: "Premium kombi", vehicleCapacity: "Do 7 putnika", vehicleComfort: "Klima i Wi-Fi", chooseVehicle: "Odaberi ovo vozilo", selected: "Vozilo je odabrano za vaš zahtjev.", closeVehicle: "Zatvori detalje vozila", vehiclePhotoAlt: "Crni premium transfer kombi u Dubrovniku"
@@ -34,7 +21,8 @@ const fastRide = {
   }
 }[lang];
 ---
-<section class="booking-page soft-page" data-transfer-booking data-lang={lang}>
+
+<section class="booking-page soft-page">
   <span class="section-marker pink-marker">{t.tag}</span>
   <h1>{t.title}</h1>
   <p class="page-intro">{t.intro}</p>
@@ -75,88 +63,7 @@ const fastRide = {
     <div class="fast-ride-dialog-body"><span class="section-marker kiwi-marker">{fastRide.tag}</span><h3 data-fast-ride-dialog-name>{fastRide.nearest}</h3><p>{fastRide.vehicleClass}</p><div class="fast-ride-dialog-meta"><span><Users size={16} />{fastRide.vehicleCapacity}</span><span><MapPin size={16} /><b data-fast-ride-dialog-distance>{fastRide.distanceOne}</b></span><span><Clock3 size={16} />{fastRide.vehicleComfort}</span></div><button class="pill-button primary" type="button" data-fast-ride-choose><Check size={17} />{fastRide.chooseVehicle}</button></div>
   </dialog>
 
-  <div class="booking-layout">
-    <div class="service-column">
-      <h2>{t.choose}</h2>
-      <div class="service-options">
-        {t.services.map((service, index) => { const Icon = icons[index]; return <button type="button" class="service-option" data-service-option={service[0]} data-service-label={service[1]}><span><Icon size={21} /></span><div><strong>{service[1]}</strong><small>{service[2]}</small></div><i><Check size={15} /></i></button>; })}
-      </div>
-      <div class="booking-help purple-grid"><Car size={28} /><h3>{help[0]}</h3><p>{help[1]}</p></div>
-    </div>
-
-    <div class="booking-card">
-      <h2>{t.details}</h2>
-      <form class="booking-form" action="/api/book" method="post">
-        <input type="hidden" name="lang" value={lang} />
-        <div class="form-field full custom-select" data-service-select>
-          <label>{t.selected}</label>
-          <input type="hidden" name="service" required data-service-input />
-          <button type="button" class="select-trigger" data-select-trigger aria-expanded="false"><span data-select-label>{t.selected}...</span><ChevronDown size={16} /></button>
-          <div class="select-menu" data-select-menu hidden>{t.services.map((service) => <button type="button" data-select-value={service[0]} data-select-text={service[1]}>{service[1]}</button>)}</div>
-        </div>
-        <div class="form-field"><label for={`pickup-${lang}`}>{t.pickup}</label><div class="input-wrap"><MapPin size={16} /><input id={`pickup-${lang}`} name="pickup" required placeholder={ui.pickupPlaceholder} autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" /></div></div>
-        <div class="form-field"><label for={`destination-${lang}`}>{t.destination}</label><div class="input-wrap"><MapPin size={16} /><input id={`destination-${lang}`} name="destination" required placeholder={ui.destinationPlaceholder} autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" /></div></div>
-        <div class="form-field full trip-type-field">
-          <label>{t.tripType}</label>
-          <input type="hidden" name="tripType" value="one-way" data-trip-type-input />
-          <div class="trip-type-toggle" role="group" aria-label={t.tripType}>
-            <button type="button" class="active" data-trip-option="one-way" aria-pressed="true"><Car size={16} />{t.oneWay}</button>
-            <button type="button" data-trip-option="return" aria-pressed="false"><ArrowLeftRight size={16} />{t.returnTrip}</button>
-          </div>
-        </div>
-        <div class="form-field"><label for={`name-${lang}`}>{t.name}</label><input id={`name-${lang}`} name="name" autocomplete="name" required /></div>
-        <div class="form-field"><label for={`email-${lang}`}>{t.email}</label><input id={`email-${lang}`} name="email" type="email" autocomplete="email" required /></div>
-        <div class="form-field"><label for={`phone-${lang}`}>{t.phone}</label><input id={`phone-${lang}`} name="phone" type="tel" autocomplete="tel" required placeholder="+385 ..." /></div>
-        <div class="form-field" data-passenger-stepper>
-          <label>{t.passengers}</label><input type="hidden" name="passengers" value="1" />
-          <div class="passenger-stepper"><Users size={16} /><button type="button" data-passenger-minus aria-label={ui.decreasePassengers}><Minus size={15} /></button><strong data-passenger-count>1</strong><button type="button" data-passenger-plus aria-label={ui.increasePassengers}><Plus size={15} /></button></div>
-        </div>
-        <div class="form-field full schedule-field" data-date-picker="outbound">
-          <label>{t.date}</label>
-          <div class="schedule-grid">
-            <div>
-              <div class="calendar-box">
-                <div class="calendar-header"><button type="button" data-cal-prev aria-label={ui.previousMonth}><ChevronLeft size={18} /></button><strong data-cal-title></strong><button type="button" data-cal-next aria-label={ui.nextMonth}><ChevronRight size={18} /></button></div>
-                <div class="calendar-weekdays" data-cal-weekdays></div>
-                <div class="calendar-days" data-cal-days></div>
-              </div>
-              <input type="hidden" name="date" data-date-input />
-              <p class="date-choice" data-date-choice hidden><span data-date-choice-date></span><span class="date-choice-time" data-date-choice-time hidden></span></p>
-            </div>
-            <div class="form-field custom-select time-select">
-              <label>{t.time}</label><input type="hidden" name="time" data-time-input />
-              <button type="button" class="select-trigger time-trigger" data-select-trigger aria-expanded="false"><Clock3 size={16} /><span data-select-label>{t.selectTime}</span><ChevronDown size={16} /></button>
-              <div class="select-menu time-menu" data-select-menu hidden>{times.map((time) => <button type="button" data-select-value={time} data-select-text={time}>{time}</button>)}</div>
-            </div>
-          </div>
-        </div>
-        <div class="form-field full schedule-field return-schedule" data-return-fields data-date-picker="return" hidden>
-          <label>{t.returnDate}</label>
-          <div class="schedule-grid">
-            <div>
-              <div class="calendar-box">
-                <div class="calendar-header"><button type="button" data-cal-prev aria-label={ui.previousMonth}><ChevronLeft size={18} /></button><strong data-cal-title></strong><button type="button" data-cal-next aria-label={ui.nextMonth}><ChevronRight size={18} /></button></div>
-                <div class="calendar-weekdays" data-cal-weekdays></div>
-                <div class="calendar-days" data-cal-days></div>
-              </div>
-              <input type="hidden" name="returnDate" data-date-input />
-              <p class="date-choice" data-date-choice hidden><span data-date-choice-date></span><span class="date-choice-time" data-date-choice-time hidden></span></p>
-            </div>
-            <div class="form-field custom-select time-select">
-              <label>{t.returnTime}</label><input type="hidden" name="returnTime" data-return-time-input />
-              <button type="button" class="select-trigger time-trigger" data-select-trigger aria-expanded="false"><Clock3 size={16} /><span data-select-label>{t.selectTime}</span><ChevronDown size={16} /></button>
-              <div class="select-menu time-menu" data-select-menu hidden>{times.map((time) => <button type="button" data-select-value={time} data-select-text={time}>{time}</button>)}</div>
-            </div>
-          </div>
-        </div>
-        <div class="form-field"><label for={`flight-${lang}`}>{t.flight}</label><div class="input-wrap flight-input-wrap"><Plane size={16} /><input id={`flight-${lang}`} name="flight" autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" /></div></div>
-        <div class="form-field"><label for={`message-${lang}`}>{t.message}</label><input id={`message-${lang}`} name="message" /></div>
-        <p class="booking-error full" data-booking-error hidden>{bookingFeedback.error}</p>
-        <button class="pill-button primary submit-button full" type="submit"><CalendarDays size={17} />{t.submit}</button>
-      </form>
-      <div class="booking-success" data-booking-success hidden><span><Check size={23} /></span><h3>{ui.successTitle}</h3><p>{ui.successText}</p><a class="pill-button primary" data-tracking-link hidden>{bookingFeedback.track}</a><button type="button" data-booking-again>{ui.successAgain}</button></div>
-    </div>
-  </div>
+  <TransferBookingForm lang={lang} variant="page" />
 </section>
 
 <script>
@@ -200,252 +107,7 @@ const fastRide = {
     });
   };
 
-  document.querySelectorAll("[data-transfer-booking]").forEach((booking) => {
-    const serviceInput = booking.querySelector("[data-service-input]");
-    const serviceLabel = booking.querySelector("[data-service-select] [data-select-label]");
-    const serviceMenu = booking.querySelector("[data-service-select] [data-select-menu]");
-    const locale = booking.getAttribute("data-lang") || "en";
-    const updateScheduleChoice = (picker) => {
-      const input = picker?.querySelector("[data-date-input]");
-      const choice = picker?.querySelector("[data-date-choice]");
-      const dateLabel = picker?.querySelector("[data-date-choice-date]");
-      const timeLabel = picker?.querySelector("[data-date-choice-time]");
-      const timeInput = picker?.querySelector("[data-time-input], [data-return-time-input]");
-      if (!(input instanceof HTMLInputElement) || !choice || !dateLabel || !timeLabel) return;
-      if (!input.value) {
-        choice.hidden = true;
-        timeLabel.hidden = true;
-        return;
-      }
-      dateLabel.textContent = new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", year: "numeric" }).format(new Date(`${input.value}T12:00:00`));
-      const time = timeInput instanceof HTMLInputElement ? timeInput.value : "";
-      timeLabel.textContent = time;
-      timeLabel.hidden = !time;
-      choice.hidden = false;
-    };
-    const setService = (value, label) => {
-      if (serviceInput instanceof HTMLInputElement) serviceInput.value = value;
-      if (serviceLabel) serviceLabel.textContent = label;
-      booking.querySelector("[data-service-select] [data-select-trigger]")?.classList.remove("invalid");
-      booking.querySelectorAll("[data-service-option]").forEach((option) => option.classList.toggle("selected", option.getAttribute("data-service-option") === value));
-      if (serviceMenu) serviceMenu.hidden = true;
-    };
-    booking.querySelectorAll("[data-service-option]").forEach((option) => option.addEventListener("click", () => setService(option.getAttribute("data-service-option") || "", option.getAttribute("data-service-label") || "")));
-
-    booking.querySelectorAll(".custom-select").forEach((select) => {
-      const trigger = select.querySelector("[data-select-trigger]");
-      const menu = select.querySelector("[data-select-menu]");
-      const label = select.querySelector("[data-select-label]");
-      const input = select.querySelector('input[type="hidden"]');
-      trigger?.addEventListener("click", () => {
-        booking.querySelectorAll("[data-select-menu]").forEach((other) => { if (other !== menu) other.hidden = true; });
-        const open = menu?.hasAttribute("hidden") ?? true;
-        if (menu) menu.hidden = !open;
-        trigger.setAttribute("aria-expanded", String(open));
-      });
-      menu?.querySelectorAll("[data-select-value]").forEach((option) => option.addEventListener("click", () => {
-        const value = option.getAttribute("data-select-value") || "";
-        const text = option.getAttribute("data-select-text") || "";
-        if (select.hasAttribute("data-service-select")) setService(value, text);
-        else {
-          if (input instanceof HTMLInputElement) input.value = value;
-          if (label) label.textContent = text;
-          if (menu) menu.hidden = true;
-          trigger?.classList.remove("invalid");
-          updateScheduleChoice(select.closest("[data-date-picker]"));
-        }
-        trigger?.setAttribute("aria-expanded", "false");
-      }));
-    });
-
-    booking.querySelectorAll("[data-passenger-stepper]").forEach((stepper) => {
-      const input = stepper.querySelector('input[name="passengers"]');
-      const count = stepper.querySelector("[data-passenger-count]");
-      const update = (next) => {
-        const value = Math.min(8, Math.max(1, next));
-        if (input instanceof HTMLInputElement) input.value = String(value);
-        if (count) count.textContent = value === 8 ? "8+" : String(value);
-      };
-      stepper.querySelector("[data-passenger-minus]")?.addEventListener("click", () => update(Number(input instanceof HTMLInputElement ? input.value : 1) - 1));
-      stepper.querySelector("[data-passenger-plus]")?.addEventListener("click", () => update(Number(input instanceof HTMLInputElement ? input.value : 1) + 1));
-    });
-
-    const today = new Date(); today.setHours(0, 0, 0, 0);
-    const monday = new Date(2024, 0, 1);
-    let outboundSelected = "";
-    let returnPicker;
-
-    const setupDatePicker = (picker, minimumDate, onSelect) => {
-      const title = picker.querySelector("[data-cal-title]");
-      const weekdays = picker.querySelector("[data-cal-weekdays]");
-      const days = picker.querySelector("[data-cal-days]");
-      const input = picker.querySelector("[data-date-input]");
-      let currentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-      let selected = "";
-      if (weekdays) weekdays.innerHTML = Array.from({ length: 7 }, (_, index) => { const date = new Date(monday); date.setDate(monday.getDate() + index); return `<span>${new Intl.DateTimeFormat(locale, { weekday: "short" }).format(date).slice(0, 2)}</span>`; }).join("");
-      const render = () => {
-        if (!title || !days) return;
-        const minimum = minimumDate();
-        title.textContent = new Intl.DateTimeFormat(locale, { month: "long", year: "numeric" }).format(currentMonth);
-        const offset = (currentMonth.getDay() + 6) % 7;
-        const count = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
-        days.innerHTML = `${'<span></span>'.repeat(offset)}${Array.from({ length: count }, (_, index) => {
-          const n = index + 1; const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), n);
-          const iso = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(n).padStart(2, "0")}`;
-          return `<button type="button" data-day="${iso}" ${date < minimum ? "disabled" : ""} class="${selected === iso ? "selected" : ""}">${n}</button>`;
-        }).join("")}`;
-        days.querySelectorAll("[data-day]").forEach((button) => button.addEventListener("click", () => {
-          selected = button.getAttribute("data-day") || "";
-          if (input instanceof HTMLInputElement) input.value = selected;
-          picker.querySelector(".calendar-box")?.classList.remove("invalid");
-          updateScheduleChoice(picker);
-          render();
-          onSelect?.(selected);
-        }));
-      };
-      const goPrevious = () => { const prev = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1); const minimum = minimumDate(); if (prev >= new Date(minimum.getFullYear(), minimum.getMonth(), 1)) currentMonth = prev; render(); };
-      const goNext = () => { currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1); render(); };
-      picker.querySelector("[data-cal-prev]")?.addEventListener("click", goPrevious);
-      picker.querySelector("[data-cal-next]")?.addEventListener("click", goNext);
-      const calendar = picker.querySelector(".calendar-box");
-      let swipeStart;
-      calendar?.addEventListener("pointerdown", (event) => { swipeStart = { x: event.clientX, y: event.clientY }; });
-      calendar?.addEventListener("pointerup", (event) => {
-        if (!swipeStart) return;
-        const deltaX = event.clientX - swipeStart.x;
-        const deltaY = event.clientY - swipeStart.y;
-        swipeStart = undefined;
-        if (Math.abs(deltaX) < 45 || Math.abs(deltaX) <= Math.abs(deltaY) * 1.25) return;
-        if (deltaX < 0) goNext(); else goPrevious();
-      });
-      calendar?.addEventListener("pointercancel", () => { swipeStart = undefined; });
-      render();
-      return {
-        input,
-        render,
-        clear: () => { selected = ""; if (input instanceof HTMLInputElement) input.value = ""; updateScheduleChoice(picker); render(); },
-        set: (value) => {
-          if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return;
-          selected = value;
-          const parsed = new Date(`${value}T12:00:00`);
-          currentMonth = new Date(parsed.getFullYear(), parsed.getMonth(), 1);
-          if (input instanceof HTMLInputElement) input.value = value;
-          updateScheduleChoice(picker);
-          render();
-          onSelect?.(value);
-        }
-      };
-    };
-
-    const outboundPickerElement = booking.querySelector('[data-date-picker="outbound"]');
-    const returnPickerElement = booking.querySelector('[data-date-picker="return"]');
-    const datePicker = outboundPickerElement ? setupDatePicker(outboundPickerElement, () => today, (value) => {
-      outboundSelected = value;
-      if (returnPicker?.input instanceof HTMLInputElement && returnPicker.input.value && returnPicker.input.value < value) returnPicker.clear();
-      returnPicker?.render();
-    }) : null;
-    if (returnPickerElement) returnPicker = setupDatePicker(returnPickerElement, () => outboundSelected ? new Date(`${outboundSelected}T00:00:00`) : today);
-
-    const tripInput = booking.querySelector("[data-trip-type-input]");
-    const returnFields = booking.querySelector("[data-return-fields]");
-    const setTripType = (value) => {
-      if (tripInput instanceof HTMLInputElement) tripInput.value = value;
-      if (returnFields instanceof HTMLElement) returnFields.hidden = value !== "return";
-      booking.querySelectorAll("[data-trip-option]").forEach((button) => {
-        const active = button.getAttribute("data-trip-option") === value;
-        button.classList.toggle("active", active);
-        button.setAttribute("aria-pressed", String(active));
-      });
-      if (value !== "return") {
-        returnPicker?.clear();
-        const returnTime = booking.querySelector("[data-return-time-input]");
-        if (returnTime instanceof HTMLInputElement) returnTime.value = "";
-      } else returnPicker?.render();
-    };
-    booking.querySelectorAll("[data-trip-option]").forEach((button) => button.addEventListener("click", () => setTripType(button.getAttribute("data-trip-option") || "one-way")));
-
-    const params = new URLSearchParams(window.location.search);
-    ["pickup", "destination"].forEach((name) => {
-      const field = booking.querySelector(`[name="${name}"]`);
-      const value = params.get(name);
-      if (field instanceof HTMLInputElement && value) field.value = value;
-    });
-    const tripParam = params.get("tripType");
-    if (tripParam === "return") setTripType("return");
-    const departureParam = params.get("date");
-    if (departureParam) datePicker?.set(departureParam);
-    const returnParam = params.get("returnDate");
-    if (tripParam === "return" && returnParam) returnPicker?.set(returnParam);
-    ["time", "returnTime", "passengers"].forEach((name) => {
-      const input = booking.querySelector(`[name="${name}"]`);
-      const value = params.get(name);
-      if (input instanceof HTMLInputElement && value) {
-        input.value = value;
-        const label = input.parentElement?.querySelector(name === "passengers" ? "[data-passenger-count]" : "[data-select-label]");
-        if (label) label.textContent = value === "8" ? "8+" : value;
-        updateScheduleChoice(input.closest("[data-date-picker]"));
-      }
-    });
-    const form = booking.querySelector(".booking-form");
-    const success = booking.querySelector("[data-booking-success]");
-    form?.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      if (!(form instanceof HTMLFormElement) || !form.reportValidity()) return;
-      if (!(serviceInput instanceof HTMLInputElement) || !serviceInput.value) {
-        booking.querySelector("[data-service-select] [data-select-trigger]")?.classList.add("invalid");
-        booking.querySelector("[data-service-select] [data-select-trigger]")?.focus();
-        return;
-      }
-      if (!(datePicker?.input instanceof HTMLInputElement) || !datePicker.input.value) {
-        outboundPickerElement?.querySelector(".calendar-box")?.classList.add("invalid");
-        return;
-      }
-      const timeInput = booking.querySelector("[data-time-input]");
-      if (!(timeInput instanceof HTMLInputElement) || !timeInput.value) {
-        outboundPickerElement?.querySelector(".time-trigger")?.classList.add("invalid");
-        return;
-      }
-      if (tripInput instanceof HTMLInputElement && tripInput.value === "return") {
-        if (!(returnPicker?.input instanceof HTMLInputElement) || !returnPicker.input.value) {
-          returnPickerElement?.querySelector(".calendar-box")?.classList.add("invalid");
-          return;
-        }
-        const returnTimeInput = booking.querySelector("[data-return-time-input]");
-        if (!(returnTimeInput instanceof HTMLInputElement) || !returnTimeInput.value) {
-          returnPickerElement?.querySelector(".time-trigger")?.classList.add("invalid");
-          return;
-        }
-      }
-      if (returnPicker?.input instanceof HTMLInputElement && datePicker.input.value && returnPicker.input.value && returnPicker.input.value < datePicker.input.value) {
-        returnPickerElement?.querySelector(".calendar-box")?.classList.add("invalid");
-        return;
-      }
-      const payload = Object.fromEntries(new FormData(form).entries());
-      const errorMessage = booking.querySelector("[data-booking-error]");
-      if (errorMessage) errorMessage.hidden = true;
-      try {
-        const response = await fetch("/api/book", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-        const result = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(result.error || "Booking failed");
-        const trackingLink = booking.querySelector("[data-tracking-link]");
-        if (trackingLink instanceof HTMLAnchorElement && result.trackingUrls?.[0]) { trackingLink.href = result.trackingUrls[0]; trackingLink.hidden = false; }
-      } catch (_) { if (errorMessage) errorMessage.hidden = false; return; }
-      form.hidden = true;
-      if (success) success.hidden = false;
-    });
-    booking.querySelector("[data-booking-again]")?.addEventListener("click", () => {
-      if (form instanceof HTMLFormElement) form.reset();
-      datePicker?.clear();
-      returnPicker?.clear();
-      outboundSelected = "";
-      setTripType("one-way");
-      if (form) form.hidden = false;
-      if (success) success.hidden = true;
-    });
-    document.addEventListener("click", (event) => { if (event.target instanceof Node && !booking.contains(event.target)) booking.querySelectorAll("[data-select-menu]").forEach((menu) => menu.hidden = true); });
-  });
-
-  document.querySelectorAll("[data-fast-ride-preview]").forEach((preview) => {
+  document.querySelectorAll<HTMLElement>("[data-fast-ride-preview]").forEach((preview) => {
     if (new URLSearchParams(window.location.search).get("preview") !== "fast-ride") return;
     preview.hidden = false;
     const mapCanvas = preview.querySelector("[data-fast-ride-map]");
@@ -466,7 +128,7 @@ const fastRide = {
     const selection = preview.querySelector("[data-fast-ride-selection]");
     const mapMarkers = new Map<string, any>();
     let selectedVehicle: Element | undefined;
-    const setStatus = (nextStatus, nextEta, nextMessage) => {
+    const setStatus = (nextStatus: string, nextEta: string, nextMessage: string) => {
       if (status) status.textContent = nextStatus;
       if (eta) eta.textContent = nextEta;
       if (message) message.textContent = nextMessage;
@@ -558,7 +220,7 @@ const fastRide = {
       if (!selectedVehicle) return;
       const name = selectedVehicle.getAttribute("data-fast-ride-vehicle-name") || "";
       if (selection) {
-        selection.textContent = `${name} · ${preview.getAttribute("data-selected") || ""}`;
+        selection.textContent = `${name} · ${preview.dataset.selected || ""}`;
         selection.hidden = false;
       }
       if (dialog instanceof HTMLDialogElement) dialog.close();
@@ -566,13 +228,13 @@ const fastRide = {
     void initializeMap();
     locationButton?.addEventListener("click", () => {
       if (!(pickup instanceof HTMLInputElement)) return;
-      const pending = preview.getAttribute("data-location-pending") || "";
-      const error = preview.getAttribute("data-location-error") || "";
-      const located = preview.getAttribute("data-located") || "";
+      const pending = preview.dataset.locationPending || "";
+      const error = preview.dataset.locationError || "";
+      const located = preview.dataset.located || "";
       setStatus(pending, eta?.textContent || "", message?.textContent || "");
       if (!navigator.geolocation) { setStatus(error, eta?.textContent || "", message?.textContent || ""); return; }
       navigator.geolocation.getCurrentPosition(
-        () => { pickup.value = located; setStatus(preview.getAttribute("data-nearby") || "", eta?.textContent || "", message?.textContent || ""); },
+        () => { pickup.value = located; setStatus(preview.dataset.nearby || "", eta?.textContent || "", message?.textContent || ""); },
         () => setStatus(error, eta?.textContent || "", message?.textContent || ""),
         { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
       );
@@ -582,13 +244,13 @@ const fastRide = {
       if (!(action instanceof HTMLButtonElement)) return;
       action.disabled = true;
       preview.classList.add("is-searching");
-      setStatus(preview.getAttribute("data-searching") || "", "", "");
-      if (actionLabel) actionLabel.textContent = preview.getAttribute("data-searching") || "";
+      setStatus(preview.dataset.searching || "", "", "");
+      if (actionLabel) actionLabel.textContent = preview.dataset.searching || "";
       window.setTimeout(() => {
         preview.classList.remove("is-searching");
         preview.classList.add("is-matched");
-        setStatus(preview.getAttribute("data-nearby") || "", "4 min", preview.getAttribute("data-found") || "");
-        if (actionLabel) actionLabel.textContent = preview.getAttribute("data-found") || "";
+        setStatus(preview.dataset.nearby || "", "4 min", preview.dataset.found || "");
+        if (actionLabel) actionLabel.textContent = preview.dataset.found || "";
       }, 850);
     });
   });
