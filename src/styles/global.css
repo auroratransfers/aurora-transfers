@@ -303,14 +303,8 @@ main { width: min(1152px, calc(100% - 32px)); margin-inline: auto; padding-top: 
 .content-card-grid { margin-top: 32px; display: grid; gap: 14px; }
 .content-card-grid article { min-width: 0; padding: 24px; display: flex; flex-direction: column; align-items: flex-start; border: 1px solid var(--line); border-radius: var(--radius); background: white; }
 .content-card-grid article > span { width: 43px; height: 43px; display: grid; place-items: center; border-radius: var(--radius-inner); color: var(--purple); background: var(--purple-light); }
-.fleet-image-placeholder { position: relative; width: 100%; aspect-ratio: 16 / 9; display: grid; place-items: center; margin-bottom: 18px; overflow: hidden; border: 1px solid #ebe6ee; border-radius: var(--radius); background: #f6f4f7; }
-.fleet-image-placeholder::before { content: ""; position: absolute; inset: 0; background: linear-gradient(110deg, transparent 25%, rgba(255,255,255,.9) 48%, transparent 71%); transform: translateX(-100%); animation: fleet-image-shimmer 2.4s ease-in-out infinite; }
-.fleet-image-ghost { position: relative; z-index: 1; width: min(54%, 240px); height: 54%; display: grid; grid-template-rows: minmax(0, 1fr) 9px 9px; gap: 10px; }
-.fleet-image-ghost > span { display: block; border-radius: var(--radius-inner); background: #e9e4eb; }
-.fleet-image-ghost > span:nth-child(2) { width: 76%; }
-.fleet-image-ghost > span:nth-child(3) { width: 48%; }
-@keyframes fleet-image-shimmer { to { transform: translateX(100%); } }
-@media (prefers-reduced-motion: reduce) { .fleet-image-placeholder::before { animation: none; } }
+.fleet-image { width: 100%; aspect-ratio: 16 / 9; margin-bottom: 18px; overflow: hidden; border: 1px solid #ebe6ee; border-radius: var(--radius); background: var(--surface); }
+.fleet-image > img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
 .content-card-grid h2 { margin: 15px 0 0; font-size: 1.1rem; }
 .content-card-grid p { flex: 1; margin: 8px 0 0; color: var(--muted); font-size: .86rem; line-height: 1.6; }
 .content-card-grid a { display: inline-flex; align-items: center; gap: 5px; margin-top: 20px; color: var(--pink-dark); font-size: .8rem; font-weight: 700; }
