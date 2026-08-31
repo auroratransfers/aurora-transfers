@@ -423,7 +423,7 @@ main { width: min(1152px, calc(100% - 32px)); margin-inline: auto; padding-top: 
   .location-pill { display: inline-flex; }
   .pillar-grid, .content-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .hero-booking-form, .quick-return { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .hero-contact-fields { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .hero-contact-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .hero-extra-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .booking-card { padding: 25px; }
   .partner-choice-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -453,6 +453,7 @@ main { width: min(1152px, calc(100% - 32px)); margin-inline: auto; padding-top: 
 
 @media (min-width: 760px) {
   main { padding-top: 24px; }
+  .header-brand-logo { width: 159px; }
   .hero-grid { margin-inline: -24px; padding: 55px 24px 62px; grid-template-columns: minmax(0, 1.05fr) minmax(330px, .95fr); gap: 35px; align-items: start; }
   .hero-copy { margin-top: 48px; }
   .hero-copy h1 { font-size: clamp(3.15rem, 6vw, 4.55rem); }
