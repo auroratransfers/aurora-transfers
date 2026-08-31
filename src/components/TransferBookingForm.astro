@@ -89,14 +89,18 @@ const placeCopy = {
 
     <section class="booking-experience-section full" aria-label={experience.serviceLabel}>
       <div class="booking-experience-heading"><div><span>{experience.serviceLabel}</span><small>{experience.serviceHint}</small></div></div>
-      <div class="booking-service-grid" role="group" aria-label={experience.serviceLabel}>
-        {experience.services.map((service) => <button type="button" class:list={["booking-service-option", { active: service.value === "private-transfer" }]} data-booking-service={service.value} aria-pressed={service.value === "private-transfer" ? "true" : "false"}>
-          <span class="booking-service-icon">
-            {service.value === "airport-arrival" || service.value === "airport-concierge" ? <Plane size={17} /> : service.value === "hourly-chauffeur" ? <Clock3 size={17} /> : service.value === "group-transfer" ? <Users size={17} /> : service.value === "aurora-now" ? <MapPin size={17} /> : <Car size={17} />}
-          </span>
-          <span class="booking-service-copy"><strong>{service.title}</strong><small>{service.text}</small></span>
-          {service.badge && <em>{service.badge}</em>}
-        </button>)}
+      <div class="booking-service-scroller" data-service-scroller>
+        <button class="booking-service-scroll-control previous" type="button" data-service-scroll-prev aria-controls={`${formId}-service-options`} aria-label={experience.serviceScrollPrevious} title={experience.serviceScrollPrevious}><ChevronLeft size={16} /></button>
+        <div id={`${formId}-service-options`} class="booking-service-grid" role="group" aria-label={experience.serviceLabel}>
+          {experience.services.map((service) => <button type="button" class:list={["booking-service-option", { active: service.value === "private-transfer" }]} data-booking-service={service.value} aria-pressed={service.value === "private-transfer" ? "true" : "false"}>
+            <span class="booking-service-icon">
+              {service.value === "airport-arrival" || service.value === "airport-concierge" ? <Plane size={17} /> : service.value === "hourly-chauffeur" ? <Clock3 size={17} /> : service.value === "group-transfer" ? <Users size={17} /> : service.value === "aurora-now" ? <MapPin size={17} /> : <Car size={17} />}
+            </span>
+            <span class="booking-service-copy"><strong>{service.title}</strong><small>{service.text}</small></span>
+            {service.badge && <em>{service.badge}</em>}
+          </button>)}
+        </div>
+        <button class="booking-service-scroll-control next" type="button" data-service-scroll-next aria-controls={`${formId}-service-options`} aria-label={experience.serviceScrollNext} title={experience.serviceScrollNext}><ChevronRight size={16} /></button>
       </div>
     </section>
 
@@ -258,6 +262,24 @@ const placeCopy = {
       field.querySelector<HTMLElement>("[data-place-menu]")?.setAttribute("hidden", "");
       field.querySelector<HTMLInputElement>("[data-place-input]")?.setAttribute("aria-expanded", "false");
     });
+
+    const serviceScroller = booking.querySelector<HTMLElement>("[data-service-scroller]");
+    const serviceGrid = serviceScroller?.querySelector<HTMLElement>(".booking-service-grid");
+    const previousServiceButton = serviceScroller?.querySelector<HTMLButtonElement>("[data-service-scroll-prev]");
+    const nextServiceButton = serviceScroller?.querySelector<HTMLButtonElement>("[data-service-scroll-next]");
+    if (serviceGrid && previousServiceButton && nextServiceButton) {
+      const updateServiceScrollControls = () => {
+        const maximum = Math.max(0, serviceGrid.scrollWidth - serviceGrid.clientWidth);
+        previousServiceButton.disabled = serviceGrid.scrollLeft <= 2;
+        nextServiceButton.disabled = serviceGrid.scrollLeft >= maximum - 2;
+      };
+      const scrollServices = (direction: 1 | -1) => serviceGrid.scrollBy({ left: direction * Math.max(180, Math.round(serviceGrid.clientWidth * .82)), behavior: "smooth" });
+      previousServiceButton.addEventListener("click", () => scrollServices(-1));
+      nextServiceButton.addEventListener("click", () => scrollServices(1));
+      serviceGrid.addEventListener("scroll", updateServiceScrollControls, { passive: true });
+      if ("ResizeObserver" in window) new ResizeObserver(updateServiceScrollControls).observe(serviceGrid);
+      requestAnimationFrame(updateServiceScrollControls);
+    }
 
     booking.querySelectorAll<HTMLButtonElement>("[data-quick-trigger]").forEach((trigger) => trigger.addEventListener("click", () => {
       const panel = trigger.parentElement?.querySelector<HTMLElement>("[data-quick-panel]");

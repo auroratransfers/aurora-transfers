@@ -10,6 +10,8 @@ type AddonOption = { value: string; title: string; text: string; price: string; 
 type BookingExperience = {
   serviceLabel: string;
   serviceHint: string;
+  serviceScrollPrevious: string;
+  serviceScrollNext: string;
   vehicleLabel: string;
   vehicleHint: string;
   addonLabel: string;
@@ -49,6 +51,8 @@ const bookingExperience = {
   hr: {
     serviceLabel: "Vrsta usluge",
     serviceHint: "Odaberite način na koji želite putovati.",
+    serviceScrollPrevious: "Prikaži prethodne usluge",
+    serviceScrollNext: "Prikaži sljedeće usluge",
     vehicleLabel: "Odaberite klasu vozila",
     vehicleHint: "Ovo su testne klase i početne cijene. Potvrđujemo stvarno vozilo prije vožnje.",
     addonLabel: "Detalji za mirniji dolazak",
@@ -80,12 +84,12 @@ const bookingExperience = {
     manageText: "Nakon slanja dobit ćete privatnu poveznicu za praćenje vozača, kontakt s operativnim timom i zahtjev za promjenu rezervacije.",
     manageAction: "Kako funkcionira",
     services: [
-      { value: "private-transfer", title: "Privatni transfer", text: "Izravna vožnja od vrata do vrata." },
-      { value: "airport-arrival", title: "Dolazak iz zračne luke", text: "Let, doček i put do smještaja." },
-      { value: "hourly-chauffeur", title: "Vozač po satu", text: "Vozilo i vozač uz vas prema vašem rasporedu." },
-      { value: "group-transfer", title: "Transfer za grupu", text: "Veće grupe, prtljaga i događaji." },
-      { value: "airport-concierge", title: "Airport concierge", text: "Koordinirana pomoć pri dolasku preko partnera.", badge: "Pilot" },
-      { value: "aurora-now", title: "Aurora Now", text: "Brza vožnja s dostupnim vozilima u blizini.", badge: "Pilot" }
+      { value: "private-transfer", title: "Privatni transfer", text: "Unaprijed rezervirana vožnja od vrata do vrata, za svaku rutu i termin." },
+      { value: "airport-arrival", title: "Dolazak iz zračne luke", text: "Doček nakon slijetanja, praćenje leta i miran dolazak do smještaja." },
+      { value: "hourly-chauffeur", title: "Vozač po satu", text: "Vozač i vozilo ostaju uz vas za plan koji se može mijenjati." },
+      { value: "group-transfer", title: "Transfer za grupu", text: "Usklađena vožnja za obitelji, događaje, krstarenja i više prtljage." },
+      { value: "airport-concierge", title: "Airport concierge", text: "Koordiniran dolazak, doček i dodatna pomoć preko odabranih partnera.", badge: "Pilot" },
+      { value: "aurora-now", title: "Aurora Now", text: "Brza gradska vožnja s vozilom koje je dostupno u blizini.", badge: "Pilot" }
     ],
     vehicles: [
       { value: "comfort", title: "Comfort", text: "Za parove i laganu prtljagu.", passengers: "do 3 putnika", luggage: "2 kovčega", from: "35 EUR" },
@@ -105,6 +109,8 @@ const bookingExperience = {
   en: {
     serviceLabel: "Service type",
     serviceHint: "Choose the way you would like to travel.",
+    serviceScrollPrevious: "Show previous services",
+    serviceScrollNext: "Show more services",
     vehicleLabel: "Choose a vehicle class",
     vehicleHint: "These are test classes and starting prices. We confirm the actual vehicle before your ride.",
     addonLabel: "Details for an easier arrival",
@@ -136,12 +142,12 @@ const bookingExperience = {
     manageText: "After you send the request, you receive a private link for driver tracking, operational support and booking-change requests.",
     manageAction: "How it works",
     services: [
-      { value: "private-transfer", title: "Private transfer", text: "Direct door-to-door travel." },
-      { value: "airport-arrival", title: "Airport arrival", text: "Flight, welcome and a calm route to your stay." },
-      { value: "hourly-chauffeur", title: "By the hour", text: "A driver and vehicle held to your schedule." },
-      { value: "group-transfer", title: "Group transfer", text: "Larger parties, luggage and event movements." },
-      { value: "airport-concierge", title: "Airport concierge", text: "Partner-led arrival assistance on request.", badge: "Pilot" },
-      { value: "aurora-now", title: "Aurora Now", text: "A fast ride using nearby available vehicles.", badge: "Pilot" }
+      { value: "private-transfer", title: "Private transfer", text: "Pre-booked, door-to-door travel for any route and departure time." },
+      { value: "airport-arrival", title: "Airport arrival", text: "Meet your driver after landing, with flight monitoring and a calm arrival." },
+      { value: "hourly-chauffeur", title: "By the hour", text: "Keep a private vehicle and driver close for plans that can change." },
+      { value: "group-transfer", title: "Group transfer", text: "Coordinated rides for families, events, cruise guests and larger luggage." },
+      { value: "airport-concierge", title: "Airport concierge", text: "Arrival coordination, meet and greet and tailored help through selected partners.", badge: "Pilot" },
+      { value: "aurora-now", title: "Aurora Now", text: "Quick city travel with a nearby available vehicle when time matters.", badge: "Pilot" }
     ],
     vehicles: [
       { value: "comfort", title: "Comfort", text: "For couples and lighter luggage.", passengers: "up to 3 passengers", luggage: "2 suitcases", from: "35 EUR" },
@@ -161,6 +167,8 @@ const bookingExperience = {
   de: {
     serviceLabel: "Art der Fahrt",
     serviceHint: "Wählen Sie, wie Sie reisen möchten.",
+    serviceScrollPrevious: "Vorherige Services anzeigen",
+    serviceScrollNext: "Weitere Services anzeigen",
     vehicleLabel: "Fahrzeugklasse wählen",
     vehicleHint: "Dies sind Testklassen und Einstiegspreise. Das konkrete Fahrzeug bestätigen wir vor der Fahrt.",
     addonLabel: "Details für eine entspannte Ankunft",
@@ -192,12 +200,12 @@ const bookingExperience = {
     manageText: "Nach dem Absenden erhalten Sie einen privaten Link für Fahrer-Tracking, operative Unterstützung und Änderungswünsche.",
     manageAction: "So funktioniert es",
     services: [
-      { value: "private-transfer", title: "Privattransfer", text: "Direkte Fahrt von Tür zu Tür." },
-      { value: "airport-arrival", title: "Ankunft am Flughafen", text: "Flug, Empfang und eine ruhige Fahrt zur Unterkunft." },
-      { value: "hourly-chauffeur", title: "Fahrer stundenweise", text: "Fahrer und Fahrzeug nach Ihrem Zeitplan." },
-      { value: "group-transfer", title: "Gruppentransfer", text: "Größere Gruppen, Gepäck und Veranstaltungen." },
-      { value: "airport-concierge", title: "Airport Concierge", text: "Ankunftshilfe über Partner auf Anfrage.", badge: "Pilot" },
-      { value: "aurora-now", title: "Aurora Now", text: "Schnelle Fahrt mit verfügbaren Fahrzeugen in der Nähe.", badge: "Pilot" }
+      { value: "private-transfer", title: "Privattransfer", text: "Vorab gebuchte Tür-zu-Tür-Fahrt für jede Route und jede Abfahrtszeit." },
+      { value: "airport-arrival", title: "Ankunft am Flughafen", text: "Treffen Sie Ihren Fahrer nach der Landung, inklusive Flugüberwachung." },
+      { value: "hourly-chauffeur", title: "Fahrer stundenweise", text: "Fahrer und Fahrzeug bleiben für einen flexibel planbaren Tag bei Ihnen." },
+      { value: "group-transfer", title: "Gruppentransfer", text: "Koordinierte Fahrten für Familien, Events, Kreuzfahrtgäste und großes Gepäck." },
+      { value: "airport-concierge", title: "Airport Concierge", text: "Ankunftskoordination, Empfang und maßgeschneiderte Hilfe über ausgewählte Partner.", badge: "Pilot" },
+      { value: "aurora-now", title: "Aurora Now", text: "Schnelle Stadtfahrt mit einem verfügbaren Fahrzeug in Ihrer Nähe.", badge: "Pilot" }
     ],
     vehicles: [
       { value: "comfort", title: "Comfort", text: "Für Paare und leichteres Gepäck.", passengers: "bis 3 Fahrgäste", luggage: "2 Koffer", from: "35 EUR" },
@@ -217,6 +225,8 @@ const bookingExperience = {
   fr: {
     serviceLabel: "Type de service",
     serviceHint: "Choisissez la façon dont vous souhaitez voyager.",
+    serviceScrollPrevious: "Afficher les services précédents",
+    serviceScrollNext: "Afficher plus de services",
     vehicleLabel: "Choisissez une catégorie de véhicule",
     vehicleHint: "Il s'agit de catégories et de prix de départ de démonstration. Nous confirmons le véhicule réel avant le trajet.",
     addonLabel: "Les détails d'une arrivée plus simple",
@@ -248,12 +258,12 @@ const bookingExperience = {
     manageText: "Après l'envoi, vous recevrez un lien privé pour suivre le chauffeur, contacter l'équipe opérationnelle et demander une modification.",
     manageAction: "Comment cela fonctionne",
     services: [
-      { value: "private-transfer", title: "Transfert privé", text: "Un trajet direct de porte à porte." },
-      { value: "airport-arrival", title: "Arrivée à l'aéroport", text: "Vol, accueil et trajet serein jusqu'à votre séjour." },
-      { value: "hourly-chauffeur", title: "Chauffeur à l'heure", text: "Un chauffeur et un véhicule selon votre programme." },
-      { value: "group-transfer", title: "Transfert de groupe", text: "Groupes plus importants, bagages et événements." },
-      { value: "airport-concierge", title: "Concierge aéroport", text: "Assistance d'arrivée via partenaires, sur demande.", badge: "Pilote" },
-      { value: "aurora-now", title: "Aurora Now", text: "Une course rapide avec des véhicules disponibles à proximité.", badge: "Pilote" }
+      { value: "private-transfer", title: "Transfert privé", text: "Trajet porte à porte réservé à l'avance, pour tout itinéraire et tout horaire." },
+      { value: "airport-arrival", title: "Arrivée à l'aéroport", text: "Accueil après l'atterrissage, suivi du vol et arrivée sereine à votre hébergement." },
+      { value: "hourly-chauffeur", title: "Chauffeur à l'heure", text: "Gardez un véhicule privé et un chauffeur disponibles pour un programme flexible." },
+      { value: "group-transfer", title: "Transfert de groupe", text: "Trajets coordonnés pour familles, événements, croisiéristes et bagages volumineux." },
+      { value: "airport-concierge", title: "Concierge aéroport", text: "Coordination de l'arrivée, accueil et assistance sur mesure via des partenaires sélectionnés.", badge: "Pilote" },
+      { value: "aurora-now", title: "Aurora Now", text: "Trajet urbain rapide avec un véhicule disponible près de vous.", badge: "Pilote" }
     ],
     vehicles: [
       { value: "comfort", title: "Comfort", text: "Pour les couples et les bagages légers.", passengers: "jusqu'à 3 passagers", luggage: "2 valises", from: "35 EUR" },
