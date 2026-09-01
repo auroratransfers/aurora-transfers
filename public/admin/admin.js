@@ -1021,8 +1021,12 @@ document.addEventListener("visibilitychange", () => {
 });
 
 $$('dialog').forEach((dialog) => {
+  dialog.addEventListener("pointerdown", (event) => {
+    dialog.dataset.backdropPointerDown = String(event.target === dialog);
+  });
   dialog.addEventListener("click", (event) => {
-    if (event.target === dialog) dialog.close();
+    if (event.target === dialog && dialog.dataset.backdropPointerDown === "true") dialog.close();
+    delete dialog.dataset.backdropPointerDown;
   });
 });
 
