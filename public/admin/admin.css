@@ -10,6 +10,10 @@
   --blue-strong: #55b8dc;
   --red: #c72f58;
   --red-soft: #fff0f4;
+  --driver-offline: #211d26;
+  --driver-busy: #c72f58;
+  --driver-available: #27864d;
+  --driver-suspended: #806300;
   --ink: #211d26;
   --muted: #68616d;
   --subtle: #918a96;
@@ -1037,6 +1041,26 @@ input:focus-visible {
   background: #e8e5e9;
 }
 
+.status.driver-status.available {
+  color: #fff;
+  background: var(--driver-available);
+}
+
+.status.driver-status.busy {
+  color: #fff;
+  background: var(--driver-busy);
+}
+
+.status.driver-status.suspended {
+  color: #fff;
+  background: var(--driver-suspended);
+}
+
+.status.driver-status.offline {
+  color: #fff;
+  background: var(--driver-offline);
+}
+
 .status.maintenance,
 .severity-medium {
   color: #7a3f02;
@@ -1262,6 +1286,60 @@ input:focus-visible {
   outline: none;
 }
 
+.filter-trigger-value {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-trigger-value [data-filter-label] {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.filter-status-label,
+.filter-option-status {
+  flex: 0 0 auto;
+  padding: 3px 6px;
+  border-radius: var(--radius);
+  color: #fff;
+  font-size: 0.56rem;
+  font-weight: 900;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.filter-status-label.is-empty {
+  display: none;
+}
+
+.filter-status-label.status-tone-offline,
+.filter-option-status.status-tone-offline,
+.custom-filter-status[data-status-tone="offline"] .filter-status-label {
+  background: var(--driver-offline);
+}
+
+.filter-status-label.status-tone-busy,
+.filter-option-status.status-tone-busy,
+.custom-filter-status[data-status-tone="busy"] .filter-status-label {
+  background: var(--driver-busy);
+}
+
+.filter-status-label.status-tone-available,
+.filter-option-status.status-tone-available,
+.custom-filter-status[data-status-tone="available"] .filter-status-label {
+  background: var(--driver-available);
+}
+
+.filter-status-label.status-tone-suspended,
+.filter-option-status.status-tone-suspended,
+.custom-filter-status[data-status-tone="suspended"] .filter-status-label {
+  background: var(--driver-suspended);
+}
+
 .filter-trigger::after {
   content: "";
   width: 8px;
@@ -1310,6 +1388,13 @@ input:focus-visible {
   font-size: 0.75rem;
   font-weight: 700;
   text-align: left;
+}
+
+.filter-option.has-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
 }
 
 .filter-option:hover,
@@ -1436,15 +1521,19 @@ td small {
 }
 
 .availability.available {
-  background: var(--kiwi);
+  background: var(--driver-available);
 }
 
 .availability.busy {
-  background: var(--purple);
+  background: var(--driver-busy);
 }
 
 .availability.suspended {
-  background: var(--red);
+  background: var(--driver-suspended);
+}
+
+.availability.offline {
+  background: var(--driver-offline);
 }
 
 .entity-facts {

@@ -69,9 +69,13 @@ function relativeTime(value) {
   return `${Math.floor(seconds / 86400)}d ago`;
 }
 
-function status(value) {
+function status(value, extraClass = "") {
   const label = String(value || "unknown").replaceAll("_", " ");
-  return `<span class="status ${esc(value)}">${esc(label)}</span>`;
+  return `<span class="status ${esc(value)}${extraClass ? ` ${esc(extraClass)}` : ""}">${esc(label)}</span>`;
+}
+
+function driverStatusTone(value) {
+  return ["offline", "busy", "available", "suspended"].includes(value) ? value : "";
 }
 
 function connectionState(item) {
@@ -536,7 +540,7 @@ async function loadDrivers() {
         const connection = deviceConnection(driver);
         const canSuspend = driver.status !== "suspended" && !Number(driver.active_rides);
         return `<article class="entity-card">
-          <header><div><span class="availability ${esc(driver.status)}"></span><h2>${esc(driver.full_name)}</h2></div>${status(driver.status)}</header>
+          <header><div><span class="availability ${esc(driver.status)}"></span><h2>${esc(driver.full_name)}</h2></div>${status(driver.status, "driver-status")}</header>
           <p>${esc(driver.phone || "No phone")} · ${esc(driver.email || "No email")}</p>
           <div class="entity-facts">
             <div><span>Driver app</span><strong>${esc(connectionLabel(connection))}</strong><small>${relativeTime(driver.device_last_seen_at)}</small></div>
@@ -712,12 +716,15 @@ async function loadPartnerApplications() {
 
 function customSelectMarkup(id, items, currentValue, placeholder) {
   const selected = items.find((item) => String(item.value) === String(currentValue));
-  return `<div class="custom-filter" id="${esc(id)}" data-custom-select data-value="${esc(currentValue || "")}">
-    <button class="filter-trigger" type="button" aria-haspopup="listbox" aria-expanded="false"><span data-filter-label>${esc(selected?.label || placeholder)}</span></button>
+  const usesStatus = items.some((item) => item.tone);
+  const selectedTone = selected?.tone || "";
+  const selectedMeta = selected?.meta || "";
+  return `<div class="custom-filter${usesStatus ? " custom-filter-status" : ""}" id="${esc(id)}" data-custom-select data-value="${esc(currentValue || "")}"${selectedTone ? ` data-status-tone="${esc(selectedTone)}"` : ""}>
+    <button class="filter-trigger" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="filter-trigger-value"><span data-filter-label>${esc(selected?.label || placeholder)}</span><span class="filter-status-label${selectedMeta ? "" : " is-empty"}" data-filter-status>${esc(selectedMeta)}</span></span></button>
     <div class="filter-menu" role="listbox" hidden>
       ${items.map((item) => {
         const isSelected = String(item.value) === String(currentValue);
-        return `<button class="filter-option${isSelected ? " selected" : ""}" type="button" role="option" aria-selected="${isSelected}" data-filter-value="${esc(item.value)}">${esc(item.label)}</button>`;
+        return `<button class="filter-option${isSelected ? " selected" : ""}${item.tone ? " has-status" : ""}" type="button" role="option" aria-selected="${isSelected}" data-filter-value="${esc(item.value)}" data-filter-label="${esc(item.label)}" data-filter-meta="${esc(item.meta || "")}" data-status-tone="${esc(item.tone || "")}"><span>${esc(item.label)}</span>${item.meta ? `<span class="filter-option-status status-tone-${esc(item.tone || "neutral")}">${esc(item.meta)}</span>` : ""}</button>`;
       }).join("")}
     </div>
   </div>`;
@@ -763,7 +770,14 @@ function initializeCustomSelect(select) {
   options.forEach((option, index) => {
     option.addEventListener("click", () => {
       select.dataset.value = option.dataset.filterValue || "";
-      $("[data-filter-label]", select).textContent = option.textContent;
+      $("[data-filter-label]", select).textContent = option.dataset.filterLabel || option.textContent;
+      const filterStatus = $("[data-filter-status]", select);
+      if (filterStatus) {
+        filterStatus.textContent = option.dataset.filterMeta || "";
+        filterStatus.classList.toggle("is-empty", !option.dataset.filterMeta);
+      }
+      if (option.dataset.statusTone) select.dataset.statusTone = option.dataset.statusTone;
+      else delete select.dataset.statusTone;
       options.forEach((item) => {
         const isSelected = item === option;
         item.classList.toggle("selected", isSelected);
@@ -807,7 +821,12 @@ async function openRide(id) {
     });
     const ride = data.ride;
     const latest = data.positions?.[0];
-    const driverItems = [{ value: "", label: "Choose driver" }, ...state.drivers.map((driver) => ({ value: driver.id, label: `${driver.full_name} · ${driver.status}` }))];
+    const driverItems = [{ value: "", label: "Choose driver" }, ...state.drivers.map((driver) => ({
+      value: driver.id,
+      label: driver.full_name,
+      meta: String(driver.status || "offline").replaceAll("_", " "),
+      tone: driverStatusTone(driver.status),
+    }))];
     const vehicleItems = [{ value: "", label: "Choose vehicle" }, ...state.vehicles.map((vehicle) => ({ value: vehicle.id, label: `${vehicle.plate_number} · ${vehicle.make} ${vehicle.model}` }))];
     const statusItems = ["requested", "confirmed", "assigned", "en_route", "arrived", "in_progress", "completed", "cancelled", "no_show", "emergency"].map((value) => ({ value, label: value.replaceAll("_", " ") }));
     const gpsState = ride.last_location_at && Date.now() - new Date(ride.last_location_at).getTime() <= LIVE_POSITION_MS ? "live" : ride.last_location_at ? "stale" : "offline";
