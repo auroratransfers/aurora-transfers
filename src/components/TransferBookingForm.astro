@@ -207,7 +207,7 @@ const placeCopy = {
 
     <div class="hero-extra-fields full">
       <label for={`${formId}-phone`}>{booking.phone}<div class="input-wrap"><Phone size={16} /><input id={`${formId}-phone`} name="phone" type="tel" autocomplete="tel" required placeholder={contactPlaceholders.phone} /></div></label>
-      <label for={`${formId}-flight`}>{booking.flight}<div class="flight-input-row"><div class="input-wrap flight-input-wrap"><Plane size={16} /><input id={`${formId}-flight`} name="flight" autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-flight-input /></div><button class="flight-check-button" type="button" data-flight-check>{experience.flightCheck}</button></div><input type="hidden" name="flightStatus" data-flight-status-output /><small class="flight-field-hint">{experience.flightHint}</small><div class="flight-check-result" data-flight-result hidden aria-live="polite" aria-atomic="true"></div></label>
+      <div class="flight-field"><label for={`${formId}-flight`}>{booking.flight}<div class="flight-input-row"><div class="input-wrap flight-input-wrap"><Plane size={16} /><input id={`${formId}-flight`} name="flight" autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-flight-input /></div><button class="flight-check-button" type="button" data-flight-check>{experience.flightCheck}</button></div></label><input type="hidden" name="flightStatus" data-flight-status-output /><small class="flight-field-hint">{experience.flightHint}</small><div class="flight-check-result" data-flight-result hidden aria-live="polite" aria-atomic="true"></div><a class="flight-external-link" data-flight-external-link hidden target="_blank" rel="noopener noreferrer">{experience.flightExternalTracker}</a></div>
       <label class="full" for={`${formId}-message`}>{booking.message}<div class="input-wrap"><MessageCircle size={16} /><input id={`${formId}-message`} name="message" autocomplete="off" /></div></label>
     </div>
 
@@ -705,6 +705,7 @@ const placeCopy = {
     const flightInput = booking.querySelector<HTMLInputElement>("[data-flight-input]");
     const flightButton = booking.querySelector<HTMLButtonElement>("[data-flight-check]");
     const flightResult = booking.querySelector<HTMLElement>("[data-flight-result]");
+    const flightExternalLink = booking.querySelector<HTMLAnchorElement>("[data-flight-external-link]");
     const flightStatusOutput = booking.querySelector<HTMLInputElement>("[data-flight-status-output]");
     const formatFlightTime = (value?: string | null, timezone?: string | null) => {
       if (!value) return "";
@@ -724,17 +725,12 @@ const placeCopy = {
       text.className = "flight-result-message";
       text.textContent = message;
       const safeTrackingUrl = trackingUrl?.startsWith("https://www.flightradar24.com/") ? trackingUrl : "";
-      if (safeTrackingUrl) {
-        const link = document.createElement("a");
-        link.className = "flight-external-link";
-        link.href = safeTrackingUrl;
-        link.target = "_blank";
-        link.rel = "noopener noreferrer";
-        link.textContent = booking.dataset.flightExternalTracker || "";
-        flightResult.replaceChildren(text, link);
-      } else {
-        flightResult.replaceChildren(text);
+      if (flightExternalLink) {
+        flightExternalLink.hidden = !safeTrackingUrl;
+        if (safeTrackingUrl) flightExternalLink.href = safeTrackingUrl;
+        else flightExternalLink.removeAttribute("href");
       }
+      flightResult.replaceChildren(text);
       flightResult.hidden = false;
     };
     const flightAirport = (leg: { airport?: string | null; iata?: string | null } = {}) => {
@@ -795,6 +791,10 @@ const placeCopy = {
         flightResult.classList.remove("is-live");
         flightResult.hidden = true;
         flightResult.replaceChildren();
+      }
+      if (flightExternalLink) {
+        flightExternalLink.hidden = true;
+        flightExternalLink.removeAttribute("href");
       }
     };
     flightInput?.addEventListener("input", resetFlightStatus);
