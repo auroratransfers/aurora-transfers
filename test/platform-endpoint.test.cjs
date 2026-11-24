@@ -20,7 +20,7 @@ test("platform endpoint serves a test quote from its consolidated route", async 
   assert.equal(res.payload.quote.mode, "demo");
 });
 
-test("platform endpoint serves labelled demo flight data without a provider key", async () => {
+test("platform endpoint does not invent flight data without a provider key", async () => {
   const original = process.env.AVIATIONSTACK_API_KEY;
   delete process.env.AVIATIONSTACK_API_KEY;
   try {
@@ -28,7 +28,8 @@ test("platform endpoint serves labelled demo flight data without a provider key"
     await handler({ method: "GET", url: "/api/platform?action=flight-status&flight=LH123&date=2026-09-01" }, res);
     assert.equal(res.statusCode, 200);
     assert.equal(res.payload.isLive, false);
-    assert.equal(res.payload.flight.number, "LH123");
+    assert.equal(res.payload.provider, "unavailable");
+    assert.equal(res.payload.flight, null);
     assert.equal(res.headers["Cache-Control"], "private, max-age=30");
   } finally {
     if (original === undefined) delete process.env.AVIATIONSTACK_API_KEY; else process.env.AVIATIONSTACK_API_KEY = original;

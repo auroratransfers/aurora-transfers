@@ -75,7 +75,6 @@ const placeCopy = {
   data-estimate-includes={experience.estimateIncludes}
   data-flight-checking={experience.flightChecking}
   data-flight-live={experience.flightLive}
-  data-flight-demo={experience.flightDemo}
   data-flight-unavailable={experience.flightUnavailable}
   data-dubrovnik-season-start={availability.dubrovnikSeasonStart}
 >
@@ -711,9 +710,14 @@ const placeCopy = {
         const date = booking.querySelector<HTMLInputElement>('[name="date"]')?.value || "";
         const response = await fetch(`/api/platform?action=flight-status&flight=${encodeURIComponent(flight)}&date=${encodeURIComponent(date)}`, { cache: "no-store" });
         const result = await response.json().catch(() => ({}));
-        if (!response.ok || !result.flight) throw new Error("Flight lookup failed");
+        if (!response.ok) throw new Error("Flight lookup failed");
+        if (!result.isLive || !result.flight) {
+          if (flightStatusOutput) flightStatusOutput.value = "";
+          if (flightResult) flightResult.textContent = booking.dataset.flightUnavailable || "";
+          return;
+        }
         const arrival = result.flight.arrival || {};
-        const sourceLabel = result.isLive ? booking.dataset.flightLive : booking.dataset.flightDemo;
+        const sourceLabel = booking.dataset.flightLive;
         const detail = [result.flight.number, result.flight.status, arrival.airport, arrival.terminal ? `T${arrival.terminal}` : "", arrival.gate ? `G${arrival.gate}` : ""].filter(Boolean).join(" · ");
         if (flightResult) flightResult.textContent = `${sourceLabel || ""}: ${detail}`;
         if (flightStatusOutput) flightStatusOutput.value = JSON.stringify(result.flight);

@@ -32,14 +32,14 @@ test("hourly chauffeur estimate uses requested duration", () => {
   assert.equal(quote.service, "hourly-chauffeur");
 });
 
-test("flight lookup uses visibly non-live demo data without a provider key", async () => {
+test("flight lookup does not invent a flight without a provider key", async () => {
   const previous = process.env.AVIATIONSTACK_API_KEY;
   delete process.env.AVIATIONSTACK_API_KEY;
   try {
     const result = await lookupFlight("LH123", "2026-09-01");
-    assert.equal(result.provider, "demo");
+    assert.equal(result.provider, "unavailable");
     assert.equal(result.isLive, false);
-    assert.equal(result.flight.number, "LH123");
+    assert.equal(result.flight, null);
   } finally {
     if (previous) process.env.AVIATIONSTACK_API_KEY = previous;
   }

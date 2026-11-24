@@ -34,7 +34,6 @@ type BookingExperience = {
   flightCheck: string;
   flightChecking: string;
   flightLive: string;
-  flightDemo: string;
   flightUnavailable: string;
   paymentLabel: string;
   paymentText: string;
@@ -75,7 +74,6 @@ const bookingExperience = {
     flightCheck: "Provjeri let",
     flightChecking: "Provjeravamo let...",
     flightLive: "Status leta uživo",
-    flightDemo: "Testni status leta",
     flightUnavailable: "Trenutačno ne možemo dohvatiti status leta. Aurora će ga pratiti nakon potvrde rezervacije.",
     paymentLabel: "Plaćanje nakon potvrde",
     paymentText: "Online polog i plaćanje karticom prikazani su kao pilot tok. Ne naplaćujemo karticu dok ih ne aktiviramo s produkcijskim pružateljem plaćanja.",
@@ -133,7 +131,6 @@ const bookingExperience = {
     flightCheck: "Check flight",
     flightChecking: "Checking flight...",
     flightLive: "Live flight status",
-    flightDemo: "Test flight status",
     flightUnavailable: "We cannot retrieve the flight status right now. Aurora will monitor it once your booking is confirmed.",
     paymentLabel: "Payment after confirmation",
     paymentText: "Online deposits and card payment are shown as a pilot flow. We will not charge a card until a production payment provider is activated.",
@@ -191,7 +188,6 @@ const bookingExperience = {
     flightCheck: "Flug prüfen",
     flightChecking: "Flug wird geprüft...",
     flightLive: "Live-Flugstatus",
-    flightDemo: "Test-Flugstatus",
     flightUnavailable: "Der Flugstatus kann derzeit nicht abgerufen werden. Aurora überwacht ihn nach Bestätigung Ihrer Buchung.",
     paymentLabel: "Zahlung nach Bestätigung",
     paymentText: "Online-Anzahlung und Kartenzahlung werden als Pilotablauf gezeigt. Es wird keine Karte belastet, bevor ein Produktions-Zahlungsanbieter aktiviert ist.",
@@ -249,7 +245,6 @@ const bookingExperience = {
     flightCheck: "Vérifier le vol",
     flightChecking: "Vérification du vol...",
     flightLive: "Statut du vol en direct",
-    flightDemo: "Statut de vol de démonstration",
     flightUnavailable: "Le statut du vol est indisponible pour le moment. Aurora le suivra une fois votre réservation confirmée.",
     paymentLabel: "Paiement après confirmation",
     paymentText: "L'acompte en ligne et le paiement par carte sont présentés comme un flux pilote. Aucune carte ne sera débitée avant l'activation d'un prestataire de paiement en production.",

@@ -304,10 +304,11 @@ async function postAction(sql, req) {
     const [watch]=await sql`select fw.*,r.scheduled_at from flight_watches fw join rides r on r.id=fw.ride_id where fw.id=${watchId}`;
     if (!watch) throw Object.assign(new Error("Flight watch not found"), { status:404 });
     const result=await lookupFlight(watch.flight_number,new Date(watch.scheduled_at).toISOString().slice(0,10));
-    const [updated]=await sql`update flight_watches set provider=${result.provider},last_status=${sql.json(result.flight)},last_checked_at=now(),updated_at=now() where id=${watch.id} returning *`;
-    await sql`update rides set flight_status=${sql.json(result.flight)},updated_at=now() where id=${watch.ride_id}`;
-    await appendEvent(sql,watch.ride_id,"flight_status_refreshed","admin","admin",null,null,{provider:result.provider,isLive:result.isLive,status:result.flight.status});
-    return { watch: updated, flight: result.flight, isLive: result.isLive };
+    const flight=result.flight || { number:watch.flight_number, status:"unavailable", departure:{}, arrival:{}, position:null };
+    const [updated]=await sql`update flight_watches set provider=${result.provider},last_status=${sql.json(flight)},last_checked_at=now(),updated_at=now() where id=${watch.id} returning *`;
+    await sql`update rides set flight_status=${sql.json(flight)},updated_at=now() where id=${watch.ride_id}`;
+    await appendEvent(sql,watch.ride_id,"flight_status_refreshed","admin","admin",null,null,{provider:result.provider,isLive:result.isLive,status:flight.status});
+    return { watch: updated, flight, isLive: result.isLive };
   }
   if (action === "create_device_token") {
     const token=randomToken(32), kind=data.kind === "vehicle_tracker" ? "vehicle_tracker" : "driver_app";
