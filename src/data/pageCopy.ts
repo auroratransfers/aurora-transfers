@@ -6,7 +6,15 @@ export type MarketingPage = (typeof marketingPages)[number];
 type PageCard = {
   title: string;
   text: string;
-  cta: string;
+  cta?: string;
+  badge?: string;
+};
+
+type DestinationGroup = {
+  tag: string;
+  title: string;
+  note?: string;
+  cards: readonly PageCard[];
 };
 
 type MarketingPageContent = {
@@ -17,6 +25,7 @@ type MarketingPageContent = {
   secondaryCta: string;
   secondaryHref: MarketingPage;
   cards: readonly PageCard[];
+  destinationGroups?: readonly DestinationGroup[];
   detail: {
     tag: string;
     title: string;
@@ -90,40 +99,55 @@ const pageCopy = {
       seoDescription: "Privatni transferi iz Dubrovnika za međunarodne putnike: zračna luka, hoteli, marine, međugradske vožnje i izleti po mjeri."
     },
     destinations: {
-      tag: "Popularne privatne rute",
-      title: "Krenite dalje od Dubrovnika, bez prepuštanja plana slučaju",
-      intro: "Jadranska regija izgleda blizu na karti, ali putovanje često uključuje granice, prtljagu, promjene smještaja i rasporede koje nije lako uskladiti. Aurora vam daje privatnu, izravnu i osobno organiziranu vožnju do mjesta na kojem vaša sljedeća priča počinje.",
-      primaryCta: "Isplaniraj svoju rutu",
+      tag: "Privatne ture",
+      title: "Privatne ture iz Dubrovnika i Zagreba",
+      intro: "Od obale, starih gradova i vinograda do jezera, Slovenije i Trsta, Aurora organizira privatne dnevne ture prema vašem ritmu. Birate datum, grupu i tempo, a mi pripremamo vožnju od vrata do vrata.",
+      primaryCta: "Isplaniraj svoju turu",
       secondaryCta: "Pogledaj usluge",
       secondaryHref: "services",
-      cards: [
+      cards: [],
+      destinationGroups: [
         {
-          title: "Zračna luka Dubrovnik do vašeg smještaja",
-          text: "Od slijetanja do vrata hotela, vile, apartmana ili marine, organiziramo privatni dolazak bez presjedanja i zajedničkih stajanja. Idealno je za prvi dan odmora kada želite što prije ostaviti prtljagu i krenuti upoznavati grad.",
-          cta: "Rezerviraj dolazak iz zračne luke"
+          tag: "Polazak s juga",
+          title: "Iz Dubrovnika",
+          note: "Sezona 2027. otvorena je za polaske od 1. ožujka 2027.",
+          cards: [
+            { title: "Kotor", text: "Privatni dan uz Bokokotorski zaljev, stari grad i tempo koji odgovara vašoj grupi.", cta: "Isplaniraj turu do Kotora" },
+            { title: "Perast", text: "Mirnija tura uz zaljev, baroknu arhitekturu i dovoljno vremena za Perast i pogled na otočiće.", cta: "Isplaniraj turu do Perasta" },
+            { title: "Mostar", text: "Spojite Jadran i Hercegovinu u privatnom izletu s vremenom za Stari most, ručak i dogovorena stajanja.", cta: "Isplaniraj turu do Mostara" },
+            { title: "Vinska tura", text: "Pažljivo osmišljena vinska tura iz Dubrovnika stiže uskoro.", badge: "Uskoro" },
+            { title: "Ston: kamenice i vino", text: "Dan na Pelješcu za svježe kamenice, lokalna vina, Ston i lagani ritam obale.", cta: "Isplaniraj turu u Ston" }
+          ]
         },
         {
-          title: "Dubrovnik i Kotor",
-          text: "Provedite dan ili nastavite putovanje prema Crnoj Gori uz privatni prijevoz koji prati vaš tempo. Putem granice i slikovitog Bokokotorskog zaljeva važni su dobar raspored, jasni detalji i dovoljno vremena za dolazak bez žurbe.",
-          cta: "Zatraži rutu za Kotor"
+          tag: "Polazak iz grada",
+          title: "Iz Zagreba",
+          cards: [
+            { title: "Plitvička jezera", text: "Privatni jednodnevni izlet do Plitvičkih jezera s preuzimanjem u Zagrebu i vožnjom bez presjedanja.", cta: "Isplaniraj Plitvice" },
+            { title: "Bled, Slovenija", text: "Opušten privatni put do Bleda, jezera i alpskih pogleda, uz raspored prilagođen vašem danu.", cta: "Isplaniraj turu do Bleda" },
+            { title: "Ljubljana", text: "Upoznajte slovensku prijestolnicu privatnom vožnjom s vremenom za šetnju, ručak i vlastiti plan grada.", cta: "Isplaniraj turu do Ljubljane" },
+            { title: "Maribor", text: "Privatna tura kroz sjevernu Sloveniju, s fleksibilnim tempom za grad, vino i krajolik.", cta: "Isplaniraj turu do Maribora" },
+            { title: "Trst", text: "Dan između Zagreba i Jadrana: Trst, kava, obala i privatni prijevoz od vrata do vrata.", cta: "Isplaniraj turu do Trsta" }
+          ]
         },
         {
-          title: "Dubrovnik i Mostar",
-          text: "Povežite obalu i Hercegovinu udobnom privatnom vožnjom, bilo da Mostar posjećujete na jednodnevnom izletu ili ga birate kao sljedeću stanicu putovanja. S vama unaprijed usklađujemo vrijeme polaska, stajanja i povratak.",
-          cta: "Isplaniraj vožnju do Mostara"
-        },
-        {
-          title: "Dubrovnik i Split",
-          text: "Za putnike koji nastavljaju prema Dalmaciji, privatna vožnja znači manje logistike između dva velika odmora. Preuzimamo vas na adresi koja vam odgovara i vozimo izravno do sljedećeg hotela, luke, vile ili centra grada.",
-          cta: "Zatraži transfer do Splita"
+          tag: "Uskoro",
+          title: "Dugolinijski transferi kroz srednju Europu",
+          note: "Austrija, Njemačka, Mađarska i dodatne veze otvaraju se postupno. Ture iz Zagreba navedene iznad ostaju zasebno dostupne.",
+          cards: [
+            { title: "Austrija", text: "Dugolinijske privatne vožnje prema Beču i drugim austrijskim gradovima pripremamo za sljedeće faze.", badge: "Uskoro" },
+            { title: "Njemačka", text: "Međunarodni transferi prema Njemačkoj bit će dostupni nakon otvaranja proširene mreže ruta.", badge: "Uskoro" },
+            { title: "Mađarska", text: "Privatne veze prema Mađarskoj planiramo otvoriti kao dio sljedeće faze prekogranične usluge.", badge: "Uskoro" },
+            { title: "Šira Slovenija", text: "Ture iz Zagreba ostaju dostupne, dok se dodatne dugolinijske veze prema Sloveniji pripremaju za kasnije otvaranje.", badge: "Uskoro" }
+          ]
         }
       ],
       detail: {
         tag: "Putujte svojim ritmom",
-        title: "Privatna ruta daje vam slobodu koju zajednički transfer ne može ponuditi.",
+        title: "Privatna tura daje vam slobodu koju grupni izlet ne može ponuditi.",
         paragraphs: [
-          "Ne putuju svi jednako: neki putnici žele samo miran, izravan dolazak, a drugi žele stati na putu, ručati uz pogled ili nastaviti prema drugom gradu istog dana. Privatni transfer ostavlja prostor za plan koji odgovara vašem putovanju, a ne unaprijed zadanom rasporedu.",
-          "Kod ruta prema susjednim zemljama važni su jasni podaci prije polaska. Pošaljite nam svoju rutu, datum i broj putnika, a mi ćemo potvrditi mogućnosti, organizaciju i konačnu cijenu prije rezervacije."
+          "Ne putuju svi jednako: neki žele miran dan uz more, drugi ručak s pogledom, lokalna vina ili nekoliko sati u novom gradu. Privatna tura ostavlja prostor za plan koji odgovara vašem putovanju, a ne unaprijed zadanom rasporedu.",
+          "Za ture prema susjednim zemljama unaprijed usklađujemo vrijeme polaska, granice, stajanja i veličinu vozila. Pošaljite datum i broj putnika, a mi ćemo potvrditi mogućnosti, organizaciju i konačnu cijenu prije rezervacije."
         ],
         points: [
           "Preuzimanje i dolazak na adresi koju vi odaberete",
@@ -131,7 +155,7 @@ const pageCopy = {
           "Mogućnost povratne vožnje i više dogovorenih stajanja",
           "Udobna alternativa javnom prijevozu i dijeljenim shuttle vožnjama"
         ],
-        cta: "Pošalji nam svoju rutu"
+        cta: "Pošalji nam plan svoje ture"
       },
       final: {
         title: "Vaša sljedeća destinacija zaslužuje dobar početak.",
@@ -140,7 +164,7 @@ const pageCopy = {
         secondaryCta: "Rezerviraj privatnu vožnju",
         secondaryHref: "services"
       },
-      seoDescription: "Privatne rute iz Dubrovnika do zračne luke, Kotora, Mostara, Splita i drugih destinacija u Hrvatskoj i regiji."
+      seoDescription: "Privatne ture iz Dubrovnika i Zagreba do Kotora, Perasta, Mostara, Stona, Plitvičkih jezera, Bleda, Ljubljane, Maribora i Trsta."
     },
     fleet: {
       tag: "Vozila Aurora",
@@ -304,40 +328,55 @@ const pageCopy = {
       seoDescription: "Private transfers from Dubrovnik for international travellers: airport arrivals, hotels, marinas, intercity rides and tailor-made tours."
     },
     destinations: {
-      tag: "Popular private routes",
-      title: "Go beyond Dubrovnik, without leaving your plans to chance",
-      intro: "The Adriatic region looks close on a map, but travel can involve borders, luggage, hotel changes and schedules that are not always easy to coordinate. Aurora gives you a private, direct and personally planned ride to the place where your next chapter begins.",
-      primaryCta: "Plan your route",
+      tag: "Private tours",
+      title: "Private tours from Dubrovnik and Zagreb",
+      intro: "From the coast, old towns and vineyards to lakes, Slovenia and Trieste, Aurora arranges private day tours around your pace. Choose the date, your party and the rhythm; we take care of the door-to-door journey.",
+      primaryCta: "Plan your tour",
       secondaryCta: "See transfer services",
       secondaryHref: "services",
-      cards: [
+      cards: [],
+      destinationGroups: [
         {
-          title: "Dubrovnik Airport to your stay",
-          text: "From landing to the door of your hotel, villa, apartment or marina, we arrange a private arrival with no changes or shared stops. It is ideal for the first day of a holiday, when you want to drop your bags and start enjoying the city sooner.",
-          cta: "Book an airport arrival"
+          tag: "Southern departure",
+          title: "From Dubrovnik",
+          note: "Dubrovnik departures for the 2027 season are open from 1 March 2027.",
+          cards: [
+            { title: "Kotor", text: "A private day around the Bay of Kotor, its old town and a pace shaped around your party.", cta: "Plan a Kotor tour" },
+            { title: "Perast", text: "A calmer Bay of Kotor day with baroque architecture, Perast and time for views of the islands.", cta: "Plan a Perast tour" },
+            { title: "Mostar", text: "Link the Adriatic and Herzegovina in a private day with time for the Old Bridge, lunch and agreed stops.", cta: "Plan a Mostar tour" },
+            { title: "Wine tour", text: "A carefully designed winery day from Dubrovnik is being prepared for a later release.", badge: "Coming soon" },
+            { title: "Ston oysters and wine", text: "A Pelješac day for fresh oysters, local wine, Ston and a slower coastal rhythm.", cta: "Plan a Ston day" }
+          ]
         },
         {
-          title: "Dubrovnik and Kotor",
-          text: "Spend a day in Montenegro or continue your journey to Kotor with private transport that follows your pace. The border and the scenic Bay of Kotor deserve a sensible plan, clear details and enough time to arrive without feeling rushed.",
-          cta: "Request a Kotor route"
+          tag: "City departure",
+          title: "From Zagreb",
+          cards: [
+            { title: "Plitvice Lakes", text: "A private day trip to Plitvice Lakes with Zagreb pickup and direct, unhurried travel.", cta: "Plan Plitvice Lakes" },
+            { title: "Bled, Slovenia", text: "An easy private journey to Bled, its lake and alpine views, with a schedule built around your day.", cta: "Plan a Bled tour" },
+            { title: "Ljubljana", text: "Explore Slovenia's capital with a private ride and time for a walk, lunch and your own city plan.", cta: "Plan a Ljubljana tour" },
+            { title: "Maribor", text: "A flexible northern Slovenia day for the city, wine country and the landscapes in between.", cta: "Plan a Maribor tour" },
+            { title: "Trieste", text: "A day between Zagreb and the Adriatic: Trieste, coffee, the waterfront and door-to-door private travel.", cta: "Plan a Trieste tour" }
+          ]
         },
         {
-          title: "Dubrovnik and Mostar",
-          text: "Connect the coast with Herzegovina in a comfortable private ride, whether Mostar is a day trip or the next stop on a longer itinerary. We coordinate departure time, planned stops and the return journey around the way you want to travel.",
-          cta: "Plan a ride to Mostar"
-        },
-        {
-          title: "Dubrovnik and Split",
-          text: "For travellers continuing along the Dalmatian coast, a private ride removes the friction between two major holiday stops. We collect you from the address that works for you and take you directly to your next hotel, port, villa or city centre.",
-          cta: "Request a Split transfer"
+          tag: "Coming soon",
+          title: "Long-distance transfers across Central Europe",
+          note: "Austria, Germany, Hungary and additional connections will open in stages. The Zagreb day tours above remain separately available.",
+          cards: [
+            { title: "Austria", text: "Long-distance private rides to Vienna and other Austrian cities are being prepared for the next release.", badge: "Coming soon" },
+            { title: "Germany", text: "International transfers to Germany will be available after the expanded route network opens.", badge: "Coming soon" },
+            { title: "Hungary", text: "Private connections to Hungary are planned as part of the next cross-border service phase.", badge: "Coming soon" },
+            { title: "Wider Slovenia", text: "The Zagreb day tours remain available, while additional long-distance connections into Slovenia are being prepared for a later opening.", badge: "Coming soon" }
+          ]
         }
       ],
       detail: {
         tag: "Travel at your pace",
-        title: "A private route gives you freedom that a shared transfer cannot.",
+        title: "A private tour gives you freedom a group excursion cannot.",
         paragraphs: [
-          "Not every traveller moves in the same way: some want a calm, direct arrival, while others want to stop for lunch, take in a view or continue to another city on the same day. A private transfer leaves room for the plan that suits your trip, not a timetable designed for everyone else.",
-          "For routes into neighbouring countries, clear information before departure matters. Send us your route, date and passenger count, and we will confirm the options, organisation and final price before you book."
+          "Not every traveller wants the same day: some want an easy coastal escape, while others want lunch with a view, local wine or several hours in a new city. A private tour leaves room for the plan that suits your trip, not a timetable designed for everyone else.",
+          "For tours into neighbouring countries, we coordinate departure timing, borders, stops and vehicle size in advance. Send us your date and passenger count, and we will confirm the options, organisation and final price before you book."
         ],
         points: [
           "Pickup and drop-off at the addresses you choose",
@@ -345,7 +384,7 @@ const pageCopy = {
           "Return journeys and agreed multi-stop routes available",
           "A comfortable alternative to public transport and shared shuttles"
         ],
-        cta: "Send us your route"
+        cta: "Send us your tour plan"
       },
       final: {
         title: "Your next destination deserves a good beginning.",
@@ -354,7 +393,7 @@ const pageCopy = {
         secondaryCta: "Book a private ride",
         secondaryHref: "services"
       },
-      seoDescription: "Private routes from Dubrovnik to the airport, Kotor, Mostar, Split and destinations across Croatia and the Adriatic region."
+      seoDescription: "Private tours from Dubrovnik and Zagreb to Kotor, Perast, Mostar, Ston, Plitvice Lakes, Bled, Ljubljana, Maribor and Trieste."
     },
     fleet: {
       tag: "Aurora vehicles",
@@ -518,40 +557,55 @@ const pageCopy = {
       seoDescription: "Private Transfers ab Dubrovnik für internationale Reisende: Flughafen, Hotels, Marinas, Fahrten zwischen Städten und individuelle Ausflüge."
     },
     destinations: {
-      tag: "Beliebte Privatrouten",
-      title: "Reisen Sie über Dubrovnik hinaus, ohne Ihren Plan dem Zufall zu überlassen",
-      intro: "Die Adriaregion wirkt auf der Karte nah, doch Reisen kann Grenzen, Gepäck, Hotelwechsel und schwer koordinierbare Zeiten einschließen. Aurora bietet Ihnen eine private, direkte und persönlich geplante Fahrt zu dem Ort, an dem Ihr nächster Reiseabschnitt beginnt.",
-      primaryCta: "Route planen",
+      tag: "Private Ausflüge",
+      title: "Private Ausflüge ab Dubrovnik und Zagreb",
+      intro: "Von Küste, Altstädten und Weinbergen bis zu Seen, Slowenien und Triest organisiert Aurora private Tagesausflüge in Ihrem Tempo. Sie wählen Datum, Reisegruppe und Rhythmus; wir kümmern uns um die Fahrt von Tür zu Tür.",
+      primaryCta: "Ausflug planen",
       secondaryCta: "Transferleistungen ansehen",
       secondaryHref: "services",
-      cards: [
+      cards: [],
+      destinationGroups: [
         {
-          title: "Vom Flughafen Dubrovnik zu Ihrer Unterkunft",
-          text: "Von der Landung bis zur Tür Ihres Hotels, Ihrer Villa, Ihres Apartments oder Ihrer Marina organisieren wir eine private Ankunft ohne Umstiege und geteilte Stopps. Ideal für den ersten Urlaubstag, wenn Sie Ihr Gepäck abstellen und die Stadt schneller genießen möchten.",
-          cta: "Flughafenankunft buchen"
+          tag: "Start im Süden",
+          title: "Ab Dubrovnik",
+          note: "Abfahrten ab Dubrovnik für die Saison 2027 sind ab dem 1. März 2027 verfügbar.",
+          cards: [
+            { title: "Kotor", text: "Ein privater Tag an der Bucht von Kotor, in der Altstadt und in einem Tempo, das zu Ihrer Gruppe passt.", cta: "Ausflug nach Kotor planen" },
+            { title: "Perast", text: "Ein ruhigerer Tag an der Bucht von Kotor mit barocker Architektur, Perast und Zeit für den Blick auf die Inseln.", cta: "Ausflug nach Perast planen" },
+            { title: "Mostar", text: "Verbinden Sie Adria und Herzegowina bei einem Privatausflug mit Zeit für die Alte Brücke, Mittagessen und vereinbarte Stopps.", cta: "Ausflug nach Mostar planen" },
+            { title: "Weintour", text: "Ein sorgfältig geplanter Weinausflug ab Dubrovnik wird für einen späteren Start vorbereitet.", badge: "Demnächst" },
+            { title: "Ston: Austern und Wein", text: "Ein Tag auf Pelješac mit frischen Austern, lokalen Weinen, Ston und einem entspannten Küstenrhythmus.", cta: "Tag in Ston planen" }
+          ]
         },
         {
-          title: "Dubrovnik und Kotor",
-          text: "Verbringen Sie einen Tag in Montenegro oder reisen Sie mit einem Privattransfer weiter nach Kotor, ganz in Ihrem Tempo. Die Grenze und die malerische Bucht von Kotor verlangen einen guten Plan, klare Angaben und genug Zeit für eine entspannte Ankunft.",
-          cta: "Route nach Kotor anfragen"
+          tag: "Start in der Stadt",
+          title: "Ab Zagreb",
+          cards: [
+            { title: "Plitvicer Seen", text: "Privater Tagesausflug zu den Plitvicer Seen mit Abholung in Zagreb und direkter, entspannter Fahrt.", cta: "Plitvicer Seen planen" },
+            { title: "Bled, Slowenien", text: "Eine entspannte Privatfahrt nach Bled, zu seinem See und den alpinen Ausblicken, passend zu Ihrem Tag.", cta: "Ausflug nach Bled planen" },
+            { title: "Ljubljana", text: "Entdecken Sie Sloweniens Hauptstadt mit einer Privatfahrt und Zeit für Spaziergang, Mittagessen und Ihren eigenen Stadtplan.", cta: "Ausflug nach Ljubljana planen" },
+            { title: "Maribor", text: "Ein flexibler Tag im Norden Sloweniens für Stadt, Weinland und die Landschaft dazwischen.", cta: "Ausflug nach Maribor planen" },
+            { title: "Triest", text: "Ein Tag zwischen Zagreb und der Adria: Triest, Kaffee, Uferpromenade und private Fahrt von Tür zu Tür.", cta: "Ausflug nach Triest planen" }
+          ]
         },
         {
-          title: "Dubrovnik und Mostar",
-          text: "Verbinden Sie die Küste mit der Herzegowina auf einer komfortablen Privatfahrt, ob Mostar als Tagesausflug oder als nächste Station Ihrer Reise geplant ist. Abfahrtszeit, Stopps und Rückfahrt stimmen wir vorab mit Ihnen ab.",
-          cta: "Fahrt nach Mostar planen"
-        },
-        {
-          title: "Dubrovnik und Split",
-          text: "Für Reisende entlang der dalmatinischen Küste nimmt eine Privatfahrt die Logistik zwischen zwei großen Urlaubsstopps ab. Wir holen Sie an der gewünschten Adresse ab und fahren direkt zu Ihrem nächsten Hotel, Hafen, Ihrer Villa oder ins Stadtzentrum.",
-          cta: "Transfer nach Split anfragen"
+          tag: "Demnächst",
+          title: "Ferntransfers durch Mitteleuropa",
+          note: "Österreich, Deutschland, Ungarn und weitere Verbindungen werden schrittweise eröffnet. Die oben genannten Tagesausflüge ab Zagreb bleiben separat verfügbar.",
+          cards: [
+            { title: "Österreich", text: "Private Fernfahrten nach Wien und in weitere österreichische Städte werden für die nächste Ausbaustufe vorbereitet.", badge: "Demnächst" },
+            { title: "Deutschland", text: "Internationale Transfers nach Deutschland werden mit der Eröffnung des erweiterten Routennetzes verfügbar.", badge: "Demnächst" },
+            { title: "Ungarn", text: "Private Verbindungen nach Ungarn sind als Teil der nächsten grenzüberschreitenden Servicephase geplant.", badge: "Demnächst" },
+            { title: "Weiteres Slowenien", text: "Die Tagesausflüge ab Zagreb bleiben verfügbar; zusätzliche Fernverbindungen nach Slowenien werden für einen späteren Start vorbereitet.", badge: "Demnächst" }
+          ]
         }
       ],
       detail: {
         tag: "Reisen in Ihrem Tempo",
-        title: "Eine private Route gibt Ihnen Freiraum, den ein Sammeltransfer nicht bieten kann.",
+        title: "Ein privater Ausflug bietet Freiraum, den eine Gruppenreise nicht geben kann.",
         paragraphs: [
-          "Nicht alle Reisenden sind gleich unterwegs: Manche wünschen eine ruhige, direkte Ankunft, andere möchten unterwegs essen, einen Ausblick genießen oder noch am selben Tag in eine andere Stadt weiterfahren. Ein Privattransfer lässt Raum für den Plan, der zu Ihrer Reise passt, statt für einen Fahrplan für alle.",
-          "Bei Fahrten in Nachbarländer sind klare Angaben vor der Abfahrt besonders wichtig. Senden Sie uns Route, Datum und Personenzahl; wir bestätigen Möglichkeiten, Organisation und Endpreis vor Ihrer Buchung."
+          "Nicht alle Reisenden wünschen denselben Tag: Manche möchten entspannt an die Küste, andere mit Aussicht essen, lokale Weine probieren oder mehrere Stunden in einer neuen Stadt verbringen. Ein Privatausflug lässt Raum für Ihren Plan statt für einen Fahrplan für alle.",
+          "Bei Ausflügen in Nachbarländer stimmen wir Abfahrtszeit, Grenzen, Stopps und Fahrzeuggröße vorher ab. Senden Sie uns Datum und Personenzahl; wir bestätigen Möglichkeiten, Organisation und Endpreis vor der Buchung."
         ],
         points: [
           "Abholung und Ankunft an den von Ihnen gewählten Adressen",
@@ -559,7 +613,7 @@ const pageCopy = {
           "Rückfahrten und vereinbarte Routen mit mehreren Stopps möglich",
           "Komfortable Alternative zu öffentlichen Verkehrsmitteln und Shuttles"
         ],
-        cta: "Ihre Route senden"
+        cta: "Ihren Ausflugsplan senden"
       },
       final: {
         title: "Ihr nächstes Ziel verdient einen guten Beginn.",
@@ -568,7 +622,7 @@ const pageCopy = {
         secondaryCta: "Private Fahrt buchen",
         secondaryHref: "services"
       },
-      seoDescription: "Private Routen ab Dubrovnik zum Flughafen, nach Kotor, Mostar, Split und zu Zielen in Kroatien und der gesamten Adriaregion."
+      seoDescription: "Private Ausflüge ab Dubrovnik und Zagreb nach Kotor, Perast, Mostar, Ston, zu den Plitvicer Seen, nach Bled, Ljubljana, Maribor und Triest."
     },
     fleet: {
       tag: "Aurora Fahrzeuge",
@@ -732,40 +786,55 @@ const pageCopy = {
       seoDescription: "Transferts privés depuis Dubrovnik pour voyageurs internationaux: aéroport, hôtels, marinas, trajets interurbains et excursions sur mesure."
     },
     destinations: {
-      tag: "Itinéraires privés populaires",
-      title: "Allez au-delà de Dubrovnik sans laisser votre programme au hasard",
-      intro: "La région adriatique semble proche sur une carte, mais un trajet peut inclure des frontières, des bagages, des changements d'hôtel et des horaires difficiles à coordonner. Aurora vous propose un déplacement privé, direct et personnel jusqu'au lieu où commence la suite de votre voyage.",
-      primaryCta: "Planifier votre itinéraire",
+      tag: "Excursions privées",
+      title: "Excursions privées au départ de Dubrovnik et Zagreb",
+      intro: "De la côte, des vieilles villes et des vignobles aux lacs, à la Slovénie et à Trieste, Aurora organise des excursions privées à votre rythme. Vous choisissez la date, votre groupe et le tempo; nous assurons le trajet porte à porte.",
+      primaryCta: "Planifier votre excursion",
       secondaryCta: "Voir les services de transfert",
       secondaryHref: "services",
-      cards: [
+      cards: [],
+      destinationGroups: [
         {
-          title: "De l'aéroport de Dubrovnik à votre hébergement",
-          text: "De l'atterrissage à la porte de votre hôtel, villa, appartement ou marina, nous organisons une arrivée privée sans changement ni arrêt partagé. C'est idéal pour le premier jour de vacances, lorsque vous souhaitez déposer vos bagages et profiter de la ville plus vite.",
-          cta: "Réserver une arrivée depuis l'aéroport"
+          tag: "Départ du sud",
+          title: "Au départ de Dubrovnik",
+          note: "Les départs de Dubrovnik pour la saison 2027 sont ouverts à partir du 1er mars 2027.",
+          cards: [
+            { title: "Kotor", text: "Une journée privée autour des Bouches de Kotor, de la vieille ville et d'un rythme adapté à votre groupe.", cta: "Planifier une excursion à Kotor" },
+            { title: "Perast", text: "Une journée plus calme dans les Bouches de Kotor, avec architecture baroque, Perast et vue sur les îlots.", cta: "Planifier une excursion à Perast" },
+            { title: "Mostar", text: "Reliez l'Adriatique à l'Herzégovine lors d'une journée privée avec temps pour le Vieux Pont, le déjeuner et les arrêts convenus.", cta: "Planifier une excursion à Mostar" },
+            { title: "Circuit des vins", text: "Une journée viticole soigneusement conçue depuis Dubrovnik est en préparation pour une prochaine ouverture.", badge: "Bientôt disponible" },
+            { title: "Ston : huîtres et vin", text: "Une journée sur la péninsule de Pelješac pour les huîtres fraîches, les vins locaux, Ston et un rythme côtier plus doux.", cta: "Planifier une journée à Ston" }
+          ]
         },
         {
-          title: "Dubrovnik et Kotor",
-          text: "Passez une journée au Monténégro ou poursuivez vers Kotor en transport privé à votre rythme. La frontière et les magnifiques Bouches de Kotor méritent un plan réaliste, des informations claires et assez de temps pour arriver sans précipitation.",
-          cta: "Demander un itinéraire vers Kotor"
+          tag: "Départ de la ville",
+          title: "Au départ de Zagreb",
+          cards: [
+            { title: "Lacs de Plitvice", text: "Une excursion privée aux lacs de Plitvice avec prise en charge à Zagreb et trajet direct, sans précipitation.", cta: "Planifier les lacs de Plitvice" },
+            { title: "Bled, Slovénie", text: "Un trajet privé serein vers Bled, son lac et les vues alpines, avec un horaire conçu pour votre journée.", cta: "Planifier une excursion à Bled" },
+            { title: "Ljubljana", text: "Découvrez la capitale slovène en véhicule privé, avec du temps pour la marche, le déjeuner et votre propre programme.", cta: "Planifier une excursion à Ljubljana" },
+            { title: "Maribor", text: "Une journée flexible dans le nord de la Slovénie, entre ville, vignobles et paysages.", cta: "Planifier une excursion à Maribor" },
+            { title: "Trieste", text: "Une journée entre Zagreb et l'Adriatique : Trieste, cafés, front de mer et transport privé porte à porte.", cta: "Planifier une excursion à Trieste" }
+          ]
         },
         {
-          title: "Dubrovnik et Mostar",
-          text: "Reliez la côte à l'Herzégovine lors d'un trajet privé confortable, que Mostar soit une excursion d'une journée ou la prochaine étape d'un itinéraire plus long. Nous coordonnons l'heure de départ, les arrêts prévus et le retour selon votre façon de voyager.",
-          cta: "Planifier un trajet vers Mostar"
-        },
-        {
-          title: "Dubrovnik et Split",
-          text: "Pour les voyageurs qui continuent le long de la côte dalmate, un trajet privé supprime la logistique entre deux grandes étapes de vacances. Nous venons vous chercher à l'adresse qui vous convient et vous conduisons directement à votre prochain hôtel, port, villa ou centre-ville.",
-          cta: "Demander un transfert vers Split"
+          tag: "Bientôt disponible",
+          title: "Transferts longue distance en Europe centrale",
+          note: "L'Autriche, l'Allemagne, la Hongrie et d'autres liaisons ouvriront progressivement. Les excursions depuis Zagreb ci-dessus restent disponibles séparément.",
+          cards: [
+            { title: "Autriche", text: "Des trajets privés longue distance vers Vienne et d'autres villes autrichiennes sont en préparation pour la prochaine phase.", badge: "Bientôt disponible" },
+            { title: "Allemagne", text: "Les transferts internationaux vers l'Allemagne seront disponibles après l'ouverture du réseau d'itinéraires élargi.", badge: "Bientôt disponible" },
+            { title: "Hongrie", text: "Les liaisons privées vers la Hongrie sont prévues dans la prochaine phase du service transfrontalier.", badge: "Bientôt disponible" },
+            { title: "Slovénie élargie", text: "Les excursions depuis Zagreb restent disponibles, tandis que d'autres liaisons longue distance vers la Slovénie sont préparées pour une ouverture ultérieure.", badge: "Bientôt disponible" }
+          ]
         }
       ],
       detail: {
         tag: "Voyagez à votre rythme",
-        title: "Un itinéraire privé vous donne une liberté qu'un transfert partagé ne peut offrir.",
+        title: "Une excursion privée offre une liberté qu'un circuit de groupe ne peut pas donner.",
         paragraphs: [
-          "Tous les voyageurs ne se déplacent pas de la même manière: certains souhaitent une arrivée calme et directe, d'autres veulent déjeuner en route, profiter d'un panorama ou rejoindre une autre ville le même jour. Un transfert privé laisse de la place au programme qui correspond à votre voyage, pas à un horaire conçu pour tout le monde.",
-          "Pour les trajets vers les pays voisins, il est important d'avoir des informations claires avant le départ. Envoyez-nous votre itinéraire, la date et le nombre de passagers; nous confirmerons les options, l'organisation et le prix final avant votre réservation."
+          "Tous les voyageurs ne souhaitent pas la même journée : certains préfèrent une parenthèse tranquille sur la côte, d'autres un déjeuner avec vue, des vins locaux ou plusieurs heures dans une nouvelle ville. Une excursion privée laisse de la place au programme qui vous ressemble, pas à un horaire conçu pour tous.",
+          "Pour les excursions vers les pays voisins, nous coordonnons à l'avance l'heure de départ, les frontières, les arrêts et la taille du véhicule. Envoyez-nous la date et le nombre de passagers; nous confirmerons les possibilités, l'organisation et le prix final avant la réservation."
         ],
         points: [
           "Prise en charge et arrivée aux adresses de votre choix",
@@ -773,7 +842,7 @@ const pageCopy = {
           "Aller-retour et itinéraires avec plusieurs arrêts possibles",
           "Une alternative confortable aux transports publics et navettes partagées"
         ],
-        cta: "Envoyer votre itinéraire"
+        cta: "Envoyer votre programme d'excursion"
       },
       final: {
         title: "Votre prochaine destination mérite un bon départ.",
@@ -782,7 +851,7 @@ const pageCopy = {
         secondaryCta: "Réserver un trajet privé",
         secondaryHref: "services"
       },
-      seoDescription: "Itinéraires privés depuis Dubrovnik vers l'aéroport, Kotor, Mostar, Split et les destinations de Croatie et de la région adriatique."
+      seoDescription: "Excursions privées depuis Dubrovnik et Zagreb vers Kotor, Perast, Mostar, Ston, les lacs de Plitvice, Bled, Ljubljana, Maribor et Trieste."
     },
     fleet: {
       tag: "Véhicules Aurora",

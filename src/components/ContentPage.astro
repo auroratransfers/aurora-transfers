@@ -29,18 +29,35 @@ const fleetVehicleImageAlt = {
       <a class="pill-button outline" href={`/${lang}/${marketingContent.secondaryHref}/`}>{marketingContent.secondaryCta}<ArrowRight size={16} /></a>
     </div>
 
-    <div class="content-card-grid">
-      {marketingContent.cards.map((card, index) => {
-        const Icon = cardIcons[index] || Compass;
-        return <article class:list={[{ "fleet-content-card": page === "fleet" }]}>
-          {page === "fleet" && <div class="fleet-image"><img src="/media/fast-ride-van.png" alt={fleetVehicleImageAlt} loading="lazy" /></div>}
-          {page !== "fleet" && <span><Icon size={23} /></span>}<h2>{card.title}</h2><p>{card.text}</p><a href={`/${lang}/book/`}>{card.cta}<ArrowRight size={14} /></a>
-        </article>;
-      })}
-    </div>
+    {page === "destinations" && marketingContent.destinationGroups ? (
+      <div class="tour-destination-groups">
+        {marketingContent.destinationGroups.map((group) => <section class="tour-destination-group">
+          <div class="tour-destination-group-heading"><span class="section-marker kiwi-marker">{group.tag}</span><h2>{group.title}</h2>{group.note && <p>{group.note}</p>}</div>
+          <div class="content-card-grid">
+            {group.cards.map((card, index) => {
+              const Icon = cardIcons[index % cardIcons.length] || Compass;
+              return <article>
+                <span><Icon size={23} /></span><h3>{card.title}</h3><p>{card.text}</p>
+                {card.cta ? <a href={`/${lang}/book/`}>{card.cta}<ArrowRight size={14} /></a> : card.badge ? <em class="content-card-badge">{card.badge}</em> : null}
+              </article>;
+            })}
+          </div>
+        </section>)}
+      </div>
+    ) : (
+      <div class="content-card-grid">
+        {marketingContent.cards.map((card, index) => {
+          const Icon = cardIcons[index] || Compass;
+          return <article class:list={[{ "fleet-content-card": page === "fleet" }]}>
+            {page === "fleet" && <div class="fleet-image"><img src="/media/fast-ride-van.png" alt={fleetVehicleImageAlt} loading="lazy" /></div>}
+            {page !== "fleet" && <span><Icon size={23} /></span>}<h2>{card.title}</h2><p>{card.text}</p>{card.cta && <a href={`/${lang}/book/`}>{card.cta}<ArrowRight size={14} /></a>}
+          </article>;
+        })}
+      </div>
+    )}
 
     <section class:list={["content-detail", { "content-detail-image": page === "about" }]}>
-      {page === "about" && <img src="/media/dubrovnik-harbor.jpg" alt={ui.imageAltHarbor} loading="lazy" />}
+      {page === "about" && <img src="/media/dubrovnik-night.jpg" alt={ui.imageAltHarbor} loading="lazy" />}
       <div class="content-detail-copy">
         <span class="section-marker kiwi-marker">{marketingContent.detail.tag}</span>
         <h2>{marketingContent.detail.title}</h2>

@@ -1,6 +1,6 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const { canTransition, haversineMeters, validateBooking } = require("../lib/rides.cjs");
+const { DUBROVNIK_SEASON_START, canTransition, haversineMeters, isDubrovnikSeasonAvailable, validateBooking } = require("../lib/rides.cjs");
 
 test("ride lifecycle permits only expected driver transitions", () => {
   assert.equal(canTransition("assigned", "en_route"), true);
@@ -23,6 +23,13 @@ test("booking validation rejects invalid contact and schedule", () => {
   assert.throws(() => validateBooking({ pickup:"A", destination:"B", date:"bad", time:"13:00", name:"A", email:"bad", phone:"1" }));
   assert.throws(() => validateBooking({ pickup:"A", destination:"B", date:"2035-02-30", time:"13:00", name:"A", email:"a@example.com", phone:"1" }), /Invalid transfer date/);
   assert.throws(() => validateBooking({ pickup:"A", destination:"B", tripType:"return", date:"2035-07-12", time:"13:00", returnDate:"2035-07-11", returnTime:"13:00", name:"A", email:"a@example.com", phone:"1" }), /Return transfer/);
+});
+
+test("Dubrovnik bookings open from the configured 2027 season date", () => {
+  assert.equal(DUBROVNIK_SEASON_START, "2027-03-01");
+  assert.equal(isDubrovnikSeasonAvailable({ pickup:"Dubrovnik", destination:"Kotor", date:"2027-02-28" }), false);
+  assert.equal(isDubrovnikSeasonAvailable({ pickup:"Dubrovnik Airport (DBV)", destination:"Mostar", date:"2027-03-01" }), true);
+  assert.equal(isDubrovnikSeasonAvailable({ pickup:"Zagreb", destination:"Bled", date:"2027-02-15" }), true);
 });
 
 test("haversine distance supports geofence checks", () => {

@@ -27,7 +27,7 @@ const localized = (target: Lang) => Astro.url.pathname === "/" ? (target === "en
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={new URL("/media/dubrovnik-harbor.jpg", Astro.site)} />
+    <meta property="og:image" content={new URL("/media/dubrovnik-night.jpg", Astro.site)} />
     <meta name="twitter:card" content="summary_large_image" />
     <title>{title}</title>
     <script type="application/ld+json" set:html={JSON.stringify({
@@ -35,7 +35,7 @@ const localized = (target: Lang) => Astro.url.pathname === "/" ? (target === "en
       "@type": "TaxiService",
       name: "Aurora Private Transfers",
       url: Astro.site,
-      image: new URL("/media/dubrovnik-harbor.jpg", Astro.site),
+      image: new URL("/media/dubrovnik-night.jpg", Astro.site),
       areaServed: ["Croatia", "Central Europe", "Austria", "Hungary", "Slovenia", "Germany"],
       availableLanguage: ["Croatian", "English", "German", "French"]
     })} />

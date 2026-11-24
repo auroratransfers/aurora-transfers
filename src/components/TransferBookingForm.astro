@@ -2,6 +2,7 @@
 import { ArrowLeftRight, ArrowRight, CalendarCheck, Car, Check, ChevronDown, ChevronLeft, ChevronRight, Clock3, Mail, MapPin, MessageCircle, Minus, Phone, Plane, Plus, User, Users } from "@lucide/astro";
 import { getContent, getInterfaceContent, type Lang } from "../data/site";
 import { getBookingExperience } from "../data/bookingExperience";
+import availability from "../data/availability.json";
 
 interface Props {
   lang: Lang;
@@ -76,6 +77,7 @@ const placeCopy = {
   data-flight-live={experience.flightLive}
   data-flight-demo={experience.flightDemo}
   data-flight-unavailable={experience.flightUnavailable}
+  data-dubrovnik-season-start={availability.dubrovnikSeasonStart}
 >
   {variant === "hero" ? (
     <div class="hero-booking-heading"><span><CalendarCheck size={18} /></span><div><strong>{booking.title}</strong><small>{booking.intro}</small></div></div>
@@ -184,6 +186,8 @@ const placeCopy = {
         <div class="quick-menu" data-quick-panel hidden>{times.map((time) => <button type="button" data-value={time}>{time}</button>)}</div>
       </div>
     </div>
+
+    <p class="booking-season-note full" data-dubrovnik-season-note hidden>{booking.dubrovnikSeason}</p>
 
     <div class="hero-contact-fields full">
       <label for={`${formId}-name`}>{booking.name}<div class="input-wrap"><User size={16} /><input id={`${formId}-name`} name="name" autocomplete="name" required /></div></label>
@@ -318,6 +322,18 @@ const placeCopy = {
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+    const localDate = (value: string) => {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return undefined;
+      const [year, month, day] = value.split("-").map(Number);
+      return new Date(year, month - 1, day);
+    };
+    const dubrovnikSeasonStart = localDate(booking.dataset.dubrovnikSeasonStart || "");
+    const routeIncludesDubrovnik = () => ["pickup", "destination"].some((name) =>
+      booking.querySelector<HTMLInputElement>(`[name="${name}"]`)?.value.toLocaleLowerCase(locale).includes("dubrovnik"),
+    );
+    const departureMinimum = () => (
+      dubrovnikSeasonStart && routeIncludesDubrovnik() && dubrovnikSeasonStart > today ? dubrovnikSeasonStart : today
+    );
     const monday = new Date(2024, 0, 1);
     let outbound = "";
     let returnCalendar: ReturnType<typeof makeCalendar> | undefined;
@@ -341,6 +357,8 @@ const placeCopy = {
       const render = () => {
         if (!title || !days) return;
         const minimum = minimumDate();
+        const minimumMonth = new Date(minimum.getFullYear(), minimum.getMonth(), 1);
+        if (month < minimumMonth) month = minimumMonth;
         title.textContent = new Intl.DateTimeFormat(locale, { month: "long", year: "numeric" }).format(month);
         const offset = (month.getDay() + 6) % 7;
         const count = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
@@ -395,7 +413,14 @@ const placeCopy = {
         set: (value: string) => {
           if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return;
           selected = value;
-          const date = new Date(`${value}T12:00:00`);
+          const date = localDate(value);
+          if (!date || date < minimumDate()) {
+            selected = "";
+            if (input) input.value = "";
+            if (label) label.textContent = label.dataset.quickEmpty || "";
+            render();
+            return;
+          }
           month = new Date(date.getFullYear(), date.getMonth(), 1);
           if (input) input.value = value;
           if (label) label.textContent = new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", year: "numeric" }).format(date);
@@ -407,12 +432,33 @@ const placeCopy = {
 
     const departureElement = booking.querySelector<HTMLElement>('[data-quick-date="date"]');
     const returnElement = booking.querySelector<HTMLElement>('[data-quick-date="returnDate"]');
-    const departureCalendar = departureElement ? makeCalendar(departureElement, () => today, (value) => {
+    const returnMinimum = () => {
+      const minimum = departureMinimum();
+      const departure = localDate(outbound);
+      return departure && departure > minimum ? departure : minimum;
+    };
+    const departureCalendar = departureElement ? makeCalendar(departureElement, departureMinimum, (value) => {
       outbound = value;
       if (returnCalendar?.input?.value && returnCalendar.input.value < value) returnCalendar.clear();
       returnCalendar?.render();
     }) : undefined;
-    if (returnElement) returnCalendar = makeCalendar(returnElement, () => outbound ? new Date(`${outbound}T00:00:00`) : today);
+    if (returnElement) returnCalendar = makeCalendar(returnElement, returnMinimum);
+    const dubrovnikSeasonNote = booking.querySelector<HTMLElement>("[data-dubrovnik-season-note]");
+    const syncDubrovnikSeason = () => {
+      const isDubrovnikRoute = routeIncludesDubrovnik();
+      dubrovnikSeasonNote?.toggleAttribute("hidden", !isDubrovnikRoute);
+      const minimum = departureMinimum();
+      const departure = localDate(departureCalendar?.input?.value || "");
+      if (departure && departure < minimum) {
+        departureCalendar?.clear();
+        outbound = "";
+        returnCalendar?.clear();
+      }
+      const returnDate = localDate(returnCalendar?.input?.value || "");
+      if (returnDate && returnDate < returnMinimum()) returnCalendar?.clear();
+      departureCalendar?.render();
+      returnCalendar?.render();
+    };
 
     const tripInput = booking.querySelector<HTMLInputElement>("[data-quick-trip-input]");
     const returnFields = booking.querySelector<HTMLElement>("[data-quick-return]");
@@ -519,6 +565,7 @@ const placeCopy = {
         if (latitude) latitude.value = Number.isFinite(place.latitude) ? String(place.latitude) : "";
         if (longitude) longitude.value = Number.isFinite(place.longitude) ? String(place.longitude) : "";
         close();
+        syncDubrovnikSeason();
       };
       const render = (next: Place[], message: string, isEmpty = false) => {
         results = next;
@@ -602,6 +649,7 @@ const placeCopy = {
       input.addEventListener("focus", () => { void load(input.value); });
       input.addEventListener("input", () => {
         clearPlaceMeta();
+        syncDubrovnikSeason();
         window.clearTimeout(debounce);
         debounce = window.setTimeout(() => { void load(input.value); }, 160);
       });
@@ -622,6 +670,7 @@ const placeCopy = {
       const value = params.get(name);
       if (input && value) input.value = value;
     });
+    syncDubrovnikSeason();
     const tripParam = params.get("tripType");
     if (tripParam === "return") setTripType("return");
     const serviceParam = params.get("service");

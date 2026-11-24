@@ -7,10 +7,10 @@ interface Props { lang: Lang; }
 const { lang } = Astro.props;
 const t = getContent(lang).booking;
 const bookingPhoto = {
-  hr: { alt: "Luka i obala Dubrovnika", label: "Aurora privatni transferi", text: "Od aerodroma do vašeg odredišta, bez stresa." },
-  en: { alt: "Dubrovnik harbour and coast", label: "Aurora private transfers", text: "From the airport to your destination, without the stress." },
-  de: { alt: "Hafen und Küste von Dubrovnik", label: "Aurora Privattransfers", text: "Vom Flughafen zu Ihrem Ziel, ganz entspannt." },
-  fr: { alt: "Port et côte de Dubrovnik", label: "Transferts privés Aurora", text: "De l'aéroport à votre destination, sans stress." },
+  hr: { alt: "Noćni pogled na stari grad Dubrovnik", label: "Aurora privatni transferi", text: "Od aerodroma do vašeg odredišta, bez stresa." },
+  en: { alt: "Night view of Dubrovnik Old Town", label: "Aurora private transfers", text: "From the airport to your destination, without the stress." },
+  de: { alt: "Nachtblick auf die Altstadt von Dubrovnik", label: "Aurora Privattransfers", text: "Vom Flughafen zu Ihrem Ziel, ganz entspannt." },
+  fr: { alt: "Vue nocturne sur la vieille ville de Dubrovnik", label: "Transferts privés Aurora", text: "De l'aéroport à votre destination, sans stress." },
 }[lang];
 const fastRide = {
   hr: {
@@ -72,7 +72,7 @@ const fastRide = {
   <div class="booking-form-layout">
     <TransferBookingForm lang={lang} variant="page" />
     <aside class="booking-page-photo">
-      <img src="/media/dubrovnik-harbor.jpg" alt={bookingPhoto.alt} loading="lazy" />
+      <img src="/media/dubrovnik-night.jpg" alt={bookingPhoto.alt} loading="lazy" />
       <div class="booking-page-photo-note">
         <strong>{bookingPhoto.label}</strong>
         <span>{bookingPhoto.text}</span>

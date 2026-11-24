@@ -12,5 +12,17 @@ const content = getRouteCopy(lang);
   <span class="section-marker kiwi-marker">{content.tag}</span>
   <h1>{content.indexTitle}</h1>
   <p class="page-intro">{content.indexIntro}</p>
-  <div class="route-page-grid">{auroraRoutes.map((route) => <article><div class="route-page-points"><span><MapPin size={16} />{route.from}</span><i></i><span><MapPin size={16} />{route.to}</span></div><div class="route-page-meta"><span>{route.duration}</span><span>{route.distanceKm} km</span><strong>{content.facts[0]}: {route.fromPrice}</strong></div><a href={`/${lang}/routes/${route.slug}/`}>{content.cta}<ArrowRight size={15} /></a></article>)}</div>
+  <div class="route-page-grid">
+    {auroraRoutes.map((route) => (
+      <article>
+        <div class="route-page-points"><span><MapPin size={16} />{route.from}</span><i></i><span><MapPin size={16} />{route.to}</span></div>
+        <div class="route-page-meta">
+          <span>{route.duration}</span>
+          <span>{route.distanceKm} km</span>
+          {route.comingSoon ? <em class="route-coming-soon">{content.comingSoon}</em> : <strong>{content.facts[0]}: {route.fromPrice}</strong>}
+        </div>
+        {route.comingSoon ? <p class="route-coming-soon-notice">{content.comingSoonNotice}</p> : <a href={`/${lang}/routes/${route.slug}/`}>{content.cta}<ArrowRight size={15} /></a>}
+      </article>
+    ))}
+  </div>
 </section>
