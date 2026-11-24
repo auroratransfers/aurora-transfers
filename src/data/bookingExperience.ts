@@ -35,6 +35,17 @@ type BookingExperience = {
   flightChecking: string;
   flightLive: string;
   flightUnavailable: string;
+  flightAirline: string;
+  flightDeparture: string;
+  flightArrival: string;
+  flightScheduled: string;
+  flightEstimated: string;
+  flightActual: string;
+  flightTerminal: string;
+  flightGate: string;
+  flightDelay: string;
+  flightAircraft: string;
+  flightMinutes: string;
   paymentLabel: string;
   paymentText: string;
   paymentAction: string;
@@ -70,11 +81,22 @@ const bookingExperience = {
     estimateTime: "Procijenjeno trajanje",
     estimateIncludes: "Uključeni odabrani dodaci",
     flightLabel: "Praćenje leta",
-    flightHint: "Dodajte broj leta i provjerit ćemo najnoviji status dolaska.",
+    flightHint: "Dodajte IATA ili ICAO broj leta i provjerit ćemo najnoviji status dolaska.",
     flightCheck: "Provjeri let",
     flightChecking: "Provjeravamo let...",
     flightLive: "Status leta uživo",
     flightUnavailable: "Trenutačno ne možemo dohvatiti status leta. Aurora će ga pratiti nakon potvrde rezervacije.",
+    flightAirline: "Avioprijevoznik",
+    flightDeparture: "Polazak",
+    flightArrival: "Dolazak",
+    flightScheduled: "Planirani dolazak",
+    flightEstimated: "Procijenjeni dolazak",
+    flightActual: "Stvarni dolazak",
+    flightTerminal: "Terminal",
+    flightGate: "Izlaz",
+    flightDelay: "Kašnjenje",
+    flightAircraft: "Zrakoplov",
+    flightMinutes: "min",
     paymentLabel: "Plaćanje nakon potvrde",
     paymentText: "Online polog i plaćanje karticom prikazani su kao pilot tok. Ne naplaćujemo karticu dok ih ne aktiviramo s produkcijskim pružateljem plaćanja.",
     paymentAction: "Plaćanje uskoro",
@@ -127,11 +149,22 @@ const bookingExperience = {
     estimateTime: "Estimated duration",
     estimateIncludes: "Selected extras included",
     flightLabel: "Flight tracking",
-    flightHint: "Add your flight number and we will check the latest arrival status.",
+    flightHint: "Add an IATA or ICAO flight number and we will check the latest arrival status.",
     flightCheck: "Check flight",
     flightChecking: "Checking flight...",
     flightLive: "Live flight status",
     flightUnavailable: "We cannot retrieve the flight status right now. Aurora will monitor it once your booking is confirmed.",
+    flightAirline: "Airline",
+    flightDeparture: "Departure",
+    flightArrival: "Arrival",
+    flightScheduled: "Scheduled arrival",
+    flightEstimated: "Estimated arrival",
+    flightActual: "Actual arrival",
+    flightTerminal: "Terminal",
+    flightGate: "Gate",
+    flightDelay: "Delay",
+    flightAircraft: "Aircraft",
+    flightMinutes: "min",
     paymentLabel: "Payment after confirmation",
     paymentText: "Online deposits and card payment are shown as a pilot flow. We will not charge a card until a production payment provider is activated.",
     paymentAction: "Payments coming soon",
@@ -184,11 +217,22 @@ const bookingExperience = {
     estimateTime: "Geschätzte Dauer",
     estimateIncludes: "Gewählte Extras enthalten",
     flightLabel: "Flug verfolgen",
-    flightHint: "Fügen Sie Ihre Flugnummer hinzu, damit wir den aktuellen Ankunftsstatus prüfen können.",
+    flightHint: "Fügen Sie eine IATA- oder ICAO-Flugnummer hinzu, damit wir den aktuellen Ankunftsstatus prüfen können.",
     flightCheck: "Flug prüfen",
     flightChecking: "Flug wird geprüft...",
     flightLive: "Live-Flugstatus",
     flightUnavailable: "Der Flugstatus kann derzeit nicht abgerufen werden. Aurora überwacht ihn nach Bestätigung Ihrer Buchung.",
+    flightAirline: "Fluggesellschaft",
+    flightDeparture: "Abflug",
+    flightArrival: "Ankunft",
+    flightScheduled: "Geplante Ankunft",
+    flightEstimated: "Voraussichtliche Ankunft",
+    flightActual: "Tatsächliche Ankunft",
+    flightTerminal: "Terminal",
+    flightGate: "Gate",
+    flightDelay: "Verspätung",
+    flightAircraft: "Flugzeug",
+    flightMinutes: "Min.",
     paymentLabel: "Zahlung nach Bestätigung",
     paymentText: "Online-Anzahlung und Kartenzahlung werden als Pilotablauf gezeigt. Es wird keine Karte belastet, bevor ein Produktions-Zahlungsanbieter aktiviert ist.",
     paymentAction: "Zahlungen folgen",
@@ -241,11 +285,22 @@ const bookingExperience = {
     estimateTime: "Durée estimée",
     estimateIncludes: "Options sélectionnées incluses",
     flightLabel: "Suivi du vol",
-    flightHint: "Ajoutez votre numéro de vol et nous vérifierons le dernier statut d'arrivée.",
+    flightHint: "Ajoutez un numéro de vol IATA ou ICAO et nous vérifierons le dernier statut d'arrivée.",
     flightCheck: "Vérifier le vol",
     flightChecking: "Vérification du vol...",
     flightLive: "Statut du vol en direct",
     flightUnavailable: "Le statut du vol est indisponible pour le moment. Aurora le suivra une fois votre réservation confirmée.",
+    flightAirline: "Compagnie aérienne",
+    flightDeparture: "Départ",
+    flightArrival: "Arrivée",
+    flightScheduled: "Arrivée prévue",
+    flightEstimated: "Arrivée estimée",
+    flightActual: "Arrivée réelle",
+    flightTerminal: "Terminal",
+    flightGate: "Porte",
+    flightDelay: "Retard",
+    flightAircraft: "Avion",
+    flightMinutes: "min",
     paymentLabel: "Paiement après confirmation",
     paymentText: "L'acompte en ligne et le paiement par carte sont présentés comme un flux pilote. Aucune carte ne sera débitée avant l'activation d'un prestataire de paiement en production.",
     paymentAction: "Paiements bientôt disponibles",

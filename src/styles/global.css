@@ -163,7 +163,18 @@ main { width: min(1152px, calc(100% - 32px)); margin-inline: auto; padding-top: 
 .flight-check-button:hover { border-color: var(--purple); background: var(--purple-light); }
 .flight-check-button:disabled { cursor: wait; opacity: .7; }
 .flight-field-hint { color: var(--muted); font-size: .62rem; font-weight: 500; line-height: 1.3; }
-.flight-check-result { padding: 7px 8px; border-radius: var(--radius-inner); color: var(--purple-dark); background: var(--purple-light); font-size: .64rem; font-weight: 700; line-height: 1.35; }
+.flight-check-result { display: grid; gap: 9px; padding: 9px; border: 1px solid transparent; border-radius: var(--radius-inner); color: var(--purple-dark); background: var(--purple-light); font-size: .64rem; font-weight: 700; line-height: 1.35; }
+.flight-check-result.is-live { border-color: #ded8e6; color: var(--ink); background: white; }
+.flight-result-message { margin: 0; }
+.flight-result-header { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 8px; }
+.flight-result-header > div { min-width: 0; display: grid; gap: 2px; }
+.flight-result-header strong { color: var(--purple-dark); font-size: .68rem; line-height: 1.2; }
+.flight-result-header small { overflow: hidden; color: var(--muted); font-size: .61rem; font-weight: 700; line-height: 1.25; text-overflow: ellipsis; white-space: nowrap; }
+.flight-status-badge { max-width: 98px; padding: 4px 6px; overflow: hidden; border-radius: var(--radius-inner); color: var(--purple-dark); background: var(--purple-light); font-size: .56rem; font-weight: 900; line-height: 1; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
+.flight-result-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.flight-result-grid > div { min-width: 0; display: grid; gap: 2px; padding: 7px; border: 1px solid #ece8f0; border-radius: var(--radius-inner); background: #fdfcff; }
+.flight-result-grid small { color: var(--muted); font-size: .54rem; font-weight: 800; line-height: 1.15; text-transform: uppercase; }
+.flight-result-grid strong { overflow: hidden; color: var(--ink); font-size: .62rem; font-weight: 800; line-height: 1.25; text-overflow: ellipsis; white-space: nowrap; }
 .booking-advanced { padding: 0; border: 1px solid #ddd8e2; border-radius: var(--radius); background: #fff; }
 .booking-advanced > summary { display: grid; gap: 2px; padding: 12px; list-style: none; cursor: pointer; }
 .booking-advanced > summary::-webkit-details-marker { display: none; }
@@ -658,6 +669,7 @@ main { width: min(1152px, calc(100% - 32px)); margin-inline: auto; padding-top: 
   .hero-booking-form, .quick-return { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .hero-contact-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .hero-extra-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .flight-result-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .booking-addon-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .booking-estimate { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
   .booking-estimate > p { grid-column: 1 / -1; }

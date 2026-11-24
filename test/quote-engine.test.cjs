@@ -1,7 +1,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 const { calculateQuote } = require("../lib/quote-engine.cjs");
-const { lookupFlight } = require("../lib/flight-status.cjs");
+const { flightQuery, lookupFlight } = require("../lib/flight-status.cjs");
 
 test("quote engine returns a labelled demo estimate with selected extras", () => {
   const quote = calculateQuote({
@@ -30,6 +30,12 @@ test("hourly chauffeur estimate uses requested duration", () => {
   assert.equal(quote.hourlyHours, 5);
   assert.equal(quote.durationMinutes, 300);
   assert.equal(quote.service, "hourly-chauffeur");
+});
+
+test("flight lookup selects the correct IATA or ICAO provider query", () => {
+  assert.deepEqual(flightQuery("LH123"), { parameter: "flight_iata", value: "LH123" });
+  assert.deepEqual(flightQuery("W64312"), { parameter: "flight_iata", value: "W64312" });
+  assert.deepEqual(flightQuery("CFG2548"), { parameter: "flight_icao", value: "CFG2548" });
 });
 
 test("flight lookup does not invent a flight without a provider key", async () => {
