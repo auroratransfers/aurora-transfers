@@ -30,6 +30,7 @@ test("platform endpoint does not invent flight data without a provider key", asy
     assert.equal(res.payload.isLive, false);
     assert.equal(res.payload.provider, "unavailable");
     assert.equal(res.payload.flight, null);
+    assert.equal(res.payload.trackingUrl, "https://www.flightradar24.com/data/flights/lh123");
     assert.equal(res.headers["Cache-Control"], "private, max-age=30");
   } finally {
     if (original === undefined) delete process.env.AVIATIONSTACK_API_KEY; else process.env.AVIATIONSTACK_API_KEY = original;

@@ -76,6 +76,7 @@ const placeCopy = {
   data-flight-checking={experience.flightChecking}
   data-flight-live={experience.flightLive}
   data-flight-unavailable={experience.flightUnavailable}
+  data-flight-external-tracker={experience.flightExternalTracker}
   data-flight-airline={experience.flightAirline}
   data-flight-departure={experience.flightDeparture}
   data-flight-arrival={experience.flightArrival}
@@ -716,13 +717,24 @@ const placeCopy = {
         return new Intl.DateTimeFormat(locale, options).format(date);
       }
     };
-    const setFlightMessage = (message: string) => {
+    const setFlightMessage = (message: string, trackingUrl?: string) => {
       if (!flightResult) return;
       flightResult.classList.remove("is-live");
       const text = document.createElement("p");
       text.className = "flight-result-message";
       text.textContent = message;
-      flightResult.replaceChildren(text);
+      const safeTrackingUrl = trackingUrl?.startsWith("https://www.flightradar24.com/") ? trackingUrl : "";
+      if (safeTrackingUrl) {
+        const link = document.createElement("a");
+        link.className = "flight-external-link";
+        link.href = safeTrackingUrl;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = booking.dataset.flightExternalTracker || "";
+        flightResult.replaceChildren(text, link);
+      } else {
+        flightResult.replaceChildren(text);
+      }
       flightResult.hidden = false;
     };
     const flightAirport = (leg: { airport?: string | null; iata?: string | null } = {}) => {
@@ -801,7 +813,7 @@ const placeCopy = {
         if (!response.ok) throw new Error("Flight lookup failed");
         if (!result.isLive || !result.flight) {
           if (flightStatusOutput) flightStatusOutput.value = "";
-          setFlightMessage(booking.dataset.flightUnavailable || "");
+          setFlightMessage(booking.dataset.flightUnavailable || "", result.trackingUrl);
           return;
         }
         renderFlightResult(result.flight);

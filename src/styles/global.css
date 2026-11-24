@@ -166,6 +166,8 @@ main { width: min(1152px, calc(100% - 32px)); margin-inline: auto; padding-top: 
 .flight-check-result { display: grid; gap: 9px; padding: 9px; border: 1px solid transparent; border-radius: var(--radius-inner); color: var(--purple-dark); background: var(--purple-light); font-size: .64rem; font-weight: 700; line-height: 1.35; }
 .flight-check-result.is-live { border-color: #ded8e6; color: var(--ink); background: white; }
 .flight-result-message { margin: 0; }
+.flight-external-link { width: fit-content; min-height: 28px; display: inline-flex; align-items: center; padding: 0 8px; border: 1px solid rgba(111,45,189,.2); border-radius: var(--radius-inner); color: var(--purple-dark); background: white; font-size: .6rem; font-weight: 900; text-decoration: none; }
+.flight-external-link:hover { border-color: var(--purple); color: white; background: var(--purple); }
 .flight-result-header { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 8px; }
 .flight-result-header > div { min-width: 0; display: grid; gap: 2px; }
 .flight-result-header strong { color: var(--purple-dark); font-size: .68rem; line-height: 1.2; }

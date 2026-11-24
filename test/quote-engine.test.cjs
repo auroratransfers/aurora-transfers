@@ -1,7 +1,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 const { calculateQuote } = require("../lib/quote-engine.cjs");
-const { flightQuery, lookupFlight } = require("../lib/flight-status.cjs");
+const { flightQuery, lookupFlight, publicTrackingUrl } = require("../lib/flight-status.cjs");
 
 test("quote engine returns a labelled demo estimate with selected extras", () => {
   const quote = calculateQuote({
@@ -36,6 +36,7 @@ test("flight lookup selects the correct IATA or ICAO provider query", () => {
   assert.deepEqual(flightQuery("LH123"), { parameter: "flight_iata", value: "LH123" });
   assert.deepEqual(flightQuery("W64312"), { parameter: "flight_iata", value: "W64312" });
   assert.deepEqual(flightQuery("CFG2548"), { parameter: "flight_icao", value: "CFG2548" });
+  assert.equal(publicTrackingUrl("CFG2548"), "https://www.flightradar24.com/data/flights/cfg2548");
 });
 
 test("flight lookup does not invent a flight without a provider key", async () => {
@@ -46,6 +47,7 @@ test("flight lookup does not invent a flight without a provider key", async () =
     assert.equal(result.provider, "unavailable");
     assert.equal(result.isLive, false);
     assert.equal(result.flight, null);
+    assert.equal(result.trackingUrl, "https://www.flightradar24.com/data/flights/lh123");
   } finally {
     if (previous) process.env.AVIATIONSTACK_API_KEY = previous;
   }

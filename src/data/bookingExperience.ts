@@ -35,6 +35,7 @@ type BookingExperience = {
   flightChecking: string;
   flightLive: string;
   flightUnavailable: string;
+  flightExternalTracker: string;
   flightAirline: string;
   flightDeparture: string;
   flightArrival: string;
@@ -85,7 +86,8 @@ const bookingExperience = {
     flightCheck: "Provjeri let",
     flightChecking: "Provjeravamo let...",
     flightLive: "Status leta uživo",
-    flightUnavailable: "Trenutačno ne možemo dohvatiti status leta. Aurora će ga pratiti nakon potvrde rezervacije.",
+    flightUnavailable: "Trenutačno ne možemo dohvatiti status leta unutar Aurore. Broj leta ostat će uz rezervaciju, a status uživo možete otvoriti na javnoj stranici.",
+    flightExternalTracker: "Otvori status uživo",
     flightAirline: "Avioprijevoznik",
     flightDeparture: "Polazak",
     flightArrival: "Dolazak",
@@ -153,7 +155,8 @@ const bookingExperience = {
     flightCheck: "Check flight",
     flightChecking: "Checking flight...",
     flightLive: "Live flight status",
-    flightUnavailable: "We cannot retrieve the flight status right now. Aurora will monitor it once your booking is confirmed.",
+    flightUnavailable: "We cannot retrieve the flight status inside Aurora right now. Your flight number remains with the booking, and you can open its live status on the public tracker.",
+    flightExternalTracker: "Open live status",
     flightAirline: "Airline",
     flightDeparture: "Departure",
     flightArrival: "Arrival",
@@ -221,7 +224,8 @@ const bookingExperience = {
     flightCheck: "Flug prüfen",
     flightChecking: "Flug wird geprüft...",
     flightLive: "Live-Flugstatus",
-    flightUnavailable: "Der Flugstatus kann derzeit nicht abgerufen werden. Aurora überwacht ihn nach Bestätigung Ihrer Buchung.",
+    flightUnavailable: "Der Flugstatus kann derzeit nicht innerhalb von Aurora abgerufen werden. Die Flugnummer bleibt bei der Buchung, und Sie können den Live-Status auf der öffentlichen Tracking-Seite öffnen.",
+    flightExternalTracker: "Live-Status öffnen",
     flightAirline: "Fluggesellschaft",
     flightDeparture: "Abflug",
     flightArrival: "Ankunft",
@@ -289,7 +293,8 @@ const bookingExperience = {
     flightCheck: "Vérifier le vol",
     flightChecking: "Vérification du vol...",
     flightLive: "Statut du vol en direct",
-    flightUnavailable: "Le statut du vol est indisponible pour le moment. Aurora le suivra une fois votre réservation confirmée.",
+    flightUnavailable: "Le statut du vol est indisponible dans Aurora pour le moment. Votre numéro de vol reste associé à la réservation, et vous pouvez ouvrir son statut en direct sur le suivi public.",
+    flightExternalTracker: "Ouvrir le statut en direct",
     flightAirline: "Compagnie aérienne",
     flightDeparture: "Départ",
     flightArrival: "Arrivée",
